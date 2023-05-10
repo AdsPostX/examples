@@ -85,14 +85,12 @@ This guide is designed to help you with the integration of `APXCarouselPlugin`
     
     | Parameter | Value | Description | Default Value |
     | --- | --- | --- | --- |
-    | layout | string
-    [stack / tinder / default] | describes a layout type for carousel items. | stack |
+    | layout | string [stack / tinder / default] | describes a layout type for carousel items. | stack |
     | layoutCardOffset | Number | Use to increase or decrease the default card offset in both 'stack' and 'tinder' layouts. | 18 |
     | environment | string (live/test) | has to be either ‘live’ or ‘test. | live |
     | apiKey | string | Native API Key provided to you. |  |
     | userAttributes | dictionary/map | supported user attributes in key-value form. | {} |
-    | sliderHeight | double | height of a carousel. | If pagination enabled then 230. 
-    If pagination disabled then 210. |
+    | sliderHeight | double | height of a carousel. | If pagination enabled then 230. If pagination disabled then 210. |
     | sliderWidth | double | width of a carousel. | 80% of screen width. |
     | autoPlay | boolean (true/false) | if true, autoplay carousel items. | false |
     | autoPlayDelay | double | The delay between every page transition in seconds | 2 |
@@ -102,8 +100,7 @@ This guide is designed to help you with the integration of `APXCarouselPlugin`
     | paginationDefaultColor | valid color value | color for all the pagination (except current pagination) | ‘grey’ |
     | currentItem | callback function | Give information about currently displayed item in carousel. |  |
     | onPressItem | callback function | Give information about selected carousel item. |  |
-    | openLinkIn | external / inapp | if external : it will open links in external browser.
-    if inapp: it will open links in inapp webview.  | external |
+    | openLinkIn | external / inapp | if external : it will open links in external browser. if inapp: it will open links in inapp webview.  | external |
     | contentAlignment | left/right/center | content alignment for Offer UI.(title, description, CTA) | center |
     
     **That’s it. Congratulations! You have successfully integrated `APXCarouselPlugin` into your React-Native project.**

@@ -20,8 +20,8 @@ This guide is designed to help you with the integration of `APXCarouselPlugin`
     npm install -S axios react-native-fast-image react-native-render-html react-native-responsive-fontsize react-native-snap-carousel react-native-webview
     ```
     
-4. Download the `APXCarouselPlugin` folder from [here](https://github.com/AdsPostX/examples/tree/main/react-native/APXCarouselDemo). Drag and drop the folder into your React native project.
-5. Download [cancel.png](https://github.com/AdsPostX/examples/blob/main/react-native/APXCarouselDemo/assets/cancel.png) and [placeholder.png](https://github.com/AdsPostX/examples/blob/main/react-native/APXCarouselDemo/assets/placeholder.png). Drag and drop those files under `assets` folder in React native project.
+4. Download the `APXCarouselPlugin` folder from [here](https://github.com/AdsPostX/examples/tree/main/react-native/APXCarousel/APXCarouselDemo). Drag and drop the folder into your React native project.
+5. Download [cancel.png](https://github.com/AdsPostX/examples/blob/main/react-native/APXCarousel/APXCarouselDemo/assets/cancel.png) and [placeholder.png](https://github.com/AdsPostX/examples/blob/main/react-native/APXCarousel/APXCarouselDemo/assets/placeholder.png). Drag and drop those files under `assets` folder in React native project.
 6. Go to a file where you want to render `APXCarouselPlugin`
 7. Inside the render method copy-paste the following code:
     

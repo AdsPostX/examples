@@ -1,12 +1,6 @@
 import axios from 'axios';
 import {Platform} from 'react-native';
-import {
-  USER_AGENTS,
-  DEFAULT_HEADERS,
-  ENVIRONMENT,
-  BASE_URL_LIVE,
-  BASE_URL_TEST,
-} from './Constants';
+import {USER_AGENTS, DEFAULT_HEADERS, ENVIRONMENT, BASE_URL} from './Constants';
 
 const NetworkLayer = {
   getRequestHeaders: (apiKey, userAgent) => ({
@@ -91,10 +85,11 @@ const NetworkLayer = {
 
     NetworkLayer.validateRequestMethod(requestMethod);
 
-    const baseUrl =
-      environment === ENVIRONMENT.live ? BASE_URL_LIVE : BASE_URL_TEST;
+    if (environment === ENVIRONMENT.test) {
+      requestParameters.dev = 1;
+    }
 
-    const apiUrl = `${baseUrl}${domainPath}`;
+    const apiUrl = `${BASE_URL}${domainPath}`;
 
     const requestOptions = {
       method: requestMethod,

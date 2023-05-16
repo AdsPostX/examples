@@ -86,7 +86,7 @@ function App() {
           <APXCarouselPlugin
             layout={LAYOUT.stack}
             layoutCardOffset={20}
-            environment={ENVIRONMENT.live}
+            environment={ENVIRONMENT.test}
             apiKey={apiKey}
             userAttributes={userAttributes}
             autoPlay={true}

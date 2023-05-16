@@ -1,5 +1,4 @@
-export const BASE_URL_LIVE = 'https://api.adspostx.com/';
-export const BASE_URL_TEST = 'https://api-staging.adspostx.com/';
+export const BASE_URL = 'https://api.adspostx.com/';
 
 export const DEFAULT_HEADERS = {
   Accept: 'application/json',

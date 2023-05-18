@@ -428,13 +428,19 @@ function APXCarouselPlugin({
       }
       return text;
     };
-    const html = truncateText(item.description);
+    let html;
+    if (item.description) {
+      html = truncateText(item.description);
+    }
 
     return (
       <TouchableOpacity
         activeOpacity={1}
         style={childStyle}
         onPress={() => {
+          if (!item.cta_yes) {
+            onPressCTA(item, index);
+          }
           if (onPressItem) {
             onPressItem(item);
           }
@@ -458,28 +464,34 @@ function APXCarouselPlugin({
             )}
           </View>
           <View style={textsContainerStyle}>
-            <View style={titleContainerStyle}>
-              <Text numberOfLines={2} style={titleStyle}>
-                {item.title}
-              </Text>
-            </View>
-            <View style={styles.descriptionContainerStyle}>
-              <RenderHtml
-                contentWidth={carouselWidth * 0.7}
-                source={{html: `<div>${html}</div>`}}
-                tagsStyles={htmlStyles}
-                baseFontStyle={baseFontStyle}
-              />
-            </View>
-            <View style={ctaContainerStyle}>
-              <TouchableOpacity
-                style={ctaButtonStyle}
-                onPress={() => {
-                  onPressCTA(item, index);
-                }}>
-                <Text style={ctaTextStyle}>{item.cta_yes}</Text>
-              </TouchableOpacity>
-            </View>
+            {item.title && (
+              <View style={titleContainerStyle}>
+                <Text numberOfLines={2} style={titleStyle}>
+                  {item.title}
+                </Text>
+              </View>
+            )}
+            {html && (
+              <View style={styles.descriptionContainerStyle}>
+                <RenderHtml
+                  contentWidth={carouselWidth * 0.7}
+                  source={{html: `<div>${html}</div>`}}
+                  tagsStyles={htmlStyles}
+                  baseFontStyle={baseFontStyle}
+                />
+              </View>
+            )}
+            {item.cta_yes && (
+              <View style={ctaContainerStyle}>
+                <TouchableOpacity
+                  style={ctaButtonStyle}
+                  onPress={() => {
+                    onPressCTA(item, index);
+                  }}>
+                  <Text style={ctaTextStyle}>{item.cta_yes}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>

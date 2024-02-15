@@ -76,7 +76,7 @@ function App(props) {
 
     try {
       const result = await fetchOffers(
-        'af54b5cf072aac19',
+        '<account_id>', // use your accountId/api key here..
         headers,
         queryParameters,
         bodyParameters,

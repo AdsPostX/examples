@@ -9,7 +9,7 @@ function OfferContainerView({offers, OnCloseOfferCTA}) {
 
   useEffect(() => {
     setCurrentOffer(offers[currentOfferIndex]);
-    console.log('[AdsPostXAPIDemo] firing pixel now');
+    console.log('[AdsPostXAPIDemo] firing pixel/beacon now');
     firePixel(offers[currentOfferIndex]?.pixel);
   }, [currentOfferIndex]);
 

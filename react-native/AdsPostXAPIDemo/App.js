@@ -20,7 +20,7 @@ function App(props) {
 
       const headers = {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'User-Agent': userAgent,
       };
 

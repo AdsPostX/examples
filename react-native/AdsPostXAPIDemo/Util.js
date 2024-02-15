@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {Linking} from 'react-native';
-import {Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 export const firePixel = url => {

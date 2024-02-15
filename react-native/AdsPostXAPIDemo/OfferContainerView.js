@@ -3,47 +3,45 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OfferView from './OfferView';
 import {firePixel, openURL} from './Util';
 
-function OfferContainerView({
-  offers,
-  closeOfferCTAAction,
-  goToPreviousOfferCTAAction,
-  goToNextOfferCTAAction,
-}) {
+function OfferContainerView({offers, closeOfferCTAAction}) {
   const [currentOffer, setCurrentOffer] = useState(null);
   const [currentOfferIndex, setCurrentOfferIndex] = useState(0);
 
   useEffect(() => {
     setCurrentOffer(offers[currentOfferIndex]);
-  }, [currentOfferIndex, offers]);
+    console.log('[AdsPostXAPIDemo] firing pixel now');
+    firePixel(offers[currentOfferIndex]?.pixel);
+  }, [currentOfferIndex]);
 
-  const goToNextOffer = () => {
+  const goToNextOffer = shouldClose => {
+    console.log('[AdsPostXAPIDemo] Go to next Offer tapped');
     var currentIndex = currentOfferIndex;
     if (currentIndex == offers.length - 1) {
-      closeOfferCTAAction(false, currentOfferIndex);
+      if (!shouldClose) {
+        return;
+      }
+      closeOfferCTAAction(currentOfferIndex, shouldClose);
       return;
     }
-    console.log('[AdsPostXAPIDemo] Go to next Offer tapped');
     currentIndex += 1;
     setCurrentOfferIndex(currentIndex);
-    goToNextOfferCTAAction(currentOfferIndex);
   };
 
   const goToPreviousOffer = () => {
-    console.log('[AdsPostXAPIDemo] Go to previous Offer tapped');
     var currentIndex = currentOfferIndex;
     if (currentIndex == 0) {
       return;
     }
+    console.log('[AdsPostXAPIDemo] Go to previous Offer tapped');
     currentIndex -= 1;
     setCurrentOfferIndex(currentIndex);
-    goToPreviousOfferCTAAction(currentOfferIndex);
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          closeOfferCTAAction(true, currentOfferIndex);
+          closeOfferCTAAction(currentOfferIndex, true);
         }}
         style={{flexDirection: 'row-reverse', padding: 8}}>
         <Text>Close</Text>
@@ -54,30 +52,24 @@ function OfferContainerView({
           description={currentOffer.description}
           imageURL={currentOffer.image}
           clickURL={currentOffer.click_url}
-          onLoadCallback={() => {
-            console.log(
-              '[AdsPostXAPIDemo] fire pixel when offer rendered on screen first time..',
-            );
-            firePixel(currentOffer?.pixel);
-          }}
           imageCTAAction={() => {
             openURL(currentOffer?.click_url);
           }}
           positiveCTA={currentOffer.cta_yes}
-          positiveCTAAction={() => {
+          onPositiveCTA={() => {
             console.log('[AdsPostXAPIDemo] positive cta clicked');
             console.log('[AdsPostXAPIDemo] opening a link url');
             openURL(currentOffer?.click_url);
-            goToNextOffer();
+            goToNextOffer(true);
           }}
           negativeCTA={currentOffer.cta_no}
-          negativeCTAAction={() => {
+          onNegativeCTA={() => {
             console.log('[AdsPostXAPIDemo] negetive cta clicked');
             console.log(
               '[AdsPostXAPIDemo] fire no thanks beacon when -ve cta tapped...',
             );
             firePixel(currentOffer?.beacons?.no_thanks_click);
-            goToNextOffer();
+            goToNextOffer(true);
           }}
         />
       )}
@@ -88,7 +80,9 @@ function OfferContainerView({
           <Text>{'<'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={goToNextOffer}
+          onPress={() => {
+            goToNextOffer(false);
+          }}
           style={styles.navigationButton}>
           <Text>{'>'}</Text>
         </TouchableOpacity>

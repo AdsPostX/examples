@@ -14,44 +14,47 @@ function App(props) {
   const [offers, setOffers] = useState(null);
   const [isOfferClosed, setOfferClosed] = useState(false);
 
-  const fetchMomentOffers = async (
-    apiKey,
-    headers,
-    queryParameters,
-    bodyParameters,
-  ) => {
+  const fetchMomentOffers = async (apiKey, queryParameters, payload) => {
     try {
-      const allParams = {
-        accountId: apiKey,
+      let userAgent = payload.ua ?? (await getUserAgent());
+
+      const headers = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'User-Agent': userAgent,
+      };
+
+      const allQueryParameters = {
+        api_key: apiKey,
         ...queryParameters,
       };
 
       // Remove undefined values from allParams
-      Object.keys(allParams).forEach(
-        key => allParams[key] === undefined && delete allParams[key],
+      Object.keys(allQueryParameters).forEach(
+        key =>
+          allQueryParameters[key] === undefined &&
+          delete allQueryParameters[key],
       );
 
-      // Remove undefined values from bodyParameters
-      Object.keys(bodyParameters).forEach(
-        key => bodyParameters[key] === undefined && delete bodyParameters[key],
+      // Remove undefined values from payload
+      Object.keys(payload).forEach(
+        key => payload[key] === undefined && delete payload[key],
       );
 
-      const postData = {
-        ...bodyParameters,
-      };
-
-      const queryString = Object.keys(allParams)
+      const queryString = Object.keys(allQueryParameters)
         .map(
           key =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(allParams[key])}`,
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              allQueryParameters[key],
+            )}`,
         )
         .join('&');
 
-      const apiUrl = `https://api.adspostx.com/native/v2/offers.json${
+      const apiUrl = `http://api-staging.adspostx.com/native/v2/offers.json${
         queryString ? `?${queryString}` : ''
       }`;
 
-      const response = await axios.post(apiUrl, postData, {headers});
+      const response = await axios.post(apiUrl, payload, {headers});
       return response;
     } catch (error) {
       throw error;
@@ -61,26 +64,13 @@ function App(props) {
   const fetchData = async () => {
     const queryParameters = {loyaltyboost: '0', creative: '0'};
     const payload = {country: 'usa'};
-
-    const bodyParameters = {
-      adpx_fp: 'react_native_api_demo',
-      ...payload,
-    };
-
-    let userAgent = await getUserAgent();
-
-    const headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'User-Agent': userAgent,
-    };
+    // add any payload parameters into the payload object above
 
     try {
       const result = await fetchMomentOffers(
-        '<account_id/api_key>', // use your accountId/api key here..
-        headers,
+        '<api_key>', //replace with your generated API Key
         queryParameters,
-        bodyParameters,
+        payload,
       );
       let offerArray = result.data?.data?.offers;
       setOffers(offerArray);
@@ -99,27 +89,12 @@ function App(props) {
       {!isOfferClosed && offers && offers.length > 0 && (
         <OfferContainerView
           offers={offers}
-          closeOfferCTAAction={(shouldFirePixel, currentIndex) => {
+          closeOfferCTAAction={(currentIndex, shouldFirePixel) => {
             console.log('[AdsPostXAPIDemo] close button tapped');
-            let currentOffer = offers[currentIndex];
-            if (shouldFirePixel && currentOffer) {
-              firePixel(currentOffer?.pixel);
+            if (shouldFirePixel) {
+              firePixel(offers[currentIndex]?.beacons?.close);
             }
             setOfferClosed(true);
-          }}
-          goToPreviousOfferCTAAction={index => {
-            let updatedCurrentOffer = offers[index];
-            console.log(
-              '[AdsPostXAPIDemo] fire pixel when previous offer is displayed',
-            );
-            firePixel(updatedCurrentOffer?.pixel);
-          }}
-          goToNextOfferCTAAction={index => {
-            let updatedCurrentOffer = offers[index];
-            console.log(
-              '[AdsPostXAPIDemo] fire pixel when next offer is displayed',
-            );
-            firePixel(updatedCurrentOffer?.pixel);
           }}
         />
       )}

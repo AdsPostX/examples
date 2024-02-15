@@ -5,18 +5,13 @@ function OfferView({
   title,
   imageURL,
   clickURL,
-  onLoadCallback,
   imageCTAAction,
   description,
   positiveCTA,
-  positiveCTAAction,
+  onPositiveCTA,
   negativeCTA,
-  negativeCTAAction,
+  onNegativeCTA,
 }) {
-  useEffect(() => {
-    onLoadCallback();
-  }, []);
-
   return (
     <View style={styles.container}>
       {title && <Text style={styles.title}>{title}</Text>}
@@ -33,14 +28,14 @@ function OfferView({
       <View style={styles.ctaContainer}>
         {positiveCTA && (
           <TouchableOpacity
-            onPress={positiveCTAAction}
+            onPress={onPositiveCTA}
             style={[styles.cta, {backgroundColor: '#3565A9'}]}>
             <Text style={styles.ctaText}>{positiveCTA}</Text>
           </TouchableOpacity>
         )}
         {negativeCTA && (
           <TouchableOpacity
-            onPress={negativeCTAAction}
+            onPress={onNegativeCTA}
             style={[styles.cta, {backgroundColor: 'grey'}]}>
             <Text style={styles.ctaText}>{negativeCTA}</Text>
           </TouchableOpacity>

@@ -50,7 +50,7 @@ function App(props) {
         )
         .join('&');
 
-      const apiUrl = `http://api-staging.adspostx.com/native/v2/offers.json${
+      const apiUrl = `http://api.adspostx.com/native/v2/offers.json${
         queryString ? `?${queryString}` : ''
       }`;
 

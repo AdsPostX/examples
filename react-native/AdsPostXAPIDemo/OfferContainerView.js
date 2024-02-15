@@ -64,9 +64,9 @@ function OfferContainerView({offers, OnCloseOfferCTA}) {
           }}
           negativeCTA={currentOffer.cta_no}
           onNegativeCTA={() => {
-            console.log('[AdsPostXAPIDemo] negetive cta clicked');
+            console.log('[AdsPostXAPIDemo] negative cta clicked');
             console.log(
-              '[AdsPostXAPIDemo] fire no thanks beacon when -ve cta tapped...',
+              '[AdsPostXAPIDemo] fire no thanks beacon when negative cta tapped...',
             );
             firePixel(currentOffer?.beacons?.no_thanks_click);
             goToNextOffer(true);

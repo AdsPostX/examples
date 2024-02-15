@@ -1,12 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
-  Linking,
-} from 'react-native';
+import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 
 function OfferView({
   title,

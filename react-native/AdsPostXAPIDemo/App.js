@@ -7,21 +7,22 @@ import {
   Image,
 } from 'react-native';
 import axios from 'axios';
-import OffersContainer from './OffersContainer';
+import OfferContainerView from './OfferContainerView';
+import {firePixel, getUserAgent, openURL} from './Util';
 
 function App(props) {
   const [offers, setOffers] = useState(null);
   const [isOfferClosed, setOfferClosed] = useState(false);
 
-  const fetchOffers = async (
-    accountId,
+  const fetchMomentOffers = async (
+    apiKey,
     headers,
     queryParameters,
     bodyParameters,
   ) => {
     try {
       const allParams = {
-        accountId,
+        accountId: apiKey,
         ...queryParameters,
       };
 
@@ -62,21 +63,21 @@ function App(props) {
     const payload = {country: 'usa'};
 
     const bodyParameters = {
-      // ua: 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.43 Mobile Safari/537.36',
       adpx_fp: 'react_native_api_demo',
-      sub_id: 'mobile_android_app_post_transaction',
       ...payload,
     };
+
+    let userAgent = await getUserAgent();
+
     const headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'User-Agent':
-        'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.43 Mobile Safari/537.36',
+      'User-Agent': userAgent,
     };
 
     try {
-      const result = await fetchOffers(
-        '<account_id>', // use your accountId/api key here..
+      const result = await fetchMomentOffers(
+        '<account_id/api_key>', // use your accountId/api key here..
         headers,
         queryParameters,
         bodyParameters,
@@ -96,10 +97,29 @@ function App(props) {
   return (
     <SafeAreaView style={styles.container}>
       {!isOfferClosed && offers && offers.length > 0 && (
-        <OffersContainer
+        <OfferContainerView
           offers={offers}
-          closeOfferCTAAction={() => {
+          closeOfferCTAAction={(shouldFirePixel, currentIndex) => {
+            console.log('[AdsPostXAPIDemo] close button tapped');
+            let currentOffer = offers[currentIndex];
+            if (shouldFirePixel && currentOffer) {
+              firePixel(currentOffer?.pixel);
+            }
             setOfferClosed(true);
+          }}
+          goToPreviousOfferCTAAction={index => {
+            let updatedCurrentOffer = offers[index];
+            console.log(
+              '[AdsPostXAPIDemo] fire pixel when previous offer is displayed',
+            );
+            firePixel(updatedCurrentOffer?.pixel);
+          }}
+          goToNextOfferCTAAction={index => {
+            let updatedCurrentOffer = offers[index];
+            console.log(
+              '[AdsPostXAPIDemo] fire pixel when next offer is displayed',
+            );
+            firePixel(updatedCurrentOffer?.pixel);
           }}
         />
       )}

@@ -1,16 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Image,
-  Linking,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OfferView from './OfferView';
-import axios from 'axios';
+import {firePixel, openURL} from './Util';
 
-function OffersContainer({offers, closeOfferCTAAction}) {
+function OfferContainerView({
+  offers,
+  closeOfferCTAAction,
+  goToPreviousOfferCTAAction,
+  goToNextOfferCTAAction,
+}) {
   const [currentOffer, setCurrentOffer] = useState(null);
   const [currentOfferIndex, setCurrentOfferIndex] = useState(0);
 
@@ -18,70 +16,34 @@ function OffersContainer({offers, closeOfferCTAAction}) {
     setCurrentOffer(offers[currentOfferIndex]);
   }, [currentOfferIndex, offers]);
 
-  const openURL = async url => {
-    if (url) {
-      const supported = await Linking.canOpenURL(url);
-
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        // console.log(`[AdsPostXAPIDemo] Cannot open URL: ${url}`);
-      }
-    }
-  };
-
-  const firePixel = url => {
-    if (url) {
-      axios
-        .get(url)
-        .then(response => {
-          //   console.log('[AdsPostXAPIDemo] fire pixel Success:', response.data);
-        })
-        .catch(error => {
-          //   console.error('fire pixel Error:', error);
-        });
-    }
-  };
-
-  const goToPreviousOffer = () => {
-    var currentIndex = currentOfferIndex;
-    if (currentIndex == 0) {
-      return;
-    }
-    console.log('[AdsPostXAPIDemo] Go to previous Offer tapped');
-    currentIndex -= 1;
-    setCurrentOfferIndex(currentIndex);
-    let newOffer = offers[currentIndex];
-    console.log(
-      '[AdsPostXAPIDemo] fire pixel when previous offer is displayed',
-    );
-    firePixel(newOffer?.pixel);
-  };
-
   const goToNextOffer = () => {
     var currentIndex = currentOfferIndex;
     if (currentIndex == offers.length - 1) {
-      closeOfferCTAAction();
+      closeOfferCTAAction(false, currentOfferIndex);
       return;
     }
     console.log('[AdsPostXAPIDemo] Go to next Offer tapped');
     currentIndex += 1;
     setCurrentOfferIndex(currentIndex);
+    goToNextOfferCTAAction(currentOfferIndex);
+  };
 
-    let newOffer = offers[currentIndex];
-    console.log('[AdsPostXAPIDemo] fire pixel when next offer is displayed');
-    firePixel(newOffer?.pixel);
+  const goToPreviousOffer = () => {
+    console.log('[AdsPostXAPIDemo] Go to previous Offer tapped');
+    var currentIndex = currentOfferIndex;
+    if (currentIndex == 0) {
+      return;
+    }
+    currentIndex -= 1;
+    setCurrentOfferIndex(currentIndex);
+    goToPreviousOfferCTAAction(currentOfferIndex);
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          console.log(
-            '[AdsPostXAPIDemo] fire beacon when close button tapped.',
-          );
-          firePixel(currentOffer?.beacons?.close);
-          closeOfferCTAAction();
+          closeOfferCTAAction(true, currentOfferIndex);
         }}
         style={{flexDirection: 'row-reverse', padding: 8}}>
         <Text>Close</Text>
@@ -160,4 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OffersContainer;
+export default OfferContainerView;

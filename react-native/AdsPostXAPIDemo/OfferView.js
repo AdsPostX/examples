@@ -4,9 +4,9 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 function OfferView({
   title,
   imageURL,
-  clickURL,
-  imageCTAAction,
   description,
+  clickURL,
+  onImageCTA,
   positiveCTA,
   onPositiveCTA,
   negativeCTA,
@@ -16,7 +16,7 @@ function OfferView({
     <View style={styles.container}>
       {title && <Text style={styles.title}>{title}</Text>}
       {imageURL && (
-        <TouchableOpacity onPress={imageCTAAction}>
+        <TouchableOpacity onPress={onImageCTA}>
           <Image
             source={{uri: `${imageURL}`}}
             resizeMode="contain"

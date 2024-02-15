@@ -3,7 +3,7 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OfferView from './OfferView';
 import {firePixel, openURL} from './Util';
 
-function OfferContainerView({offers, closeOfferCTAAction}) {
+function OfferContainerView({offers, OnCloseOfferCTA}) {
   const [currentOffer, setCurrentOffer] = useState(null);
   const [currentOfferIndex, setCurrentOfferIndex] = useState(0);
 
@@ -20,7 +20,7 @@ function OfferContainerView({offers, closeOfferCTAAction}) {
       if (!shouldClose) {
         return;
       }
-      closeOfferCTAAction(currentOfferIndex, shouldClose);
+      OnCloseOfferCTA(currentOfferIndex, shouldClose);
       return;
     }
     currentIndex += 1;
@@ -41,7 +41,7 @@ function OfferContainerView({offers, closeOfferCTAAction}) {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          closeOfferCTAAction(currentOfferIndex, true);
+          OnCloseOfferCTA(currentOfferIndex, true);
         }}
         style={{flexDirection: 'row-reverse', padding: 8}}>
         <Text>Close</Text>
@@ -52,7 +52,7 @@ function OfferContainerView({offers, closeOfferCTAAction}) {
           description={currentOffer.description}
           imageURL={currentOffer.image}
           clickURL={currentOffer.click_url}
-          imageCTAAction={() => {
+          onImageCTA={() => {
             openURL(currentOffer?.click_url);
           }}
           positiveCTA={currentOffer.cta_yes}

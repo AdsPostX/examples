@@ -89,7 +89,7 @@ function App(props) {
       {!isOfferClosed && offers && offers.length > 0 && (
         <OfferContainerView
           offers={offers}
-          closeOfferCTAAction={(currentIndex, shouldFirePixel) => {
+          OnCloseOfferCTA={(currentIndex, shouldFirePixel) => {
             console.log('[AdsPostXAPIDemo] close button tapped');
             if (shouldFirePixel) {
               firePixel(offers[currentIndex]?.beacons?.close);

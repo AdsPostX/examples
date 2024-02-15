@@ -75,7 +75,7 @@ function App(props) {
       let offerArray = result.data?.data?.offers;
       setOffers(offerArray);
     } catch (error) {
-      console.error('Error in while fetchOffers:', error);
+      console.log('Error in while fetchOffers:', error);
       setOffers(null);
     }
   };

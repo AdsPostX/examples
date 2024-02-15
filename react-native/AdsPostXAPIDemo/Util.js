@@ -11,7 +11,7 @@ export const firePixel = url => {
         console.log('[AdsPostXAPIDemo] fire pixel Success:', response.data);
       })
       .catch(error => {
-        console.error('fire pixel Error:', error);
+        console.log('fire pixel Error:', error);
       });
   }
 };

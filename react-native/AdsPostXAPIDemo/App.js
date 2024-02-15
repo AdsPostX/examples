@@ -20,7 +20,7 @@ function App(props) {
 
       const headers = {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'User-Agent': userAgent,
       };
 
@@ -50,7 +50,7 @@ function App(props) {
         )
         .join('&');
 
-      const apiUrl = `http://api-staging.adspostx.com/native/v2/offers.json${
+      const apiUrl = `http://api.adspostx.com/native/v2/offers.json${
         queryString ? `?${queryString}` : ''
       }`;
 

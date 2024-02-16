@@ -16,7 +16,7 @@ function App(props) {
 
   const fetchMomentOffers = async (apiKey, queryParameters, payload) => {
     try {
-      let userAgent = payload.ua ?? (await getUserAgent());
+      let userAgent = payload?.ua ?? (await getUserAgent());
 
       const headers = {
         'Content-Type': 'application/json',
@@ -26,20 +26,24 @@ function App(props) {
 
       const allQueryParameters = {
         api_key: apiKey,
-        ...queryParameters,
+        ...(queryParameters || {}),
       };
 
       // Remove undefined values from allParams
-      Object.keys(allQueryParameters).forEach(
-        key =>
-          allQueryParameters[key] === undefined &&
-          delete allQueryParameters[key],
-      );
+      if (queryParameters) {
+        Object.keys(allQueryParameters).forEach(
+          key =>
+            allQueryParameters[key] === undefined &&
+            delete allQueryParameters[key],
+        );
+      }
 
       // Remove undefined values from payload
-      Object.keys(payload).forEach(
-        key => payload[key] === undefined && delete payload[key],
-      );
+      if (payload) {
+        Object.keys(payload).forEach(
+          key => payload[key] === undefined && delete payload[key],
+        );
+      }
 
       const queryString = Object.keys(allQueryParameters)
         .map(
@@ -68,7 +72,7 @@ function App(props) {
 
     try {
       const result = await fetchMomentOffers(
-        '<api_key>', //replace with your generated API Key
+	'<api_key>', //replace with your generated API Key
         queryParameters,
         payload,
       );

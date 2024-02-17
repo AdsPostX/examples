@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import OfferContainerView from './OfferContainerView';
-import {firePixel, getUserAgent, openURL} from './Util';
+import {firePixel, getUserAgent, openURL, generateUniqueID} from './Util';
 
 function App(props) {
   const [offers, setOffers] = useState(null);
@@ -67,12 +67,15 @@ function App(props) {
 
   const fetchData = async () => {
     const queryParameters = {loyaltyboost: '0', creative: '0'};
-    const payload = {country: 'usa'};
-    // add any payload parameters into the payload object above
+
+    const payload = {
+      'dev': '1',
+      'adpx_fp': (await generateUniqueID()).toString(),
+    };
 
     try {
       const result = await fetchMomentOffers(
-	'<api_key>', //replace with your generated API Key
+        '<api_key>', //replace with your generated API Key
         queryParameters,
         payload,
       );

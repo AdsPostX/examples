@@ -1,6 +1,14 @@
 import axios from 'axios';
-import {Linking} from 'react-native';
+import {Linking, Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+
+export const generateUniqueID = () => {
+  return Platform.select({
+    ios: DeviceInfo.getUniqueId(), // IDFV for iOS
+    android: DeviceInfo.getAndroidId(), // AndroidID for Android
+    default: 'unknown',
+  });
+};
 
 export const firePixel = url => {
   if (url) {

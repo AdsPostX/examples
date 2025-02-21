@@ -12,14 +12,20 @@ export const generateUniqueID = () => {
 
 export const firePixel = url => {
   if (url) {
-    console.log('[AdsPostXAPIDemo] Inside fire pixel');
+    if (__DEV__) {
+      console.log('[AdsPostXAPIDemo] Inside fire pixel');
+    }
     axios
       .get(url)
       .then(response => {
-        console.log('[AdsPostXAPIDemo] fire pixel Success:', response.data);
+        if (__DEV__) {
+          console.log('[AdsPostXAPIDemo] fire pixel Success:', response.data);
+        }
       })
       .catch(error => {
-        console.log('fire pixel Error:', error);
+        if (__DEV__) {
+          console.log('fire pixel Error:', error);
+        }
       });
   }
 };
@@ -31,7 +37,9 @@ export const openURL = async url => {
     if (supported) {
       await Linking.openURL(url);
     } else {
-      console.log(`[AdsPostXAPIDemo] Cannot open URL: ${url}`);
+      if (__DEV__) {
+        console.log(`[AdsPostXAPIDemo] Cannot open URL: ${url}`);
+      }
     }
   }
 };

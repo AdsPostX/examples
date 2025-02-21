@@ -82,7 +82,9 @@ function App(props) {
       let offerArray = result.data?.data?.offers;
       setOffers(offerArray);
     } catch (error) {
-      console.log('Error in while fetchOffers:', error);
+      if (__DEV__) {
+        console.log('Error in while fetchOffers:', error);
+      }
       setOffers(null);
     }
   };
@@ -97,7 +99,9 @@ function App(props) {
         <OfferContainerView
           offers={offers}
           OnCloseOfferCTA={(currentIndex, shouldFirePixel) => {
-            console.log('[AdsPostXAPIDemo] close button tapped');
+            if (__DEV__) {
+              console.log('[AdsPostXAPIDemo] close button tapped');
+            }
             if (shouldFirePixel) {
               firePixel(offers[currentIndex]?.beacons?.close);
             }

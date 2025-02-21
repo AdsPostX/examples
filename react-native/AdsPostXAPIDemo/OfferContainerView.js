@@ -9,12 +9,16 @@ function OfferContainerView({offers, OnCloseOfferCTA}) {
 
   useEffect(() => {
     setCurrentOffer(offers[currentOfferIndex]);
-    console.log('[AdsPostXAPIDemo] firing pixel/beacon now');
+    if (__DEV__) {
+      console.log('[AdsPostXAPIDemo] firing pixel/beacon now');
+    }
     firePixel(offers[currentOfferIndex]?.pixel);
   }, [currentOfferIndex]);
 
   const goToNextOffer = shouldClose => {
-    console.log('[AdsPostXAPIDemo] Go to next Offer tapped');
+    if (__DEV__) {
+      console.log('[AdsPostXAPIDemo] Go to next Offer tapped');
+    }
     var currentIndex = currentOfferIndex;
     if (currentIndex == offers.length - 1) {
       if (!shouldClose) {
@@ -32,7 +36,9 @@ function OfferContainerView({offers, OnCloseOfferCTA}) {
     if (currentIndex == 0) {
       return;
     }
-    console.log('[AdsPostXAPIDemo] Go to previous Offer tapped');
+    if (__DEV__) {
+      console.log('[AdsPostXAPIDemo] Go to previous Offer tapped');
+    }
     currentIndex -= 1;
     setCurrentOfferIndex(currentIndex);
   };
@@ -57,17 +63,21 @@ function OfferContainerView({offers, OnCloseOfferCTA}) {
           }}
           positiveCTA={currentOffer.cta_yes}
           onPositiveCTA={() => {
-            console.log('[AdsPostXAPIDemo] positive cta clicked');
-            console.log('[AdsPostXAPIDemo] opening a link url');
+            if (__DEV__) {
+              console.log('[AdsPostXAPIDemo] positive cta clicked');
+              console.log('[AdsPostXAPIDemo] opening a link url');
+            }
             openURL(currentOffer?.click_url);
             goToNextOffer(true);
           }}
           negativeCTA={currentOffer.cta_no}
           onNegativeCTA={() => {
-            console.log('[AdsPostXAPIDemo] negative cta clicked');
-            console.log(
-              '[AdsPostXAPIDemo] fire no thanks beacon when negative cta tapped...',
-            );
+            if (__DEV__) {
+              console.log('[AdsPostXAPIDemo] negative cta clicked');
+              console.log(
+                '[AdsPostXAPIDemo] fire no thanks beacon when negative cta tapped...',
+              );
+            }
             firePixel(currentOffer?.beacons?.no_thanks_click);
             goToNextOffer(true);
           }}

@@ -13,13 +13,16 @@ export const generateUniqueID = () => {
 export const firePixel = url => {
   if (url) {
     if (__DEV__) {
-      console.log('[AdsPostXAPIDemo] Inside fire pixel');
+      console.log('[MomentScienceAPIDemo] Inside fire pixel');
     }
     axios
       .get(url)
       .then(response => {
         if (__DEV__) {
-          console.log('[AdsPostXAPIDemo] fire pixel Success:', response.data);
+          console.log(
+            '[MomentScienceAPIDemo] fire pixel Success:',
+            response.data,
+          );
         }
       })
       .catch(error => {
@@ -38,7 +41,7 @@ export const openURL = async url => {
       await Linking.openURL(url);
     } else {
       if (__DEV__) {
-        console.log(`[AdsPostXAPIDemo] Cannot open URL: ${url}`);
+        console.log(`[MomentScienceAPIDemo] Cannot open URL: ${url}`);
       }
     }
   }

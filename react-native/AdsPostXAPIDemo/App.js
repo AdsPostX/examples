@@ -60,7 +60,7 @@ function App(props) {
       return response;
     } catch (error) {
       if (__DEV__) {
-        console.error('Error in fetchMomentOffers:', error);
+        console.log('Error in fetchMomentOffers:', error);
       }
       throw error; // Propagate the error for better handling upstream
     }
@@ -91,11 +91,10 @@ function App(props) {
 
       // Safely extract the offers array from the response
       const offers = response?.data?.data?.offers ?? [];
-
       setOffers(offers.length ? offers : null); // Handle empty array scenario
     } catch (error) {
       if (__DEV__) {
-        console.error('Error while fetching offers:', error);
+        console.log('Error while fetching offers:', error);
       }
       setOffers(null); // Clear offers on error
     }

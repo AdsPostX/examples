@@ -9,6 +9,7 @@ import {
 import axios from 'axios';
 import OfferContainerView from './OfferContainerView';
 import {firePixel, getUserAgent, openURL, generateUniqueID} from './Util';
+import Config from 'react-native-config';
 
 function App(props) {
   const [offers, setOffers] = useState(null);
@@ -36,7 +37,7 @@ function App(props) {
       };
       const filteredQueryParameters = Object.fromEntries(
         Object.entries(allQueryParameters).filter(
-          ([_, value]) => value != null,
+          ([key, value]) => value !== null && value !== undefined,
         ),
       );
 
@@ -51,7 +52,7 @@ function App(props) {
       ).toString();
 
       // Construct the full API URL
-      const apiUrl = `http://api.adspostx.com/native/v2/offers.json${
+      const apiUrl = `${Config.API_BASE_URL}/offers.json${
         queryString ? `?${queryString}` : ''
       }`;
 
@@ -82,7 +83,7 @@ function App(props) {
     };
 
     try {
-      const apiKey = '<api_key>'; // Replace with your actual API Key
+      const apiKey = Config.API_KEY; // Replace with your actual API Key
       const response = await fetchMomentOffers(
         apiKey,
         queryParameters,

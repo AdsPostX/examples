@@ -43,9 +43,10 @@ function App(props) {
 
       // Remove null values from the payload
       const filteredPayload = Object.fromEntries(
-        Object.entries(payload).filter(([_, value]) => value != null),
+        Object.entries(payload).filter(
+          ([key, value]) => value !== null && value !== undefined,
+        ),
       );
-
       // Create the query string
       const queryString = new URLSearchParams(
         filteredQueryParameters,

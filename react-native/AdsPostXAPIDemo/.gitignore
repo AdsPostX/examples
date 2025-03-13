@@ -67,3 +67,4 @@ yarn-error.log
 android/app/release/app-release.apk
 android/app/src/main/assets/index.android.bundle
 package-lock.json
+android/.kotlin/

@@ -47,6 +47,7 @@ function App(props) {
           ([key, value]) => value !== null && value !== undefined,
         ),
       );
+
       // Create the query string
       const queryString = new URLSearchParams(
         filteredQueryParameters,
@@ -63,6 +64,10 @@ function App(props) {
     } catch (error) {
       if (__DEV__) {
         console.log('Error in fetchMomentOffers:', error);
+        console.log(
+          'Error details:',
+          error.response || error.request || error.message,
+        );
       }
       throw error; // Propagate the error for better handling upstream
     }

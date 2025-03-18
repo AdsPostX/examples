@@ -80,4 +80,4 @@ If the post message has the name 'url_clicked' and includes a 'target_url', then
 In the [`ProductDetailScreen`](src/screens/product_detail_screen.js) component, the `WebView` is used to display a HTML page. JavaScript is injected to listen for messages from the web content, which are then handled in the `onMessage` callback. Navigation events are intercepted to prevent certain URLs from loading.
 
 ## Note
-Please review .env.example file, create .env file and assign valid values for environment variables which has been mentioned in .env.example.
+Please review the .env.example file, create a .env file, and assign valid values to the environment variables mentioned in .env.example.

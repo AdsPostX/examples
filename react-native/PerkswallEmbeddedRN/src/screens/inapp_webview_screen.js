@@ -21,12 +21,24 @@ const InAppWebViewScreen = ({route, navigation}) => {
   const [loading, setLoading] = useState(true);
 
   const handleRequest = event => {
-    const isStoreUrl =
-      event.url.includes('play.google.com') ||
-      event.url.includes('apps.apple.com');
+    const isPlayStoreUrl = event.url.includes('play.google.com');
+    const isAppStoreUrl =
+      event.url.startsWith('https://apps.apple.com/') ||
+      event.url.startsWith('itms-apps://');
 
-    if (isStoreUrl) {
-      Linking.openURL(url);
+    if (isAppStoreUrl && Platform.OS === 'ios') {
+      const appStoreUrl = event.url.startsWith('itms-apps://')
+        ? event.url
+        : event.url.replace('https://', 'itms-apps://');
+      Linking.openURL(appStoreUrl).catch(err =>
+        console.log('Failed to open App Store:', err),
+      );
+      navigation.goBack();
+      return false;
+    } else if (isPlayStoreUrl && Platform.OS === 'android') {
+      Linking.openURL(event.url).catch(err =>
+        console.log('Failed to open Play Store:', err),
+      );
       navigation.goBack();
       return false;
     }

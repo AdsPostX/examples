@@ -121,10 +121,20 @@ fun OffersView(
         }
     }
 
+    // Track WebView state
+    var isWebViewInitialized by remember { mutableStateOf(false) }
+
     // Clean up WebView on disposal
     DisposableEffect(Unit) {
         onDispose {
-            webViewInstance.destroy()
+            try {
+                if (isWebViewInitialized) {
+                    webViewInstance.destroy()
+                    isWebViewInitialized = false
+                }
+            } catch (e: Exception) {
+                println(e.toString())
+            }
         }
     }
 
@@ -193,6 +203,9 @@ fun OffersView(
                 Text("Prefetch with WebSDK will load websdk with 0 x 0 webview on this screen first, web sdk will save response locally and when we use web sdk again on 2nd screen to display, that saved response will be used. once offers are displayed saved response will be deleted locally")
                 Button(
                     onClick = { 
+                        if (!isWebViewInitialized) {
+                            isWebViewInitialized = true
+                        }
                         webViewInstance.visibility = android.view.View.VISIBLE
                         viewModel.setWebViewLoading(true)
                         viewModel.setPrefetchMode(PrefetchMode.WEB)
@@ -205,8 +218,8 @@ fun OffersView(
                                 null
                             )
                         } catch (e: Exception) {
-                            // Handle the exception - show error message to user
                             viewModel.setError("Failed to load HTML template: ${e.message}")
+                            isWebViewInitialized = false
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

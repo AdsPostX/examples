@@ -46,7 +46,7 @@
       <h1>MomentScience Demo App</h1>
       <p id="offers-count">%%OFFERS_COUNT%% offers available</p>
     </div>
-    <div id="target"></div>
+    <div id="adpx"></div>
 
     <script>
       // Configuration
@@ -54,14 +54,6 @@
           accountId: '%%SDK_ID%%',
           autoShow: true,
           %%AUTOLOAD_CONFIG%%,
-          settings: {
-              embedded: {
-                  enabled: true,
-                  showHeader: false,
-                  showFooter: false,
-                  targetElement: "target"
-              }
-          },
           callback: (event, payload) => {
               console.log('Adpx callback:', event, payload);
               Android.adpxCallback(event, JSON.stringify(payload));

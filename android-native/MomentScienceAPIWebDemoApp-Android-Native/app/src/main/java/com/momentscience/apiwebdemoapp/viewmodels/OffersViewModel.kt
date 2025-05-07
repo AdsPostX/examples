@@ -296,6 +296,7 @@ class OffersViewModel : ViewModel() {
         return mapOf(
             "user_id" to getUniqueId(),
             "email" to "user@example.com",
+            "themeId" to "theme1",
             "session_id" to getUniqueId()
         )
     }

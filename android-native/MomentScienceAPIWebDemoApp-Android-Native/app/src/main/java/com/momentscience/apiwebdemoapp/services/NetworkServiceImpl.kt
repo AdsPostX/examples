@@ -35,7 +35,7 @@ class NetworkServiceImpl : NetworkService {
      * @param adpxFp Optional unique value.
      * @param dev Optional dev flag.
      * @param subid Optional subid.
-     * @param pubUserId Optional publisher user ID.
+     * @param pubUserId Optional publisher user ID, this value is passed as pub_user_id to the API
      * @param payload Optional payload data.
      * @param loyaltyboost Optional loyalty boost flag.
      * @param creative Optional creative flag.

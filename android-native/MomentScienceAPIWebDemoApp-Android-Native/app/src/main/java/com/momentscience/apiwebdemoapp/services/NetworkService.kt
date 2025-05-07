@@ -21,7 +21,7 @@ interface NetworkService {
         val dev: String? = null,              // Optional dev flag
         val subid: String? = null,            // Optional subid
         @SerializedName("pub_user_id")
-        val pubUserId: String? = null,        // Optional publisher user ID
+        val pubUserId: String? = null,        // Optional publisher user ID, this value is passed as pub_user_id to the API
         val payload: Map<String, String>? = null // Optional payload data
     )
 
@@ -36,7 +36,7 @@ interface NetworkService {
      * @param adpxFp Optional unique value.
      * @param dev Optional dev flag.
      * @param subid Optional subid.
-     * @param pubUserId Optional publisher user ID.
+     * @param pubUserId Optional publisher user ID, this value is passed as pub_user_id to the API
      * @param payload Optional payload data.
      * @param loyaltyboost Optional loyalty boost flag.
      * @param creative Optional creative flag.

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- 
+  This template is used for WebSDK prefetching in a hidden WebView.
+  It initializes the WebSDK with the prefetch flag and handles communication
+  back to the native app via webkit message handlers.
+  
+  The {{SDK_ID}} placeholder is replaced at runtime with the actual SDK ID.
+-->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      try {
+        console.log("Initializing AdpxConfig...");
+        window.AdpxConfig = {
+          accountId: "{{SDK_ID}}",
+          autoLoad: true,
+          prefetch: true,
+          autoShow: false,
+          callback: (event, payload) => {
+            console.log("Adpx callback:", event, payload);
+            window.webkit.messageHandlers.adpxCallback.postMessage({
+              event: event,
+              payload: payload,
+            });
+          },
+        };
+        console.log("AdpxConfig initialized: " + JSON.stringify(window.AdpxConfig));
+        window.AdpxUser = {};
+
+        const script = document.createElement("script");
+        script.src = "{{LAUNCHER_SCRIPT_URL}}";
+        script.importance = "high";
+        script.crossOrigin = "anonymous";
+        script.async = true;
+        script.onload = function () {
+          console.log("Adpx script loaded successfully");
+          if (window.Adpx) {
+            console.log("Adpx initialized successfully");
+            window.Adpx.init(window.AdpxConfig, window.AdpxConfig.callback);
+          }
+        };
+        document.head.appendChild(script);
+      } catch (error) {
+        console.error("Error in HTML script: " + error.message);
+      }
+    </script>
+  </head>
+  <body></body>
+</html>

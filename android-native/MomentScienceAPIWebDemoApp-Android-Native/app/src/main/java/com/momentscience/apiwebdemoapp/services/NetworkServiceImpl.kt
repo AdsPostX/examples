@@ -13,6 +13,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import com.google.gson.JsonObject
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * Implementation of the NetworkService interface using OkHttp and Gson.
@@ -20,7 +21,7 @@ import com.google.gson.JsonObject
  */
 class NetworkServiceImpl : NetworkService {
     private val TAG = "NetworkServiceImpl"
-    private val baseUrl = "https://api.adspostx.com/native/v4/offers.json"
+    private val baseUrl = AppConfig.API_BASE_URL
     private val client: OkHttpClient = AppModule.okHttpClient
     private val gson: Gson = AppModule.gson
 

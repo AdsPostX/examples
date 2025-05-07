@@ -7,6 +7,7 @@ import com.momentscience.apiwebdemoapp.templates.CheckoutHtmlTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * ViewModel responsible for managing the checkout screen state and business logic.
@@ -120,7 +121,7 @@ class CheckoutViewModel : ViewModel() {
      * @return The base URL string.
      */
     fun getBaseUrl(): String {
-        return "https://dummywebsite.com"
+        return AppConfig.DEFAULT_WEBVIEW_BASE_URL
     }
 
     /**

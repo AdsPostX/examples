@@ -43,6 +43,7 @@ import com.momentscience.apiwebdemoapp.viewmodels.OffersViewModel
 import androidx.compose.runtime.DisposableEffect
 import com.momentscience.apiwebdemoapp.PrefetchMode
 import com.momentscience.apiwebdemoapp.interfaces.AdpxJavaScriptInterface
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * Composable for the offers screen that displays input for SDK ID and prefetch options.
@@ -63,7 +64,7 @@ fun OffersView(
     val showCheckout by viewModel.showCheckout.collectAsState()
     val offerCount by viewModel.offerCount.collectAsState()
     val viewModelSdkId by viewModel.sdkId.collectAsState()
-    var localSdkId by remember { mutableStateOf("99e58babc94df55a") }
+    var localSdkId by remember { mutableStateOf(AppConfig.DEFAULT_SDK_ID) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     
@@ -140,7 +141,7 @@ fun OffersView(
 
     // Set default SDK ID when composable is first created
     LaunchedEffect(Unit) {
-        viewModel.setSdkId("99e58babc94df55a")
+        viewModel.setSdkId(AppConfig.DEFAULT_SDK_ID)
     }
 
     // Sync local SDK ID with ViewModel's SDK ID

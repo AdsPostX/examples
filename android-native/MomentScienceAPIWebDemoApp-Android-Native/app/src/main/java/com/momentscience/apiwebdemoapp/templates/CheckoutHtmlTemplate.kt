@@ -6,6 +6,7 @@ import com.google.gson.JsonElement
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import android.util.Log
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * Template generator for the checkout WebView HTML content.
@@ -69,6 +70,7 @@ object CheckoutHtmlTemplate {
             .replace("%%AUTOLOAD_CONFIG%%", autoLoadConfig)
             .replace("%%RESPONSE_HANDLING%%", responseHandling)
             .replace("window.AdpxUser = {};", "window.AdpxUser = $userPayloadJson;")
+            .replace("%%SDK_CDN_URL%%", AppConfig.SDK_CDN_URL)
 
         // Log the result to verify replacement
         Log.d("CheckoutHtmlTemplate", "Final HTML: $result")

@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import android.util.Log
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * Template generator for the offers WebView HTML content.
@@ -49,6 +50,7 @@ object AdpxHtmlTemplate {
         // Replace placeholders with actual values
         val result = templateContent
             .replace("%%SDK_ID%%", sdkId)
+            .replace("%%SDK_CDN_URL%%", AppConfig.SDK_CDN_URL)
             .replace("window.AdpxUser = {};", "window.AdpxUser = $userPayloadJson;")
         
         Log.d("AdpxHtmlTemplate", "Final HTML contains window.AdpxUser: ${result.contains("window.AdpxUser")}")

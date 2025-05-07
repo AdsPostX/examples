@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import com.momentscience.apiwebdemoapp.PrefetchMode
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * ViewModel responsible for managing the state and business logic related to offers.
@@ -280,7 +281,7 @@ class OffersViewModel : ViewModel() {
      * @return The base URL string.
      */
     fun getBaseUrl(): String {
-        return "https://dummywebsite.com"
+        return AppConfig.DEFAULT_WEBVIEW_BASE_URL
     }
 
     /**

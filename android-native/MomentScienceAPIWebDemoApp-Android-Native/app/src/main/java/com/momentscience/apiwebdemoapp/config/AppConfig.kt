@@ -22,6 +22,6 @@ object AppConfig {
     /**
      * Default WebView base URL
      */
-    const val DEFAULT_WEBVIEW_BASE_URL = "https://yourwebsite.com"
+    const val DEFAULT_WEBVIEW_BASE_URL = "file:///android_asset/templates/"
 }
 

@@ -23,6 +23,7 @@ import android.webkit.WebView.setWebContentsDebuggingEnabled
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.momentscience.apiwebdemoapp.viewmodels.CheckoutViewModel
 import com.momentscience.apiwebdemoapp.interfaces.AdpxJavaScriptInterface
+import com.momentscience.apiwebdemoapp.config.AppConfig
 
 /**
  * Composable for the checkout screen that displays offers in a WebView.

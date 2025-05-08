@@ -30,7 +30,7 @@ class OffersViewModel: ObservableObject {
     @Published var userPayload: [String: String]? = [
         "user_id": "12345",
         "email": "demo@example.com",
-        "themeId": "theme1", // make sure to pass the themeId
+        "themeId": "demo", // make sure to pass the themeId
         "session_id": UUID().uuidString
     ]
     

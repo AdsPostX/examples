@@ -1,0 +1,4 @@
+mssdk_demo_app/.env
+mssdk_demo_app/ios/Podfile.lock
+mssdk_demo_app/pubspec.lock
+mssdk_demo_app/android/app/google-services.json

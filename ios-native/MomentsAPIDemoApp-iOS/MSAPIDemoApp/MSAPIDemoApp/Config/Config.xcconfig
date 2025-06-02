@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  MSAPIDemoApp
+//
+//  Created by shivang vyas on 31/05/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+ADSPOSTX_BASE_URL = https:$()/api.adspostx.com/native/v4

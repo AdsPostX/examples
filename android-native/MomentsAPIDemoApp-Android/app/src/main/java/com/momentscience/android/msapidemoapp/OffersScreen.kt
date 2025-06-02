@@ -28,6 +28,7 @@ import com.momentscience.android.msapidemoapp.model.Styles
  * - External URL navigation handling
  * - Offer navigation and interaction
  * - Screen dismissal handling
+ * - Development mode support
  *
  * State Management:
  * - Observes ViewModel state for offers content
@@ -51,6 +52,9 @@ import com.momentscience.android.msapidemoapp.model.Styles
  * @param apiKey The authentication key used to fetch offers from the API.
  *               This key is used when the screen first appears.
  *
+ * @param isDevelopment Whether to use development mode for API calls.
+ *                     Defaults to false for production environment.
+ *
  * @param onClose Callback function invoked when the screen should be dismissed.
  *                Called after handling cleanup in the ViewModel.
  *
@@ -62,6 +66,7 @@ import com.momentscience.android.msapidemoapp.model.Styles
  * OffersScreen(
  *     viewModel = offersViewModel,
  *     apiKey = "your-api-key",
+ *     isDevelopment = false,
  *     onClose = { navigateBack() },
  *     modifier = Modifier.fillMaxSize()
  * )
@@ -71,6 +76,7 @@ import com.momentscience.android.msapidemoapp.model.Styles
 fun OffersScreen(
     viewModel: OffersViewModel,
     apiKey: String,
+    isDevelopment: Boolean = false,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -105,7 +111,10 @@ fun OffersScreen(
 
     // Initial offers loading when screen appears
     LaunchedEffect(apiKey) {
-        viewModel.fetchOffers(apiKey)
+        viewModel.fetchOffers(
+            apiKey = apiKey,
+            isDevelopment = isDevelopment
+        )
     }
 
     // Root surface with background color and z-index

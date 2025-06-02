@@ -97,7 +97,7 @@ class OffersViewModel(
      * @param apiKey Authentication key for the API
      * @param loyaltyBoost Loyalty boost level (default: "0")
      * @param creative Creative variant (default: "0")
-     * @param isDevelopment Whether to use development mode (default: true)
+     * @param isDevelopment Whether to use development mode (default: false)
      *
      * Flow:
      * 1. Sets loading state
@@ -109,7 +109,7 @@ class OffersViewModel(
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
-        isDevelopment: Boolean = true
+        isDevelopment: Boolean = false
     ) {
         viewModelScope.launch {
             _uiState.value = OffersUiState.Loading

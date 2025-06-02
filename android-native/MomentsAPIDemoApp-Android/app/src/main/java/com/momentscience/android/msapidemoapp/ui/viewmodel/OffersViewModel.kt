@@ -98,6 +98,7 @@ class OffersViewModel(
      * @param loyaltyBoost Loyalty boost level (default: "0")
      * @param creative Creative variant (default: "0")
      * @param isDevelopment Whether to use development mode (default: false)
+     * @param payload Additional parameters to be sent with the request (default: empty map)
      *
      * Flow:
      * 1. Sets loading state
@@ -109,7 +110,8 @@ class OffersViewModel(
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
-        isDevelopment: Boolean = false
+        isDevelopment: Boolean = false,
+        payload: Map<String, String> = emptyMap()
     ) {
         viewModelScope.launch {
             _uiState.value = OffersUiState.Loading
@@ -118,7 +120,8 @@ class OffersViewModel(
                 apiKey = apiKey,
                 loyaltyBoost = loyaltyBoost,
                 creative = creative,
-                isDevelopment = isDevelopment
+                isDevelopment = isDevelopment,
+                payload = payload
             ).onSuccess { offers ->
                 _uiState.value = OffersUiState.Success(offers)
                 // Fire pixel beacon for first offer
@@ -299,5 +302,9 @@ class OffersViewModel(
      */
     fun clearCloseEvent() {
         _closeEvent.value = false
+    }
+
+    fun getUserAgent() : String {
+        return repository.getUserAgent()
     }
 } 

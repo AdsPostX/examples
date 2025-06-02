@@ -29,6 +29,7 @@ import com.momentscience.android.msapidemoapp.model.Styles
  * - Offer navigation and interaction
  * - Screen dismissal handling
  * - Development mode support
+ * - Custom payload support
  *
  * State Management:
  * - Observes ViewModel state for offers content
@@ -55,6 +56,9 @@ import com.momentscience.android.msapidemoapp.model.Styles
  * @param isDevelopment Whether to use development mode for API calls.
  *                     Defaults to false for production environment.
  *
+ * @param payload Additional parameters to be sent with the offers request.
+ *                Defaults to an empty map if no additional parameters are needed.
+ *
  * @param onClose Callback function invoked when the screen should be dismissed.
  *                Called after handling cleanup in the ViewModel.
  *
@@ -67,6 +71,7 @@ import com.momentscience.android.msapidemoapp.model.Styles
  *     viewModel = offersViewModel,
  *     apiKey = "your-api-key",
  *     isDevelopment = false,
+ *     payload = mapOf("userId" to "123", "source" to "home"),
  *     onClose = { navigateBack() },
  *     modifier = Modifier.fillMaxSize()
  * )
@@ -77,6 +82,7 @@ fun OffersScreen(
     viewModel: OffersViewModel,
     apiKey: String,
     isDevelopment: Boolean = false,
+    payload: Map<String, String> = emptyMap(),
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -113,7 +119,8 @@ fun OffersScreen(
     LaunchedEffect(apiKey) {
         viewModel.fetchOffers(
             apiKey = apiKey,
-            isDevelopment = isDevelopment
+            isDevelopment = isDevelopment,
+            payload = payload
         )
     }
 

@@ -132,7 +132,7 @@ class OffersService {
      * 
      * @return A string containing the user agent information
      */
-    private fun getUserAgent(): String {
+    fun getUserAgent(): String {
         return "Mozilla/5.0 (Linux; Android 14; Pixel 7 Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0.6099.230 Mobile Safari/537.36"
     }
 
@@ -169,9 +169,11 @@ class OffersService {
             validateLoyaltyBoost(loyaltyBoost)
             validateCreative(creative)
 
-            // Add dev parameter to payload
+            // Add dev parameter to payload only if isDevelopment is true
             val finalPayload = payload.toMutableMap().apply {
-                put("dev", if (isDevelopment) "1" else "0")
+                if (isDevelopment) {
+                    put("dev", "1")
+                }
             }
 
             val response = RetrofitProvider.offersApi.fetchOffers(

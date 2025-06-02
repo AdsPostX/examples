@@ -34,6 +34,7 @@ interface OffersRepository {
      * @param loyaltyBoost Loyalty boost parameter (valid values: "0", "1", "2")
      * @param creative Creative parameter (valid values: "0", "1")
      * @param isDevelopment Whether to run in development mode
+     * @param payload Additional parameters to be sent with the request
      * @return [Result] containing either [OffersResponse] on success or an error on failure
      *
      * Possible errors:
@@ -48,7 +49,8 @@ interface OffersRepository {
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
-        isDevelopment: Boolean = true
+        isDevelopment: Boolean = true,
+        payload: Map<String, String> = emptyMap()
     ): Result<OffersResponse>
 
     /**
@@ -63,6 +65,8 @@ interface OffersRepository {
      * - [OffersError.NetworkError] if the request fails
      */
     suspend fun fireBeacon(url: String): Result<Unit>
+
+    fun getUserAgent(): String
 }
 
 /**
@@ -103,13 +107,15 @@ class OffersRepositoryImpl(
         apiKey: String,
         loyaltyBoost: String,
         creative: String,
-        isDevelopment: Boolean
+        isDevelopment: Boolean,
+        payload: Map<String, String>
     ): Result<OffersResponse> = runCatching {
         offersService.fetchOffers(
             apiKey = apiKey,
             loyaltyBoost = loyaltyBoost,
             creative = creative,
-            isDevelopment = isDevelopment
+            isDevelopment = isDevelopment,
+            payload = payload
         )
     }
 
@@ -121,5 +127,9 @@ class OffersRepositoryImpl(
      */
     override suspend fun fireBeacon(url: String): Result<Unit> = runCatching {
         offersService.fireBeaconRequest(url)
+    }
+
+    override fun getUserAgent(): String {
+        return offersService.getUserAgent()
     }
 } 

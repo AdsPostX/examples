@@ -87,6 +87,10 @@ fun HomeScreen(
             viewModel = offersViewModel,
             apiKey = apiKey,
             isDevelopment = isDevelopmentMode,
+            payload = mapOf(
+                "adpx_fp" to "unique_user_id",  // Example payload parameter
+                "ua" to offersViewModel.getUserAgent(),
+            ),
             onClose = { showOffers = false }
         )
     }

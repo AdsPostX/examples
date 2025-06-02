@@ -39,6 +39,8 @@ struct ContentView: View {
     @State private var showError: Bool = false
     /// Stores the current error message
     @State private var errorMessage: String = ""
+    /// Controls development mode
+    @State private var isDevelopment: Bool = false
     
     /// Initializes the view and its dependencies
     /// - Note: Fails fatally if OffersService cannot be initialized
@@ -70,6 +72,9 @@ struct ContentView: View {
                     .padding(.horizontal)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+                
+                Toggle("Development Mode", isOn: $isDevelopment)
+                    .padding(.horizontal)
                 
                 Button("Load Offers") {
                     handleLoadOffers()
@@ -109,8 +114,13 @@ struct ContentView: View {
             return
         }
         
+        let payload: [String: String] = [
+            "adpx_fp": UUID().uuidString,
+            "ua": viewModel.getUserAgent()
+        ]
+        
         // Load offers and show the offers view
-        viewModel.loadOffers(apiKey: trimmedApiKey)
+        viewModel.loadOffers(apiKey: trimmedApiKey, isDevelopment: isDevelopment, payload: payload)
         showOffers = true
     }
     

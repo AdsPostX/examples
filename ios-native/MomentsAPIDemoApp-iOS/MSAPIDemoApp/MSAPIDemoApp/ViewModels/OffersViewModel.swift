@@ -57,9 +57,11 @@ class OffersViewModel: ObservableObject {
     }
     
     /// Loads offers using the stored or provided API key
-    /// - Parameter apiKey: Optional API key to use for this request
+    /// - Parameters:
+    ///   - apiKey: Optional API key to use for this request
+    ///   - isDevelopment: Whether to run in development mode (default: false)
     /// - Note: If no API key is provided, uses the stored API key
-    func loadOffers(apiKey: String? = nil) {
+    func loadOffers(apiKey: String? = nil, isDevelopment: Bool = false, payload: [String: String]? = nil) {
         // If a new API key is provided, update it
         if let newApiKey = apiKey {
             updateApiKey(newApiKey)
@@ -76,7 +78,7 @@ class OffersViewModel: ObservableObject {
                 self.isLoading = true
                 self.error = nil
                 
-                let response = try await self.offersService.fetchOffers(apiKey: self.apiKey)
+                let response = try await self.offersService.fetchOffers(apiKey: self.apiKey, isDevelopment: isDevelopment, payload: payload)
                 self.offers = response.data?.offers ?? []
                 self.styles = response.data?.styles
                 self.currentOfferIndex = 0
@@ -234,4 +236,9 @@ class OffersViewModel: ObservableObject {
             print("Close beacon request failed: \(error.localizedDescription)")
         }
     }
-} 
+    
+    func getUserAgent() -> String {
+        // Returns a standardized user agent string for API requests
+        return offersService.getUserAgent()
+    }
+}

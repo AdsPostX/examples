@@ -8,113 +8,87 @@
  * - Offer display state
  * - Offer closed state
  */
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   Text,
-  ActivityIndicator,
+  TextInput,
   View,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import OfferContainerView from './src/components/OfferContainerView';
-import {useOffers} from './src/hooks/useOffers';
+import OffersScreen from './src/screens/OffersScreen';
+
+const DEFAULT_API_KEY = 'b167f9d7-c479-41d8-b58f-4a5b26e561f1';
 
 /**
  * Main App Component
  *
  * Component Lifecycle:
- * 1. Initializes with useOffers
- * 2. Fetches offers on mount
- * 3. Renders appropriate UI based on state
- *
- * States:
- * - Loading: Shows loading indicator
- * - Error: Shows error message with retry option
- * - Offers Available: Shows offer container
- * - Offers Closed: Shows reload button
+ * 1. Shows API key input field with default value
+ * 2. Shows Load Offers button (enabled only when API key is present)
+ * 3. Opens modal screen when Load Offers is tapped
  *
  * @component
  * @returns {React.ReactElement} The rendered app component
  */
 function App() {
-  // Initialize offers view model with all required states and handlers
-  const {
-    offers, // Array of offer objects
-    isOfferClosed, // Boolean flag for offer closed state
-    isLoading, // Boolean flag for loading state
-    error, // Error message string if any
-    fetchOffers, // Function to fetch offers
-    handleCloseOffer, // Function to handle offer closure
-    reloadOffers, // Function to reload offers
-  } = useOffers();
+  const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
+  const [showOffers, setShowOffers] = useState(false);
 
-  /**
-   * Effect to fetch offers when component mounts
-   * Dependency on fetchOffers ensures consistent function reference
-   */
-  useEffect(() => {
-    fetchOffers();
-  }, [fetchOffers]);
+  // Check if button should be enabled
+  const isLoadButtonEnabled = apiKey.trim().length > 0;
 
-  /**
-   * Loading State View
-   * Rendered when:
-   * - Initial load
-   * - Reloading offers
-   * - No offers available yet
-   */
-  if (isLoading && !offers) {
-    return (
-      <SafeAreaView style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.loadingText}>Loading offers...</Text>
-      </SafeAreaView>
-    );
-  }
+  // Handler for Load Offers button
+  const handleLoadOffers = () => {
+    Keyboard.dismiss();
+    setShowOffers(true);
+  };
 
-  /**
-   * Error State View
-   * Rendered when:
-   * - API call fails
-   * - No offers available
-   * - Network errors
-   */
-  if (error && !offers) {
-    return (
-      <SafeAreaView style={styles.centerContainer}>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.reloadButton} onPress={fetchOffers}>
-            <Text style={styles.buttonText}>Try Again</Text>
+  // Handler for closing offers modal
+  const handleCloseOffers = () => {
+    setShowOffers(false);
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          {/* API Key Input */}
+          <Text style={styles.label}>API Key:</Text>
+          <TextInput
+            style={styles.input}
+            value={apiKey}
+            onChangeText={setApiKey}
+            placeholder="Enter API Key"
+            placeholderTextColor="#999"
+            autoCapitalize="none"
+            autoCorrect={false}
+            defaultValue={DEFAULT_API_KEY}
+          />
+
+          {/* Load Offers Button */}
+          <TouchableOpacity
+            style={[
+              styles.loadButton,
+              !isLoadButtonEnabled && styles.loadButtonDisabled,
+            ]}
+            onPress={handleLoadOffers}
+            disabled={!isLoadButtonEnabled}>
+            <Text style={styles.buttonText}>Load Offers</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    );
-  }
 
-  /**
-   * Main Application View
-   * Conditionally renders:
-   * - Offer container when offers are available and not closed
-   * - Reload button when offers are closed
-   */
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Render offer container when offers are available and not closed */}
-      {!isOfferClosed && offers?.length > 0 && (
-        <OfferContainerView
-          offers={offers}
-          OnCloseOfferCTA={handleCloseOffer}
+        {/* Offers Modal Screen */}
+        <OffersScreen
+          visible={showOffers}
+          onClose={handleCloseOffers}
+          apiKey={apiKey}
         />
-      )}
-      {/* Render reload button when offers are closed */}
-      {isOfferClosed && (
-        <TouchableOpacity onPress={reloadOffers} style={styles.reloadButton}>
-          <Text style={styles.buttonText}>Reload Offers</Text>
-        </TouchableOpacity>
-      )}
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -131,34 +105,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+  content: {
+    padding: 16,
   },
-  loadingText: {
-    marginTop: 10,
+  label: {
     fontSize: 16,
+    marginBottom: 8,
+    fontWeight: 'bold',
+    color: '#000000',
   },
-  errorContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  reloadButton: {
-    padding: 12,
-    backgroundColor: 'green',
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 16,
+    color: '#666666',
+  },
+  loadButton: {
+    backgroundColor: '#3565A9',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  loadButtonDisabled: {
+    backgroundColor: '#cccccc',
+    opacity: 0.7,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

@@ -438,7 +438,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5766Q27NUW;
+				DEVELOPMENT_TEAM = 9B7S93K87K;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MSAPIDemoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -451,7 +451,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.adspostx.reactnativeapidemoapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.momentscience.rn.apidemoapp;
 				PRODUCT_NAME = MSAPIDemoApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -469,7 +469,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5766Q27NUW;
+				DEVELOPMENT_TEAM = 9B7S93K87K;
 				INFOPLIST_FILE = MSAPIDemoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -481,7 +481,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.adspostx.reactnativeapidemoapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.momentscience.rn.apidemoapp;
 				PRODUCT_NAME = MSAPIDemoApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

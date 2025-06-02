@@ -18,6 +18,7 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
  * @param {Function} [props.onPositiveCTA] - Callback function for positive button click
  * @param {string} [props.negativeCTA] - Text for the negative call-to-action button
  * @param {Function} [props.onNegativeCTA] - Callback function for negative button click
+ * @param {Object} props.apiStyles - Styles from API response
  */
 function OfferView({
   title,
@@ -29,7 +30,39 @@ function OfferView({
   onPositiveCTA,
   negativeCTA,
   onNegativeCTA,
+  apiStyles,
 }) {
+  // Helper function to parse pixel values
+  const parsePixelValue = value => {
+    if (!value) return undefined;
+    // Remove 'px' and convert to number
+    return parseInt(value.replace('px', ''), 10);
+  };
+
+  // Create dynamic styles based on API response
+  const dynamicStyles = {
+    description: {
+      fontSize: apiStyles?.fontSize || 16,
+      color: apiStyles?.textColor || '#000',
+    },
+    positiveCTA: {
+      backgroundColor: apiStyles?.buttonYes?.background || '#3565A9',
+      fontSize: parsePixelValue(apiStyles?.cta_text_size) || 13,
+      fontStyle: apiStyles?.cta_text_style || 'normal',
+    },
+    positiveCTAText: {
+      color: apiStyles?.buttonYes?.color || '#fff',
+    },
+    negativeCTA: {
+      backgroundColor: apiStyles?.buttonNo?.background || 'grey',
+      fontSize: parsePixelValue(apiStyles?.cta_text_size) || 13,
+      fontStyle: apiStyles?.cta_text_style || 'normal',
+    },
+    negativeCTAText: {
+      color: apiStyles?.buttonNo?.color || '#fff',
+    },
+  };
+
   return (
     <View style={styles.container}>
       {/* Title Section - Optional */}
@@ -47,7 +80,11 @@ function OfferView({
       )}
 
       {/* Description Section - Optional */}
-      {description && <Text style={styles.description}>{description}</Text>}
+      {description && (
+        <Text style={[styles.description, dynamicStyles.description]}>
+          {description}
+        </Text>
+      )}
 
       {/* Call-to-Action Buttons Container */}
       <View style={styles.ctaContainer}>
@@ -55,8 +92,10 @@ function OfferView({
         {positiveCTA && (
           <TouchableOpacity
             onPress={onPositiveCTA}
-            style={[styles.cta, {backgroundColor: '#3565A9'}]}>
-            <Text style={styles.ctaText}>{positiveCTA}</Text>
+            style={[styles.cta, dynamicStyles.positiveCTA]}>
+            <Text style={[styles.ctaText, dynamicStyles.positiveCTAText]}>
+              {positiveCTA}
+            </Text>
           </TouchableOpacity>
         )}
 
@@ -64,8 +103,10 @@ function OfferView({
         {negativeCTA && (
           <TouchableOpacity
             onPress={onNegativeCTA}
-            style={[styles.cta, {backgroundColor: 'grey'}]}>
-            <Text style={styles.ctaText}>{negativeCTA}</Text>
+            style={[styles.cta, dynamicStyles.negativeCTA]}>
+            <Text style={[styles.ctaText, dynamicStyles.negativeCTAText]}>
+              {negativeCTA}
+            </Text>
           </TouchableOpacity>
         )}
       </View>

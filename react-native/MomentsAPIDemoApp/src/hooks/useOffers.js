@@ -5,25 +5,30 @@
  * Handles offer fetching, loading states, error handling, and offer lifecycle.
  */
 import {useState, useCallback} from 'react';
-import {getOffers} from '../services/OffersService';
-import {firePixel} from '../utils/Util';
+import {getOffers, fireOfferPixel} from '../services/OffersService';
+import Logger from '../utils/logger';
 
 /**
  * Custom hook for offer management
  *
  * @returns {Object} Hook state and methods
  *   @returns {Array|null} offers - Array of offer objects or null if not loaded
+ *   @returns {Array|null} styles - Array of style objects or null if not loaded
  *   @returns {boolean} isOfferClosed - Whether the current offer is closed
  *   @returns {boolean} isLoading - Whether offers are currently being fetched
  *   @returns {string|null} error - Error message if fetch failed, null otherwise
  *   @returns {Function} fetchOffers - Function to fetch offers from API
  *   @returns {Function} handleCloseOffer - Function to handle offer closure
  *   @returns {Function} reloadOffers - Function to reload offers and reset state
+ *   @returns {Function} resetStates - Function to reset the state of the hook
  */
 export const useOffers = () => {
   // State Management
   /** @type {[Array|null, Function]} Offers data and setter */
   const [offers, setOffers] = useState(null);
+
+  /** @type {[Array|null, Function]} Styles data and setter */
+  const [apiStyles, setApiStyles] = useState(null);
 
   /** @type {[boolean, Function]} Offer closed state and setter */
   const [isOfferClosed, setOfferClosed] = useState(false);
@@ -33,6 +38,14 @@ export const useOffers = () => {
 
   /** @type {[string|null, Function]} Error state and setter */
   const [error, setError] = useState(null);
+
+  // Add reset function
+  const resetStates = useCallback(() => {
+    setOffers(null);
+    setApiStyles(null);
+    setOfferClosed(false);
+    setError(null);
+  }, []);
 
   /**
    * Fetches offers from the API
@@ -47,18 +60,17 @@ export const useOffers = () => {
    * @async
    * @returns {Promise<void>}
    */
-  const fetchOffers = useCallback(async () => {
+  const fetchOffers = useCallback(async apiKey => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const offersData = await getOffers();
-      setOffers(offersData);
+      const response = await getOffers(apiKey);
+      setOffers(response.offers);
+      setApiStyles(response.styles);
     } catch (err) {
+      Logger.error('Error in fetchOffers:', err);
       setError('Failed to load offers');
-      if (__DEV__) {
-        console.log('Error in fetchOffers:', err);
-      }
     } finally {
       setIsLoading(false);
     }
@@ -77,13 +89,10 @@ export const useOffers = () => {
    */
   const handleCloseOffer = useCallback(
     (currentIndex, shouldFirePixel) => {
-      if (__DEV__) {
-        console.log('[MomentScienceAPIDemo] close button tapped');
-      }
+      Logger.log('Close button tapped');
 
-      // Fire tracking pixel if required and available
       if (shouldFirePixel && offers && offers[currentIndex]?.beacons?.close) {
-        firePixel(offers[currentIndex].beacons.close);
+        fireOfferPixel(offers[currentIndex].beacons.close);
       }
 
       setOfferClosed(true);
@@ -106,6 +115,7 @@ export const useOffers = () => {
   const reloadOffers = useCallback(() => {
     setOfferClosed(false); // Reset closed state
     setOffers(null); // Clear existing offers
+    setApiStyles(null); // Clear existing styles
     setIsLoading(true); // Show loading immediately
     fetchOffers(); // Fetch new offers
   }, [fetchOffers]);
@@ -114,6 +124,7 @@ export const useOffers = () => {
   return {
     // State
     offers, // Current offers data
+    apiStyles, // Current styles data
     isOfferClosed, // Whether offers are closed
     isLoading, // Loading state
     error, // Error state
@@ -122,5 +133,6 @@ export const useOffers = () => {
     fetchOffers, // Fetch offers from API
     handleCloseOffer, // Handle offer closure
     reloadOffers, // Reload offers and reset state
+    resetStates, // Include reset function in return
   };
 };

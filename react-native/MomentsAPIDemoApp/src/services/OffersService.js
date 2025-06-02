@@ -15,6 +15,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {getUserAgent, generateUniqueID} from '../utils/Util';
 import {normalizeOffer} from '../models/OfferModel';
+import Logger from '../utils/logger';
 
 /**
  * Makes a direct API call to fetch offers from the backend
@@ -80,16 +81,33 @@ export const fetchMomentOffers = async (
     const response = await axios.post(apiUrl, filteredPayload, {headers});
     return response;
   } catch (error) {
-    // Enhanced error logging in development
-    if (__DEV__) {
-      console.log('Error in fetchMomentOffers:', error);
-      console.log(
-        'Error details:',
-        error.response || error.request || error.message,
-      );
-    }
-    // Propagate error for upstream handling
+    // Enhanced error logging
+    Logger.error('Error in fetchMomentOffers:', error);
+    Logger.error(
+      'Error details:',
+      error.response || error.request || error.message,
+    );
     throw error;
+  }
+};
+
+/**
+ * Fires a tracking pixel for offer-related events
+ * Used for analytics and tracking in the offers flow
+ *
+ * @param {string} url - The tracking pixel URL
+ * @returns {Promise<void>}
+ */
+const fireOfferPixel = async url => {
+  if (!url) return;
+
+  try {
+    Logger.log('Inside fire pixel:', url);
+
+    const response = await axios.get(url);
+    Logger.log('Fire pixel Success:', response.data);
+  } catch (error) {
+    Logger.error('Fire pixel Error:', error);
   }
 };
 
@@ -103,15 +121,15 @@ export const fetchMomentOffers = async (
  * 4. Processes and normalizes response
  * 5. Handles errors
  *
- * Default Configuration:
- * - loyaltyboost: '0'
- * - creative: '0'
- * - dev: '1' (sandbox mode)
- *
- * @returns {Promise<Array>} Array of normalized offer objects
+ * @param {string} apiKey - API key for authentication
+ * @returns {Promise<Object>} Object containing normalized offers and styles
  * @throws {Error} When no offers are available or API request fails
  */
-export const getOffers = async () => {
+export const getOffers = async apiKey => {
+  if (!apiKey) {
+    throw new Error('API key is required');
+  }
+
   // Set up default query parameters
   const queryParameters = {
     loyaltyboost: '0',
@@ -129,28 +147,30 @@ export const getOffers = async () => {
   };
 
   try {
-    // Get API key from environment config
-    const apiKey = Config.API_KEY;
-
-    // Make API request
+    // Make API request with provided API key
     const response = await fetchMomentOffers(apiKey, queryParameters, payload);
 
-    // Extract offers array with fallback to empty array
+    // Extract offers array and styles
     const rawOffers = response?.data?.data?.offers ?? [];
+    const styles = response?.data?.data?.styles ?? {}; // Extract styles
 
     // Throw error if no offers received
     if (rawOffers.length === 0) {
       throw new Error('No offers available');
     }
 
-    // Normalize and return offers
-    return rawOffers.map(offer => normalizeOffer(offer));
+    // Return both normalized offers and styles
+    return {
+      offers: rawOffers.map(offer => normalizeOffer(offer)),
+      styles: styles, // Return styles along with offers
+    };
   } catch (error) {
     // Log error in development
-    if (__DEV__) {
-      console.log('Error while fetching offers:', error);
-    }
+    Logger.error('Error while fetching offers:', error);
     // Propagate error for upstream handling
     throw error;
   }
 };
+
+// Export the pixel firing function for offer-related tracking
+export {fireOfferPixel};

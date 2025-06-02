@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OfferView from './OfferView';
 import {useOfferContainer} from '../hooks/useOfferContainer';
+import Logger from '../utils/logger';
 
 /**
  * OfferContainerView Component
@@ -14,24 +15,38 @@ import {useOfferContainer} from '../hooks/useOfferContainer';
  * @param {Array<Object>} props.offers - Array of offer objects to display
  * @param {Function} props.OnCloseOfferCTA - Callback function when offer is closed
  *                                          Parameters: (currentIndex: number, shouldFirePixel: boolean)
+ * @param {Object} props.styles - Styles from API response
  */
-function OfferContainerView({offers, OnCloseOfferCTA}) {
+function OfferContainerView({offers, OnCloseOfferCTA, apiStyles}) {
+  Logger.log('OfferContainerView received apiStyles:', apiStyles);
+
   // Custom hook to handle offer container business logic
   const {
-    currentOffer, // Current offer being displayed
-    goToNextOffer, // Function to navigate to next offer
-    goToPreviousOffer, // Function to navigate to previous offer
-    handlePositiveCTA, // Handler for positive CTA button
-    handleNegativeCTA, // Handler for negative CTA button
-    handleImageCTA, // Handler for image click
-    handleClose, // Handler for close button
+    currentOffer,
+    currentIndex,
+    goToNextOffer,
+    goToPreviousOffer,
+    handlePositiveCTA,
+    handleNegativeCTA,
+    handleImageCTA,
   } = useOfferContainer(offers, OnCloseOfferCTA);
 
+  // Handler for close button
+  const handleClose = () => {
+    if (OnCloseOfferCTA) {
+      OnCloseOfferCTA(currentIndex, true); // Pass true to fire pixel
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {backgroundColor: apiStyles?.popup?.background || '#fff'},
+      ]}>
       {/* Close button at the top */}
       <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-        <Text>Close</Text>
+        <Text style={{color: 'black'}}>Close</Text>
       </TouchableOpacity>
 
       {/* Render current offer if available */}
@@ -46,6 +61,7 @@ function OfferContainerView({offers, OnCloseOfferCTA}) {
           onPositiveCTA={handlePositiveCTA}
           negativeCTA={currentOffer.cta_no}
           onNegativeCTA={handleNegativeCTA}
+          apiStyles={apiStyles?.offerText}
         />
       )}
 

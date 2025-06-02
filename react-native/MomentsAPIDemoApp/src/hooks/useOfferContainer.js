@@ -1,5 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
-import {firePixel, openURL} from '../utils/Util';
+import {openURL} from '../utils/Util';
+import {fireOfferPixel} from '../services/OffersService';
+import Logger from '../utils/logger';
 
 /**
  * Custom hook to manage offer container business logic
@@ -36,25 +38,19 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Effect to update current offer and fire tracking pixel
-   * Runs when current offer index changes or offers array changes
    */
   useEffect(() => {
     setCurrentOffer(offers[currentOfferIndex]);
-    if (__DEV__) {
-      console.log('[MomentScienceAPIDemo] firing pixel/beacon now');
-    }
-    firePixel(offers[currentOfferIndex]?.pixel);
+    Logger.log('Firing pixel/beacon now');
+    fireOfferPixel(offers[currentOfferIndex]?.pixel);
   }, [currentOfferIndex, offers]);
 
   /**
    * Navigate to next offer or close if at end
-   * @param {boolean} shouldClose - Whether to close offer after navigation
    */
   const goToNextOffer = useCallback(
     shouldClose => {
-      if (__DEV__) {
-        console.log('[MomentScienceAPIDemo] Go to next Offer tapped');
-      }
+      Logger.log('Go to next Offer tapped');
 
       if (currentOfferIndex === offers.length - 1) {
         if (shouldClose) {
@@ -74,21 +70,17 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
     if (currentOfferIndex === 0) {
       return;
     }
-    if (__DEV__) {
-      console.log('[MomentScienceAPIDemo] Go to previous Offer tapped');
-    }
+    Logger.log('Go to previous Offer tapped');
     setCurrentOfferIndex(prev => prev - 1);
   }, [currentOfferIndex]);
 
   /**
    * Handle positive CTA button click
-   * Opens offer URL and navigates to next offer
    */
   const handlePositiveCTA = useCallback(() => {
-    if (__DEV__) {
-      console.log('[MomentScienceAPIDemo] positive cta clicked');
-      console.log('[MomentScienceAPIDemo] opening a link url');
-    }
+    Logger.log('Positive CTA clicked');
+    Logger.log('Opening link URL');
+
     if (currentOffer?.click_url) {
       openURL(currentOffer.click_url);
     }
@@ -97,16 +89,12 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Handle negative CTA button click
-   * Fires tracking pixel and navigates to next offer
    */
   const handleNegativeCTA = useCallback(() => {
-    if (__DEV__) {
-      console.log('[MomentScienceAPIDemo] negative cta clicked');
-      console.log(
-        '[MomentScienceAPIDemo] fire no thanks beacon when negative cta tapped...',
-      );
-    }
-    firePixel(currentOffer?.beacons?.no_thanks_click);
+    Logger.log('Negative CTA clicked');
+    Logger.log('Firing no thanks beacon');
+
+    fireOfferPixel(currentOffer?.beacons?.no_thanks_click);
     goToNextOffer(true);
   }, [currentOffer, goToNextOffer]);
 
@@ -129,7 +117,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
   }, [currentOfferIndex, onCloseOfferCTA]);
 
   return {
-    currentOffer,
+    currentOffer: offers[currentOfferIndex],
+    currentIndex: currentOfferIndex,
     goToNextOffer,
     goToPreviousOffer,
     handlePositiveCTA,

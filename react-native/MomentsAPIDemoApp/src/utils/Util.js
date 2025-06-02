@@ -4,9 +4,9 @@
  * Utility functions for common operations across the application.
  * Includes device-specific operations, URL handling, and tracking functionality.
  */
-import axios from 'axios';
 import {Linking, Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import Logger from './logger';
 
 /**
  * Generates a platform-specific unique identifier for the device
@@ -24,41 +24,6 @@ export const generateUniqueID = () => {
     android: DeviceInfo.getAndroidId(), // AndroidID for Android
     default: 'unknown',
   });
-};
-
-/**
- * Fires a tracking pixel by making a GET request to the specified URL
- * Used for analytics and tracking purposes
- *
- * Features:
- * - Silent failure (doesn't throw errors)
- * - Debug logging in development
- * - No return value (fire and forget)
- *
- * @param {string} url - The URL to send the tracking request to
- */
-export const firePixel = url => {
-  if (url) {
-    if (__DEV__) {
-      console.log('[MomentScienceAPIDemo] Inside fire pixel');
-    }
-
-    axios
-      .get(url)
-      .then(response => {
-        if (__DEV__) {
-          console.log(
-            '[MomentScienceAPIDemo] fire pixel Success:',
-            response.data,
-          );
-        }
-      })
-      .catch(error => {
-        if (__DEV__) {
-          console.log('fire pixel Error:', error);
-        }
-      });
-  }
 };
 
 /**
@@ -81,9 +46,7 @@ export const openURL = async url => {
     if (supported) {
       await Linking.openURL(url);
     } else {
-      if (__DEV__) {
-        console.log(`[MomentScienceAPIDemo] Cannot open URL: ${url}`);
-      }
+      Logger.warn(`Cannot open URL: ${url}`);
     }
   }
 };

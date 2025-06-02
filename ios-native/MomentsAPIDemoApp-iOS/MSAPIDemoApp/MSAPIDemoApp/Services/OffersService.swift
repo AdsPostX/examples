@@ -48,14 +48,17 @@ class OffersService {
     ///   - apiKey: The API key to use for authentication
     ///   - loyaltyBoost: Loyalty boost parameter (default: "0")
     ///   - creative: Creative parameter (default: "0")
-    ///   - isDevelopment: Whether to run in development mode (default: true)
+    ///   - isDevelopment: Whether to run in development mode (default: false)
+    ///   - payload: Optional custom payload dictionary to send in the request body
+    ///     If isDevelopment is true, 'dev' = '1' will be included in the payload.
     /// - Returns: The complete offers response including styles and other metadata
     /// - Throws: OffersError for various failure scenarios
     func fetchOffers(
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
-        isDevelopment: Bool = true
+        isDevelopment: Bool = false,
+        payload: [String: String]? = nil
     ) async throws -> OffersResponse {
         // Validate loyaltyBoost parameter
         guard["0","1","2"].contains(loyaltyBoost) else {
@@ -65,6 +68,12 @@ class OffersService {
         // Validate creative parameter
         guard["0","1"].contains(creative) else {
             throw OffersError.invalidParameter(message: "Invalid creative parameter: \(creative)")
+        }
+
+        // Construct the payload, ensuring 'dev' = '1' is included if isDevelopment is true
+        var finalPayload = payload ?? [:]
+        if isDevelopment {
+            finalPayload["dev"] = "1"
         }
 
         // Construct URL with query parameters
@@ -85,14 +94,8 @@ class OffersService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         
-        // Prepare payload
-        let payload: [String: String] = [
-            "dev": isDevelopment ? "1" : "0",
-            "adpx_fp": UUID().uuidString,
-            "ua": getUserAgent()
-        ]
-        
-        request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
+        // Serialize the final payload
+        request.httpBody = try? JSONSerialization.data(withJSONObject: finalPayload)
         
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
@@ -140,7 +143,7 @@ class OffersService {
     /// Returns a standardized user agent string for API requests
     /// - Returns: A Safari-based user agent string for iOS
     /// - Note: Currently returns a fixed string, but could be made dynamic
-    private func getUserAgent() -> String {
+    func getUserAgent() -> String {
         return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
     }
 } 

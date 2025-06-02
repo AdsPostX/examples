@@ -68,7 +68,7 @@ sealed class OffersError : Exception() {
  * // Advanced usage with all parameters
  * val response = service.fetchOffers(
  *     apiKey = "your-api-key",
- *     isDevelopment = true,
+ *     isDevelopment = false,
  *     loyaltyBoost = "1",
  *     creative = "1",
  *     payload = mapOf(
@@ -132,7 +132,7 @@ class OffersService {
      * 
      * @return A string containing the user agent information
      */
-    private fun getUserAgent(): String {
+    fun getUserAgent(): String {
         return "Mozilla/5.0 (Linux; Android 14; Pixel 7 Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0.6099.230 Mobile Safari/537.36"
     }
 
@@ -144,7 +144,7 @@ class OffersService {
      * @param apiKey The authentication key for the API
      * @param loyaltyBoost Controls the loyalty boost level for offers (default: "0")
      * @param creative Determines the creative variant to use (default: "0")
-     * @param isDevelopment Toggles development mode for testing (default: true)
+     * @param isDevelopment Toggles development mode for testing (default: false)
      * @param payload Additional parameters to include in the request
      * 
      * @return OffersResponse containing the complete offer data and metadata
@@ -161,7 +161,7 @@ class OffersService {
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
-        isDevelopment: Boolean = true,
+        isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
     ): OffersResponse = withContext(Dispatchers.IO) {
         try {
@@ -169,9 +169,11 @@ class OffersService {
             validateLoyaltyBoost(loyaltyBoost)
             validateCreative(creative)
 
-            // Add dev parameter to payload
+            // Add dev parameter to payload only if isDevelopment is true
             val finalPayload = payload.toMutableMap().apply {
-                put("dev", if (isDevelopment) "1" else "0")
+                if (isDevelopment) {
+                    put("dev", "1")
+                }
             }
 
             val response = RetrofitProvider.offersApi.fetchOffers(

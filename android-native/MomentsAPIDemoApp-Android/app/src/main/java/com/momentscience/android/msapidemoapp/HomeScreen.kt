@@ -2,11 +2,13 @@ package com.momentscience.android.msapidemoapp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,17 +27,20 @@ import com.momentscience.android.msapidemoapp.di.ViewModelProvider
  *
  * Features:
  * - API key input field with automatic whitespace trimming
+ * - Development mode toggle switch
  * - Load button with enabled/disabled state based on input
  * - Conditional rendering of offers screen
  * - Centralized layout with proper spacing
  *
  * State Management:
  * - Maintains API key input state
+ * - Tracks development mode state
  * - Tracks offers screen visibility
  * - Manages ViewModel instance
  *
  * UI Components:
  * - OutlinedTextField for API key input
+ * - Switch for development mode toggle
  * - Button for loading offers
  * - Conditional OffersScreen rendering
  *
@@ -48,6 +53,7 @@ import com.momentscience.android.msapidemoapp.di.ViewModelProvider
  * Default Values:
  * - Pre-filled API key for testing
  * - Initial offers visibility set to false
+ * - Development mode initially set to false
  *
  * @param modifier Optional modifier for customizing the layout. Default is [Modifier].
  *                Applied to the root Column composable.
@@ -69,6 +75,7 @@ fun HomeScreen(
     val defaultAPIKey = ""  // Default API key for testing
     var apiKey by remember { mutableStateOf(defaultAPIKey) }
     var showOffers by remember { mutableStateOf(false) }
+    var isDevelopmentMode by remember { mutableStateOf(false) }  // Development mode state
     
     // Initialize ViewModel instance that persists across recompositions
     val offersViewModel = remember { ViewModelProvider.provideOffersViewModel() }
@@ -79,6 +86,11 @@ fun HomeScreen(
         OffersScreen(
             viewModel = offersViewModel,
             apiKey = apiKey,
+            isDevelopment = isDevelopmentMode,
+            payload = mapOf(
+                "adpx_fp" to "unique_user_id",  // Example payload parameter
+                "ua" to offersViewModel.getUserAgent(),
+            ),
             onClose = { showOffers = false }
         )
     }
@@ -97,12 +109,29 @@ fun HomeScreen(
             singleLine = true,  // Prevent multi-line input
             modifier = Modifier
                 .fillMaxWidth()  // Use full available width
-                .padding(bottom = 16.dp)  // Add space before button
+                .padding(bottom = 16.dp)  // Add space before switch
         )
+
+        // Development mode toggle switch
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Development Mode")
+            Switch(
+                checked = isDevelopmentMode,
+                onCheckedChange = { isDevelopmentMode = it }
+            )
+        }
 
         // Load Offers button with dynamic enabled state
         Button(
-            onClick = { showOffers = true },
+            onClick = { 
+                showOffers = true
+            },
             enabled = apiKey.isNotEmpty(),  // Disable button when API key is empty
             modifier = Modifier
                 .fillMaxWidth()  // Use full available width

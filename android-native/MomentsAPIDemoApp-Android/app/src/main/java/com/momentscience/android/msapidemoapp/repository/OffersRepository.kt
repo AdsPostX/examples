@@ -49,7 +49,7 @@ interface OffersRepository {
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
-        isDevelopment: Boolean = true,
+        isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
     ): Result<OffersResponse>
 
@@ -86,7 +86,7 @@ interface OffersRepository {
  * // Fetch offers
  * val result = repository.fetchOffers(
  *     apiKey = "your-api-key",
- *     isDevelopment = true
+ *     isDevelopment = false
  * )
  *
  * // Handle beacon events

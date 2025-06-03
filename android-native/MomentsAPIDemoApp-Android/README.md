@@ -2,7 +2,7 @@
 
 ## Overview
 
-This sample demonstrates how to integrate the Moments API into a native Android application using Kotlin. Use it as a reference for authentication, offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API Android Integration Playbook](https://docs.momentscience.com/moments-api-android-integration-playbook).
+This sample demonstrates how to integrate the Moments API into a native Android application using Kotlin. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API Android Integration Playbook](https://docs.momentscience.com/moments-api-android-integration-playbook).
 
 ## Prerequisites
 
@@ -15,7 +15,6 @@ This sample demonstrates how to integrate the Moments API into a native Android 
   <uses-permission android:name="android.permission.INTERNET" />
   ```
 
-- Device or emulator (API 21+)
 
 ## Quick Integration Steps
 
@@ -42,6 +41,6 @@ See the demo code for implementation patterns. For advanced usage, consult the [
 ## Project Structure
 
 - `app/` – Main source code
-- `app/src/main/java/` – Kotlin files
+- `app/src/main/java/com/momentscience/android/msapidemoapp` – Kotlin files
 - `app/src/main/res/` – Resources
-- `app/build.gradle` – Build config
+- `app/build.gradle.kts` – Build config

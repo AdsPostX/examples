@@ -2,7 +2,7 @@
 
 ## Overview
 
-This sample demonstrates how to integrate the Moments API into a native iOS application using Swift. Use it as a reference for authentication, offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API iOS Integration Playbook](https://docs.momentscience.com/moments-api-ios-swift-integration-playbook).
+This sample demonstrates how to integrate the Moments API into a native iOS application using Swift. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API iOS Integration Playbook](https://docs.momentscience.com/moments-api-ios-swift-integration-playbook).
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ See the demo code for implementation patterns. For advanced usage, consult the [
 ## Project Structure
 
 - `OfferService.swift` – API integration logic
-- `OfferContainerView.swift` – Main offer UI container
+- `OfferContainerView.swift` – OfferContainer UI
 - `OfferView.swift` – Individual offer UI
-- `OffersViewModel.swift` – State management
+- `OffersViewModel.swift` – State management, business logic
 

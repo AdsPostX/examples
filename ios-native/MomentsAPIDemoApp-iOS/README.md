@@ -1,4 +1,4 @@
-# Integrating Moments API in Swift App
+# Integrating Moments API in iOS App using Swift
 
 ## Overview
 
@@ -38,4 +38,3 @@ See the demo code for implementation patterns. For advanced usage, consult the [
 - `OfferContainerView.swift` – OfferContainer UI
 - `OfferView.swift` – Individual offer UI
 - `OffersViewModel.swift` – State management, business logic
-

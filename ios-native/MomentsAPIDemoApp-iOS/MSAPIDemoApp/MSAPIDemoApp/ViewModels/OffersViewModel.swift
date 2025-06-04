@@ -87,6 +87,7 @@ class OffersViewModel: ObservableObject {
                 
                 // Fire pixel request for the first offer
                 firePixelRequestForCurrentOffer()
+                fireAdvPixelRequestForCurrentOffer()
             } catch OffersError.noOffers {
                 self.error = "No offers available"
             } catch OffersError.invalidURL {
@@ -172,6 +173,7 @@ class OffersViewModel: ObservableObject {
             // Ensure pixel request fires after state update
             await Task.yield()
             firePixelRequestForCurrentOffer()
+            fireAdvPixelRequestForCurrentOffer()
         }
     }
     
@@ -184,6 +186,7 @@ class OffersViewModel: ObservableObject {
             // Ensure pixel request fires after state update
             await Task.yield()
             firePixelRequestForCurrentOffer()
+            fireAdvPixelRequestForCurrentOffer()
         }
     }
     
@@ -194,6 +197,25 @@ class OffersViewModel: ObservableObject {
               let pixelUrl = offer.pixel,
               !pixelUrl.isEmpty,
               let url = URL(string: pixelUrl) else {
+            return
+        }
+        
+        Task {
+            do {
+                try await offersService.fireBeaconRequest(url: url)
+            } catch {
+                print("Pixel request failed: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    /// Fires adv pixel request for the current offer
+    /// - Note: Called automatically when navigating between offers
+    private func fireAdvPixelRequestForCurrentOffer() {
+        guard let offer = currentOffer,
+              let advPixelUrl = offer.advPixelUrl,
+              !advPixelUrl.isEmpty,
+              let url = URL(string: advPixelUrl) else {
             return
         }
         

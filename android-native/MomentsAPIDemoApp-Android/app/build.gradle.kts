@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -13,7 +14,7 @@ android {
         applicationId = "com.momentscience.android.msapidemoapp"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
+        versionCode = 4
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -55,11 +56,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
-    implementation(libs.gson)
-
     // Retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
     // Image loading
@@ -77,4 +75,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Add the serialization dependency
+    implementation(libs.kotlinx.serialization.json)
+
+    // Add Retrofit's Kotlin Serialization converter
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
 }

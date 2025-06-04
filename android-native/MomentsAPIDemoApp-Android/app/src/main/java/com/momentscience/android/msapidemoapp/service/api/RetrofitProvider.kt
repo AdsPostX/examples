@@ -1,9 +1,11 @@
 package com.momentscience.android.msapidemoapp.service.api
 
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Provider class for Retrofit instance and API services.
@@ -38,6 +40,14 @@ object RetrofitProvider {
     private const val BASE_URL = "https://api.adspostx.com/native/v4/"
 
     /**
+     * Configure Json serializer
+     */
+    private val json = Json {
+        ignoreUnknownKeys = true // Add this if the API returns fields not in your models
+        coerceInputValues = true // Add this to handle null for non-null fields
+    }
+
+    /**
      * Configured OkHttpClient instance with:
      * - HTTP request/response logging
      * - Common headers for all requests
@@ -60,6 +70,8 @@ object RetrofitProvider {
         }
         .build()
 
+    private val contentType = "application/json".toMediaType()
+
     /**
      * Configured Retrofit instance with:
      * - Base URL configuration
@@ -71,7 +83,7 @@ object RetrofitProvider {
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(json.asConverterFactory(contentType))
         .build()
 
     /**

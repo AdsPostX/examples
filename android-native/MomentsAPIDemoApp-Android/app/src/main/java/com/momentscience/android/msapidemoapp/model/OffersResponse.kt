@@ -1,430 +1,464 @@
 package com.momentscience.android.msapidemoapp.model
 
-import com.google.gson.annotations.SerializedName
+/**
+ * OffersResponse.kt
+ * Defines the data models for the Moments Offers API response.
+ * This file contains all the necessary models to decode and work with offers,
+ * their styling, and associated metadata.
+ *
+ * The main components are:
+ * - Offer: The core offer data structure
+ * - OffersResponse: The top-level API response
+ * - OffersStyles: Styling information for the offer UI
+ * - Various supporting models for specific styling aspects
+ */
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 
 /**
- * Root response object from the Moments Offers API.
- * Contains the main offers data, styling information, and configuration.
- *
- * @property data Contains the list of offers and related data
- * @property count Total number of offers returned
- * @property styles UI styling configuration for the offers display
- * @property privacyUrl URL to the privacy policy
+ * Represents an offer from the API
+ * An offer contains all the necessary information to display a promotional content item,
+ * including text, images, tracking URLs, and interaction elements.
  */
-data class OffersResponse(
-    val data: OffersData? = null,
-    val count: Int? = null,
-    val styles: Styles? = null,
-    @SerializedName("privacy_url")
-    val privacyUrl: String? = null
-)
-
-/**
- * Container for the list of offers.
- *
- * @property offers List of individual offer objects
- */
-data class OffersData(
-    val offers: List<Offer>? = null
-)
-
-/**
- * Represents a single offer with all its details and configuration.
- * Each offer contains information about the campaign, visuals, and interaction options.
- *
- * @property id Unique identifier for the offer
- * @property campaignId Associated campaign identifier
- * @property title Main title of the offer
- * @property description Detailed description of the offer
- * @property clickUrl URL to be opened when the offer is clicked
- * @property image Main image URL for the offer
- * @property miniText Small text usually shown below the offer
- * @property termsAndConditions HTML formatted terms and conditions
- * @property pixel Tracking pixel URL
- * @property ctaYes Text for the positive call-to-action button
- * @property ctaNo Text for the negative call-to-action button
- * @property userActionCta Custom CTA text for user actions
- * @property userActionUrl URL for custom user actions
- * @property advPixelUrl Advertiser's tracking pixel URL
- * @property beacons Tracking beacon configurations
- * @property creatives List of creative assets for the offer
- * @property offerwallEnabled Whether this offer can appear in an offerwall
- * @property perksWalletEnabled Whether this offer supports perks wallet features
- * @property shortDescription Condensed version of the description
- * @property shortHeadline Condensed version of the title
- * @property advertiserName Name of the advertiser
- * @property isLoyaltyBoost Whether this is a loyalty boost offer
- * @property loyaltyBoostRequirements Requirements for loyalty boost
- * @property saveForLaterUrl URL for saving the offer
- * @property tags List of tags associated with the offer
- * @property offerDescription Additional offer description
- * @property campaign Campaign-specific details
- * @property offerwallUrl URL for the offerwall version
- * @property qrCodeImg URL of the QR code image
- */
+@Serializable
 data class Offer(
+    /** Unique identifier for the offer */
     val id: Int,
-    @SerializedName("campaign_id")
+    /** Associated campaign identifier */
+    @SerialName("campaign_id")
     val campaignId: Int? = null,
+    /** Main title of the offer */
     val title: String? = null,
+    /** Detailed description of the offer */
     val description: String? = null,
-    @SerializedName("click_url")
+    /** URL to handle when offer is clicked */
+    @SerialName("click_url")
     val clickUrl: String? = null,
+    /** Main image URL for the offer */
     val image: String? = null,
-    @SerializedName("mini_text")
+    /** Condensed text version of the offer */
+    @SerialName("mini_text")
     val miniText: String? = null,
-    @SerializedName("terms_and_conditions")
+    /** Legal terms and conditions */
+    @SerialName("terms_and_conditions")
     val termsAndConditions: String? = null,
+    /** Tracking pixel URL for impression tracking */
     val pixel: String? = null,
-    @SerializedName("cta_yes")
+    /** Text for the positive call-to-action button */
+    @SerialName("cta_yes")
     val ctaYes: String? = null,
-    @SerializedName("cta_no")
+    /** Text for the negative call-to-action button */
+    @SerialName("cta_no")
     val ctaNo: String? = null,
-    @SerializedName("useraction_cta")
-    val userActionCta: String? = null,
-    @SerializedName("useraction_url")
-    val userActionUrl: String? = null,
-    @SerializedName("adv_pixel_url")
+    /** Text for user action button */
+    @SerialName("useraction_cta")
+    val useractionCta: String? = null,
+    /** URL for user action */
+    @SerialName("useraction_url")
+    val useractionUrl: String? = null,
+    /** Advertiser pixel URL for tracking */
+    @SerialName("adv_pixel_url")
     val advPixelUrl: String? = null,
+    /** Tracking beacon URLs for various events */
     val beacons: Beacons? = null,
+    /** Collection of creative assets */
     val creatives: List<Creative>? = null,
-    @SerializedName("offerwall_enabled")
+    /** Whether offer is enabled for offerwall */
+    @SerialName("offerwall_enabled")
     val offerwallEnabled: Boolean? = null,
-    @SerializedName("perkswallet_enabled")
-    val perksWalletEnabled: Boolean? = null,
-    @SerializedName("short_description")
+    /** Whether offer is enabled for perks wallet */
+    @SerialName("perkswallet_enabled")
+    val perkswallEnabled: Boolean? = null,
+    /** Brief description for list views */
+    @SerialName("short_description")
     val shortDescription: String? = null,
-    @SerializedName("short_headline")
+    /** Brief headline for list views */
+    @SerialName("short_headline")
     val shortHeadline: String? = null,
-    @SerializedName("advertiser_name")
+    /** Name of the advertiser */
+    @SerialName("advertiser_name")
     val advertiserName: String? = null,
-    @SerializedName("is_loyaltyboost")
-    val isLoyaltyBoost: Boolean? = null,
-    @SerializedName("loyaltyboost_requirements")
-    val loyaltyBoostRequirements: String? = null,
-    @SerializedName("save_for_later_url")
+    /** Whether this is a loyalty boost offer */
+    @SerialName("is_loyaltyboost")
+    val isLoyaltyboost: Boolean? = null,
+    /** Requirements for loyalty boost */
+    @SerialName("loyaltyboost_requirements")
+    val loyaltyboostRequirements: String? = null,
+    /** URL for saving offer for later */
+    @SerialName("save_for_later_url")
     val saveForLaterUrl: String? = null,
+    /** Categories or labels for the offer */
     val tags: List<String>? = null,
-    @SerializedName("offer_description")
+    /** Alternative description field */
+    @SerialName("offer_description")
     val offerDescription: String? = null,
+    /** Associated campaign details */
     val campaign: Campaign? = null,
-    @SerializedName("offerwall_url")
+    /** URL for offerwall version */
+    @SerialName("offerwall_url")
     val offerwallUrl: String? = null,
-    @SerializedName("qr_code_img")
+    /** QR code image URL if applicable */
+    @SerialName("qr_code_img")
     val qrCodeImg: String? = null
 )
 
 /**
- * Configuration for tracking beacons.
- *
- * @property close URL to ping when offer is closed
- * @property noThanksClick URL to ping when offer is declined
+ * Represents beacon URLs for tracking various user interactions
+ * Beacons are fired when specific events occur during offer interaction
  */
+@Serializable
 data class Beacons(
+    /** URL to ping when offer is closed */
     val close: String? = null,
-    @SerializedName("no_thanks_click")
+    /** URL to ping when user clicks "No Thanks" */
+    @SerialName("no_thanks_click")
     val noThanksClick: String? = null
 )
 
 /**
- * Represents a creative asset (image, video, etc.) for an offer.
- *
- * @property id Unique identifier for the creative
- * @property url URL of the creative asset
- * @property height Height in pixels
- * @property width Width in pixels
- * @property type File type (e.g., "png", "jpg")
- * @property creativeType Type of creative (e.g., "icon_image")
- * @property isPrimary Whether this is the primary creative
- * @property aspectRatio Width to height ratio
- * @property userId Associated user ID
+ * Represents a creative asset (image/media) for the offer
+ * Creatives can be used for various purposes like thumbnails, banners, etc.
  */
+@Serializable
 data class Creative(
+    /** Unique identifier for the creative */
     val id: Int,
+    /** URL of the creative asset */
     val url: String? = null,
+    /** Height of the creative in pixels */
     val height: Int? = null,
+    /** Width of the creative in pixels */
     val width: Int? = null,
+    /** Type of creative (e.g., "image", "video") */
     val type: String? = null,
-    @SerializedName("creative_type")
+    /** Specific creative type classification */
+    @SerialName("creative_type")
     val creativeType: String? = null,
-    @SerializedName("is_primary")
+    /** Whether this is the primary creative for the offer */
+    @SerialName("is_primary")
     val isPrimary: Boolean? = null,
-    @SerializedName("aspect_ratio")
-    val aspectRatio: Float? = null,
-    @SerializedName("user_id")
+    /** Aspect ratio of the creative (width/height) */
+    @SerialName("aspect_ratio")
+    val aspectRatio: Double? = null,
+    /** Associated user identifier */
+    @SerialName("user_id")
     val userId: Int? = null
 )
 
 /**
- * Campaign-specific information for an offer.
- *
- * @property campaignImages List of creative assets for the campaign
- * @property offerDescription Campaign-specific offer description
- * @property isProduct Whether this campaign is for a product
+ * Represents campaign-specific information and assets
  */
+@Serializable
 data class Campaign(
-    @SerializedName("campaign_images")
+    /** Collection of images associated with the campaign */
+    @SerialName("campaign_images")
     val campaignImages: List<Creative>? = null,
-    @SerializedName("offer_description")
+    /** Campaign-specific offer description */
+    @SerialName("offer_description")
     val offerDescription: String? = null,
-    @SerializedName("is_product")
+    /** Whether the campaign is for a product */
+    @SerialName("is_product")
     val isProduct: Boolean? = null
 )
 
 /**
- * Complete styling configuration for the offers UI.
- *
- * @property popup Styling for the popup container
- * @property header Styling for the header section
- * @property offerText Styling for the offer text and buttons
- * @property footer Styling for the footer section
- * @property settings General UI settings
- * @property offerwall Styling for the offerwall view
+ * Top-level response structure for the offers API
+ * Contains the main data payload and any metadata
  */
-data class Styles(
+@Serializable
+data class OffersResponse(
+    val data: OffersData? = null
+)
+
+/**
+ * Container for offers data and associated metadata
+ */
+@Serializable
+data class OffersData(
+    /** Array of offers returned by the API */
+    val offers: List<Offer>? = null,
+    /** Total count of offers */
+    val count: Int? = null,
+    /** Styling information for rendering offers */
+    val styles: OffersStyles? = null,
+    /** URL to privacy policy */
+    @SerialName("privacy_url")
+    val privacyUrl: String? = null
+)
+
+/**
+ * Represents comprehensive styling information for offers
+ * Contains all visual customization options for the offer display
+ */
+@Serializable
+data class OffersStyles(
+    /** Styling for the popup container */
     val popup: PopupStyle? = null,
+    /** Styling for the header section */
     val header: HeaderStyle? = null,
-    @SerializedName("offerText")
+    /** Styling for offer text content */
     val offerText: OfferTextStyle? = null,
+    /** Styling for the footer section */
     val footer: FooterStyle? = null,
-    val settings: StyleSettings? = null,
+    /** General settings for offer display */
+    val settings: SettingsStyle? = null,
+    /** Styling for offerwall display */
     val offerwall: OfferwallStyle? = null
 )
 
 /**
- * Styling configuration for the popup container.
- *
- * @property background Background color
- * @property borderRadius Border radius configuration
- * @property shadow Shadow styling
- * @property lightBox Light box styling
- * @property imagePosition Position of the main image
- * @property showImage Whether to show images
+ * Defines styling for the popup container
  */
+@Serializable
 data class PopupStyle(
+    /** Background color in hex format */
     val background: String? = null,
+    /** Border radius configuration */
     val borderRadius: BorderRadius? = null,
+    /** Shadow style */
     val shadow: String? = null,
+    /** Light box effect style */
     val lightBox: String? = null,
-    @SerializedName("image_position")
+    /** Position of the image */
+    @SerialName("image_position")
     val imagePosition: String? = null,
+    /** Whether to show images */
     val showImage: Boolean? = null
 )
 
 /**
- * Border radius configuration for UI elements.
- *
- * @property topLeft Top-left corner radius
- * @property topRight Top-right corner radius
- * @property bottomRight Bottom-right corner radius
- * @property bottomLeft Bottom-left corner radius
+ * Defines border radius for each corner
  */
+@Serializable
 data class BorderRadius(
-    @SerializedName("top_left")
+    /** Top-left corner radius */
+    @SerialName("top_left")
     val topLeft: String? = null,
-    @SerializedName("top_right")
+    /** Top-right corner radius */
+    @SerialName("top_right")
     val topRight: String? = null,
-    @SerializedName("bottom_right")
+    /** Bottom-right corner radius */
+    @SerialName("bottom_right")
     val bottomRight: String? = null,
-    @SerializedName("bottom_left")
+    /** Bottom-left corner radius */
+    @SerialName("bottom_left")
     val bottomLeft: String? = null
 )
 
 /**
- * Styling configuration for the header section.
- *
- * @property text Header text content
- * @property background Background color
- * @property textColor Text color
- * @property fontSize Font size in pixels
- * @property headLineAndLeadInFontSize Font size for headlines
- * @property leadInText Lead-in text content
- * @property leadInTextColor Lead-in text color
- * @property headingFontSize Heading font size
- * @property leadInAlignment Lead-in text alignment
+ * Defines styling for the header section
  */
+@Serializable
 data class HeaderStyle(
+    /** Header text content */
     val text: String? = null,
+    /** Background color in hex format */
     val background: String? = null,
+    /** Text color in hex format */
     val textColor: String? = null,
+    /** Base font size */
     val fontSize: Int? = null,
-    @SerializedName("headLineAndLeadInFontSize")
+    /** Font size for headline and lead-in text */
     val headLineAndLeadInFontSize: Int? = null,
-    @SerializedName("lead_in_text")
+    /** Lead-in text content */
+    @SerialName("lead_in_text")
     val leadInText: String? = null,
-    @SerializedName("lead_in_text_color")
+    /** Lead-in text color */
+    @SerialName("lead_in_text_color")
     val leadInTextColor: String? = null,
-    @SerializedName("heading_font_size")
+    /** Heading font size */
+    @SerialName("heading_font_size")
     val headingFontSize: String? = null,
-    @SerializedName("lead_in_alignment")
+    /** Lead-in text alignment */
+    @SerialName("lead_in_alignment")
     val leadInAlignment: String? = null
 )
 
 /**
- * Styling configuration for offer text and buttons.
- *
- * @property ctaTextSize Call-to-action button text size
- * @property ctaTextStyle Call-to-action button text style
- * @property hideAdvName Whether to hide advertiser name
- * @property textColor Text color
- * @property font Font family
- * @property fontSize Font size in pixels
- * @property buttonYes Styling for positive button
- * @property buttonNo Styling for negative button
- * @property offerwallMouButtonRadius Button radius in offerwall
- * @property showImage Whether to show images
+ * Defines styling for offer text content
  */
+@Serializable
 data class OfferTextStyle(
-    @SerializedName("cta_text_size")
+    /** Size for CTA button text */
+    @SerialName("cta_text_size")
     val ctaTextSize: String? = null,
-    @SerializedName("cta_text_style")
+    /** Style for CTA button text (e.g., "bold") */
+    @SerialName("cta_text_style")
     val ctaTextStyle: String? = null,
-    @SerializedName("hide_adv_name")
+    /** Whether to hide advertiser name */
+    @SerialName("hide_adv_name")
     val hideAdvName: Boolean? = null,
+    /** Main text color */
     val textColor: String? = null,
+    /** Font family */
     val font: String? = null,
+    /** Base font size */
     val fontSize: Int? = null,
+    /** Style for positive CTA button */
     val buttonYes: ButtonStyle? = null,
+    /** Style for negative CTA button */
     val buttonNo: ButtonStyle? = null,
-    @SerializedName("offerwall_mou_button_radius")
+    /** Button radius for offerwall */
+    @SerialName("offerwall_mou_button_radius")
     val offerwallMouButtonRadius: Int? = null,
-    @SerializedName("show_image")
+    /** Whether to show images */
+    @SerialName("show_image")
     val showImage: Boolean? = null
 )
 
 /**
- * Styling configuration for buttons.
- *
- * @property background Background color
- * @property hover Hover state color
- * @property stroke Border color
- * @property color Text color
+ * Defines styling for buttons
  */
+@Serializable
 data class ButtonStyle(
+    /** Background color in hex format */
     val background: String? = null,
+    /** Hover state color */
     val hover: String? = null,
+    /** Border stroke color */
     val stroke: String? = null,
+    /** Text color */
     val color: String? = null
 )
 
 /**
- * Styling configuration for the footer section.
- *
- * @property disclaimer Disclaimer text
- * @property privacy Privacy policy URL
- * @property text Footer text content
- * @property showApxLinks Whether to show APX links
- * @property publisherPrivacyPolicy Publisher's privacy policy URL
- * @property publisherName Publisher's name
+ * Defines styling for the footer section
  */
+@Serializable
 data class FooterStyle(
+    /** Disclaimer text */
     val disclaimer: String? = null,
+    /** Privacy text */
     val privacy: String? = null,
+    /** General footer text */
     val text: String? = null,
-    @SerializedName("show_apx_links")
+    /** Whether to show APX links */
+    @SerialName("show_apx_links")
     val showApxLinks: Boolean? = null,
-    @SerializedName("publisher_privacy_policy")
+    /** Publisher's privacy policy URL */
+    @SerialName("publisher_privacy_policy")
     val publisherPrivacyPolicy: String? = null,
-    @SerializedName("publisher_name")
+    /** Publisher's name */
+    @SerialName("publisher_name")
     val publisherName: String? = null
 )
 
 /**
- * General UI settings and behavior configuration.
- *
- * @property adPosition Position of the ad
- * @property adAnimation Animation type
- * @property buttonOrder Order of buttons
- * @property savedOfferText Text for saved offers
- * @property enableUsp Whether to enable USP
- * @property progressBarType Type of progress bar
- * @property darkenBg Whether to darken background
- * @property delay Delay in milliseconds
- * @property showDisclaimer Whether to show disclaimer
- * @property showClose Whether to show close button
- * @property enableCloseDelay Whether to enable close delay
- * @property closeDelay Close delay in seconds
+ * Defines general settings for offer display
  */
-data class StyleSettings(
-    @SerializedName("ad_position")
+@Serializable
+data class SettingsStyle(
+    /** Position of the ad */
+    @SerialName("ad_position")
     val adPosition: String? = null,
-    @SerializedName("ad_animation")
+    /** Animation style for the ad */
+    @SerialName("ad_animation")
     val adAnimation: String? = null,
-    @SerializedName("button_order")
+    /** Order of buttons */
+    @SerialName("button_order")
     val buttonOrder: String? = null,
-    @SerializedName("saved_offer_text")
+    /** Text for saved offers */
+    @SerialName("saved_offer_text")
     val savedOfferText: String? = null,
-    @SerializedName("enable_usp")
+    /** Whether all USP offers are checked */
+    @SerialName("usp_all_offers_checked")
+    val uspAllOffersChecked: Boolean? = null,
+    /** Whether to enable USP */
+    @SerialName("enable_usp")
     val enableUsp: Boolean? = null,
-    @SerializedName("progress_bar_type")
+    /** Type of progress bar */
+    @SerialName("progress_bar_type")
     val progressBarType: String? = null,
-    @SerializedName("darken_bg")
+    /** Text for USP CTA */
+    @SerialName("usp_cta_text")
+    val uspCtaText: String? = null,
+    /** Whether to darken background */
+    @SerialName("darken_bg")
     val darkenBg: Boolean? = null,
+    /** Whether to darken non-centered background */
+    @SerialName("darken_bg_non_centered")
+    val darkenBgNonCentered: Boolean? = null,
+    /** Delay in milliseconds */
     val delay: Int? = null,
-    @SerializedName("show_disclaimer")
+    /** Whether to enable vertical offset */
+    @SerialName("enable_vertical_offset")
+    val enableVerticalOffset: Boolean? = null,
+    /** Vertical offset for mobile */
+    @SerialName("mobile_vertical_offset")
+    val mobileVerticalOffset: Int? = null,
+    /** Screen margin in pixels */
+    @SerialName("screen_margin")
+    val screenMargin: Int? = null,
+    /** Whether to show disclaimer */
+    @SerialName("show_disclaimer")
     val showDisclaimer: Boolean? = null,
-    @SerializedName("show_close")
+    /** Whether to show close button */
+    @SerialName("show_close")
     val showClose: Boolean? = null,
-    @SerializedName("enable_close_delay")
+    /** Whether to enable close delay */
+    @SerialName("enable_close_delay")
     val enableCloseDelay: Boolean? = null,
-    @SerializedName("close_delay")
+    /** Close delay in milliseconds */
+    @SerialName("close_delay")
     val closeDelay: Int? = null
 )
 
 /**
- * Styling configuration for the offerwall view.
- *
- * @property button Button styling in offerwall
- * @property tile Tile styling in offerwall
- * @property tileRadius Tile corner radius
- * @property offerwallLogoUrl URL for offerwall logo
- * @property mouTileGap Gap between tiles
+ * Defines styling for offerwall display
  */
+@Serializable
 data class OfferwallStyle(
+    /** Button styling for offerwall */
     val button: OfferwallButtonStyle? = null,
+    /** Tile styling for offerwall */
     val tile: OfferwallTileStyle? = null,
-    @SerializedName("tile_radius")
+    /** Radius for tiles */
+    @SerialName("tile_radius")
     val tileRadius: Int? = null,
-    @SerializedName("offerwall_logo_url")
+    /** URL for offerwall logo */
+    @SerialName("offerwall_logo_url")
     val offerwallLogoUrl: String? = null,
-    @SerializedName("mou_tile_gap")
+    /** Gap between tiles */
+    @SerialName("mou_tile_gap")
     val mouTileGap: Int? = null
 )
 
 /**
- * Button styling configuration for offerwall.
- *
- * @property background Button background color
- * @property color Button text color
- * @property hover Button hover color
- * @property stroke Button border color
+ * Defines button styling specific to offerwall
  */
+@Serializable
 data class OfferwallButtonStyle(
-    @SerializedName("offerwall_mou_button_background")
-    val background: String? = null,
-    @SerializedName("offerwall_mou_button_color")
-    val color: String? = null,
-    @SerializedName("offerwall_mou_button_hover")
-    val hover: String? = null,
-    @SerializedName("offerwall_mou_button_stroke")
-    val stroke: String? = null
+    /** Button background color */
+    @SerialName("offerwall_mou_button_background")
+    val offerwallMouButtonBackground: String? = null,
+    /** Button text color */
+    @SerialName("offerwall_mou_button_color")
+    val offerwallMouButtonColor: String? = null,
+    /** Button hover state color */
+    @SerialName("offerwall_mou_button_hover")
+    val offerwallMouButtonHover: String? = null,
+    /** Button border stroke color */
+    @SerialName("offerwall_mou_button_stroke")
+    val offerwallMouButtonStroke: String? = null
 )
 
 /**
- * Tile styling configuration for offerwall.
- *
- * @property borderColor Tile border color
- * @property borderThickness Tile border thickness
- * @property backgroundHoverColor Tile background color on hover
- * @property backgroundColor Tile background color
+ * Defines tile styling specific to offerwall
  */
+@Serializable
 data class OfferwallTileStyle(
-    @SerializedName("offerwall_mou_border_color")
-    val borderColor: String? = null,
-    @SerializedName("offerwall_mou_border_thickness")
-    val borderThickness: Int? = null,
-    @SerializedName("offerwall_mou_tile_background_hover_color")
-    val backgroundHoverColor: String? = null,
-    @SerializedName("mou_tile_background_color")
-    val backgroundColor: String? = null
-) 
+    /** Border color for tiles */
+    @SerialName("offerwall_mou_border_color")
+    val offerwallMouBorderColor: String? = null,
+    /** Border thickness for tiles */
+    @SerialName("offerwall_mou_border_thickness")
+    val offerwallMouBorderThickness: Int? = null,
+    /** Hover state background color for tiles */
+    @SerialName("offerwall_mou_tile_background_hover_color")
+    val offerwallMouTileBackgroundHoverColor: String? = null,
+    /** Default background color for tiles */
+    @SerialName("mou_tile_background_color")
+    val mouTileBackgroundColor: String? = null
+)

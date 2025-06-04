@@ -128,6 +128,9 @@ class OffersViewModel(
                 offers.data?.offers?.firstOrNull()?.pixel?.let { pixel ->
                     fireBeacon(pixel)
                 }
+                offers.data?.offers?.firstOrNull()?.advPixelUrl?.let { advPixelUrl ->
+                    fireBeacon(advPixelUrl)
+                }
             }.onFailure { error ->
                 val errorMessage = when (error) {
                     is OffersError.InvalidURL -> "Invalid URL"
@@ -240,6 +243,12 @@ class OffersViewModel(
                     fireBeacon(pixel)
                 }
             }
+            currentState.offers.data?.offers?.getOrNull(currentState.currentOfferIndex + 1)?.advPixelUrl?.let { advPixelUrl ->
+                viewModelScope.launch {
+                    fireBeacon(advPixelUrl)
+                }
+            }
+
             true
         } else {
             false
@@ -267,6 +276,11 @@ class OffersViewModel(
             currentState.offers.data?.offers?.getOrNull(currentState.currentOfferIndex - 1)?.pixel?.let { pixel ->
                 viewModelScope.launch {
                     fireBeacon(pixel)
+                }
+            }
+            currentState.offers.data?.offers?.getOrNull(currentState.currentOfferIndex - 1)?.advPixelUrl?.let { advPixelUrl ->
+                viewModelScope.launch {
+                    fireBeacon(advPixelUrl)
                 }
             }
             true

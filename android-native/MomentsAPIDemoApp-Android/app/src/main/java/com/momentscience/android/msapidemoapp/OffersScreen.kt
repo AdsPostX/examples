@@ -14,7 +14,7 @@ import androidx.compose.ui.zIndex
 import com.momentscience.android.msapidemoapp.ui.components.OfferContainerView
 import com.momentscience.android.msapidemoapp.ui.viewmodel.OffersUiState
 import com.momentscience.android.msapidemoapp.ui.viewmodel.OffersViewModel
-import com.momentscience.android.msapidemoapp.model.Styles
+import com.momentscience.android.msapidemoapp.model.OffersStyles
 
 /**
  * A composable that manages the display and interaction of offers content.
@@ -196,7 +196,7 @@ fun OffersScreen(
                         // Render offer container with navigation and interaction handlers
                         OfferContainerView(
                             offers = state.offers.data?.offers ?: emptyList(),
-                            styles = state.offers.styles ?: Styles(),
+                            styles = state.offers.data?.styles ?: OffersStyles(),
                             currentOfferIndex = state.currentOfferIndex,
                             onClose = {
                                 currentOffer.let { viewModel.onClose(it) }

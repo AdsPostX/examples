@@ -11,7 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.momentscience.android.msapidemoapp.model.Offer
-import com.momentscience.android.msapidemoapp.model.Styles
+import com.momentscience.android.msapidemoapp.model.OffersStyles
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.toColorInt
 
 /**
  * A composable container that displays offers in a carousel-like interface with navigation controls.
@@ -75,7 +78,7 @@ import com.momentscience.android.msapidemoapp.model.Styles
 @Composable
 fun OfferContainerView(
     offers: List<Offer>,
-    styles: Styles,
+    styles: OffersStyles,
     currentOfferIndex: Int,
     onClose: () -> Unit,
     onPositiveClick: (Offer) -> Unit,
@@ -89,9 +92,21 @@ fun OfferContainerView(
     val hasPreviousOffer = currentOfferIndex > 0
     val hasNextOffer = currentOfferIndex < offers.size - 1
 
+    // Get the default background color from Material theme
+    val defaultBackgroundColor = MaterialTheme.colorScheme.background
+
+    // Get background color from styles or fallback to Material theme
+    val backgroundColor = remember(styles.popup?.background, defaultBackgroundColor) {
+        styles.popup?.background?.let { colorString ->
+            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+        } ?: defaultBackgroundColor
+    }
+
     // Root column that fills the available space and arranges content vertically
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Top section: Close button with safe area handling

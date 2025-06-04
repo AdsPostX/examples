@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +20,7 @@ import androidx.core.graphics.toColorInt
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.momentscience.android.msapidemoapp.model.Offer
-import com.momentscience.android.msapidemoapp.model.Styles
+import com.momentscience.android.msapidemoapp.model.OffersStyles
 
 /**
  * A composable that renders a single offer with its associated content and styling.
@@ -79,17 +80,21 @@ import com.momentscience.android.msapidemoapp.model.Styles
 @Composable
 fun OfferView(
     offer: Offer,
-    styles: Styles,
+    styles: OffersStyles,
     onPositiveClick: () -> Unit,
     onNegativeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Default style values for fallback
     val defaultFontSize = 13.sp
-    val defaultTextColor = Color(0xFF000000) // Black
+    val defaultTextColor = Color.Black
     val defaultPrimaryColor = Color(0xFF1C64F2) // Blue
-    val defaultSurfaceColor = Color(0xFFFFFFFF) // White
-    
+    val defaultSurfaceColor = Color.White
+
+    // Get Material theme colors outside of remember
+    val defaultOnPrimaryColor = MaterialTheme.colorScheme.onPrimary
+    val defaultOnSurfaceColor = MaterialTheme.colorScheme.onSurface
+
     // Convert CTA text size from pixels to scale-independent pixels
     // Falls back to default size if parsing fails
     val ctaSize = styles.offerText?.ctaTextSize?.replace("px", "")?.toFloatOrNull()?.sp ?: defaultFontSize
@@ -110,31 +115,32 @@ fun OfferView(
     }
 
     // Positive button background color
-    val positiveButtonColor = try {
-        styles.offerText?.buttonYes?.background?.let { Color(it.toColorInt()) } ?: defaultPrimaryColor
-    } catch (e: Exception) {
-        defaultPrimaryColor // Fallback on parsing error
+    val positiveButtonColor = remember(styles.offerText?.buttonYes?.background) {
+        styles.offerText?.buttonYes?.background?.let { colorString ->
+            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+        } ?: defaultPrimaryColor
     }
 
+
     // Negative button background color
-    val negativeButtonColor = try {
-        styles.offerText?.buttonNo?.background?.let { Color(it.toColorInt()) } ?: defaultSurfaceColor
-    } catch (e: Exception) {
-        defaultSurfaceColor // Fallback on parsing error
+    val negativeButtonColor = remember(styles.offerText?.buttonNo?.background) {
+        styles.offerText?.buttonNo?.background?.let { colorString ->
+            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+        } ?: defaultSurfaceColor
     }
 
     // Positive button text color
-    val positiveButtonTextColor = try {
-        styles.offerText?.buttonYes?.color?.let { Color(it.toColorInt()) } ?: Color.White
-    } catch (e: Exception) {
-        Color.White // Fallback on parsing error
+    val positiveButtonTextColor = remember(styles.offerText?.buttonYes?.color, defaultOnPrimaryColor) {
+        styles.offerText?.buttonYes?.color?.let { colorString ->
+            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+        } ?: defaultOnPrimaryColor
     }
 
     // Negative button text color
-    val negativeButtonTextColor = try {
-        styles.offerText?.buttonNo?.color?.let { Color(it.toColorInt()) } ?: Color.Black
-    } catch (e: Exception) {
-        Color.Black // Fallback on parsing error
+    val negativeButtonTextColor = remember(styles.offerText?.buttonNo?.color, defaultOnSurfaceColor) {
+        styles.offerText?.buttonNo?.color?.let { colorString ->
+            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+        } ?: defaultOnSurfaceColor
     }
 
     // Main content column with centered alignment and spacing
@@ -197,7 +203,7 @@ fun OfferView(
                     Text(
                         text = it,
                         fontSize = ctaSize,
-                        fontStyle = ctaFontStyle
+                        fontStyle = ctaFontStyle,
                     )
                 }
             }
@@ -221,4 +227,4 @@ fun OfferView(
             }
         }
     }
-} 
+}

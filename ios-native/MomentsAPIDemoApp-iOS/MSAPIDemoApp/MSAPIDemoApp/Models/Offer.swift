@@ -403,7 +403,7 @@ struct SettingsStyle: Codable {
     /// Whether to enable vertical offset
     let enableVerticalOffset: Bool?
     /// Vertical offset for mobile
-    let mobileVerticalOffset: String?
+    let mobileVerticalOffset: Int?
     /// Screen margin in pixels
     let screenMargin: Int?
     /// Whether to show disclaimer

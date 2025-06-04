@@ -32,9 +32,7 @@ struct OfferContainerView: View {
     
     var body: some View {
         ZStack {
-            // Semi-transparent background from API styling
-            viewModel.getPopupBackgroundColor()
-                .ignoresSafeArea()
+            
             
             if viewModel.isLoading {
                 // Loading state
@@ -64,6 +62,7 @@ struct OfferContainerView: View {
                 .padding()
             } else if let offer = viewModel.currentOffer {
                 // Main offer display container
+                    
                 VStack(spacing: 0) {
                     // Close button with beacon tracking
                     HStack {
@@ -135,11 +134,13 @@ struct OfferContainerView: View {
                         onNext: viewModel.showNextOffer
                     )
                 }
-                .background(Color.white)
+                .background(viewModel.getPopupBackgroundColor())
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal)
                 .padding(.vertical, 40)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.secondary)
+                
             }
         }
         .statusBar(hidden: true)

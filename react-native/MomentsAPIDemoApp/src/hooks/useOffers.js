@@ -60,21 +60,36 @@ export const useOffers = () => {
    * @async
    * @returns {Promise<void>}
    */
-  const fetchOffers = useCallback(async apiKey => {
-    setIsLoading(true);
-    setError(null);
+  const fetchOffers = useCallback(
+    async (
+      apiKey,
+      loyaltyBoost = '0',
+      creative = '0',
+      isDevelopment = false,
+      payload = {},
+    ) => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const response = await getOffers(apiKey);
-      setOffers(response.offers);
-      setApiStyles(response.styles);
-    } catch (err) {
-      Logger.error('Error in fetchOffers:', err);
-      setError('Failed to load offers');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      try {
+        const response = await getOffers(
+          apiKey,
+          loyaltyBoost,
+          creative,
+          isDevelopment,
+          payload,
+        );
+        setOffers(response.offers);
+        setApiStyles(response.styles);
+      } catch (err) {
+        Logger.log('Error in fetchOffers:', err);
+        setError('Failed to load offers');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   /**
    * Handles the closure of an offer

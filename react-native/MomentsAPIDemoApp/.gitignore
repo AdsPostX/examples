@@ -70,3 +70,4 @@ package-lock.json
 android/.kotlin/
 Podfile.lock
 android/app/release/
+package-lock.json

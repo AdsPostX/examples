@@ -33,7 +33,7 @@ import Logger from '../utils/logger';
  * @returns {Promise<Object>} API response object
  * @throws {Error} When API request fails
  */
-export const fetchMomentOffers = async (
+const fetchMomentOffers = async (
   apiKey,
   queryParameters = {},
   payload = {},
@@ -82,8 +82,8 @@ export const fetchMomentOffers = async (
     return response;
   } catch (error) {
     // Enhanced error logging
-    Logger.error('Error in fetchMomentOffers:', error);
-    Logger.error(
+    Logger.log('Error in fetchMomentOffers:', error);
+    Logger.log(
       'Error details:',
       error.response || error.request || error.message,
     );
@@ -107,7 +107,7 @@ const fireOfferPixel = async url => {
     const response = await axios.get(url);
     Logger.log('Fire pixel Success:', response.data);
   } catch (error) {
-    Logger.error('Fire pixel Error:', error);
+    Logger.log('Fire pixel Error:', error);
   }
 };
 
@@ -122,33 +122,43 @@ const fireOfferPixel = async url => {
  * 5. Handles errors
  *
  * @param {string} apiKey - API key for authentication
+ * @param {string} loyaltyBoost - Loyalty boost parameter
+ * @param {string} creative - Creative parameter
+ * @param {boolean} isDevelopment - Development mode flag
+ * @param {Object} payload - Additional request payload
  * @returns {Promise<Object>} Object containing normalized offers and styles
  * @throws {Error} When no offers are available or API request fails
  */
-export const getOffers = async apiKey => {
+export const getOffers = async (
+  apiKey,
+  loyaltyBoost = '0',
+  creative = '0',
+  isDevelopment = false,
+  payload = {},
+) => {
   if (!apiKey) {
     throw new Error('API key is required');
   }
 
-  // Set up default query parameters
+  // Set up query parameters
   const queryParameters = {
-    loyaltyboost: '0',
-    creative: '0',
+    loyaltyboost: loyaltyBoost,
+    creative: creative,
   };
 
   // Prepare request payload
-  const payload = {
-    // Development mode flag
-    // WARNING: Set to '0' in production or just skip it in production
-    dev: '1',
-
-    // Generate unique identifier for user tracking
-    adpx_fp: (await generateUniqueID()).toString(),
+  const requestPayload = {
+    ...(isDevelopment && {dev: '1'}),
+    ...payload,
   };
 
   try {
     // Make API request with provided API key
-    const response = await fetchMomentOffers(apiKey, queryParameters, payload);
+    const response = await fetchMomentOffers(
+      apiKey,
+      queryParameters,
+      requestPayload,
+    );
 
     // Extract offers array and styles
     const rawOffers = response?.data?.data?.offers ?? [];
@@ -166,7 +176,7 @@ export const getOffers = async apiKey => {
     };
   } catch (error) {
     // Log error in development
-    Logger.error('Error while fetching offers:', error);
+    Logger.log('Error while fetching offers:', error);
     // Propagate error for upstream handling
     throw error;
   }

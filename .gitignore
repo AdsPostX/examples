@@ -2,9 +2,9 @@
 react-native/AdsPostXAPIDemo/Android-Keystore/keystore
 react-native/AdsPostXAPIDemo/android/app/debug.keystore
 react-native/PerkswallEmbeddedRN/android/app/debug.keystore
-react-native/PerkswallEmbeddedRN/android/app/debug.keystore
-react-native/PerkswallEmbeddedRN/android/app/debug.keystore
 react-native/MomentsAPIDemoApp/.env
 react-native/MomentsAPIDemoApp/Android-Keystore/keystore
-react-native/MomentsAPIDemoApp/android/app/debug.keystore
 .DS_Store
+react-native/MomentsAPIDemoApp/Gemfile.lock
+react-native/PerkswallEmbeddedRN/ios/Podfile.lock
+react-native/PerkswallEmbeddedRN/package-lock.json

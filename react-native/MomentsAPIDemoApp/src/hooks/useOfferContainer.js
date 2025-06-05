@@ -43,6 +43,7 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
     setCurrentOffer(offers[currentOfferIndex]);
     Logger.log('Firing pixel/beacon now');
     fireOfferPixel(offers[currentOfferIndex]?.pixel);
+    fireOfferPixel(offers[currentOfferIndex]?.adv_pixel_url);
   }, [currentOfferIndex, offers]);
 
   /**

@@ -18,6 +18,7 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  Switch,
 } from 'react-native';
 import OffersScreen from './src/screens/OffersScreen';
 
@@ -37,6 +38,7 @@ const DEFAULT_API_KEY = 'b167f9d7-c479-41d8-b58f-4a5b26e561f1';
 function App() {
   const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
   const [showOffers, setShowOffers] = useState(false);
+  const [isDevelopment, setIsDevelopment] = useState(false);
 
   // Check if button should be enabled
   const isLoadButtonEnabled = apiKey.trim().length > 0;
@@ -69,6 +71,19 @@ function App() {
             defaultValue={DEFAULT_API_KEY}
           />
 
+          {/* Development Mode Switch */}
+          <View style={[styles.switchContainer, {marginVertical: 16}]}>
+            <Text style={[styles.switchLabel, {color: '#000'}]}>
+              Development Mode
+            </Text>
+            <Switch
+              value={isDevelopment}
+              onValueChange={setIsDevelopment}
+              trackColor={{false: '#767577', true: '#81b0ff'}}
+              thumbColor={isDevelopment ? '#f5dd4b' : '#f4f3f4'}
+            />
+          </View>
+
           {/* Load Offers Button */}
           <TouchableOpacity
             style={[
@@ -86,6 +101,7 @@ function App() {
           visible={showOffers}
           onClose={handleCloseOffers}
           apiKey={apiKey}
+          isDevelopment={isDevelopment}
         />
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -137,6 +153,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  switchLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
   },
 });
 

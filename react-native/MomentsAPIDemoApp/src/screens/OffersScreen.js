@@ -7,11 +7,14 @@ import {
   ActivityIndicator,
   Text,
   TouchableOpacity,
+  Switch,
 } from 'react-native';
 import OfferContainerView from '../components/OfferContainerView';
 import {useOffers} from '../hooks/useOffers';
+import {generateUniqueID, getUserAgent} from '../utils/Util';
+import Logger from '../utils/logger';
 
-function OffersScreen({visible, onClose, apiKey}) {
+function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
   const {
     offers,
     apiStyles,
@@ -33,11 +36,22 @@ function OffersScreen({visible, onClose, apiKey}) {
 
   // Reset states and fetch offers when visibility changes
   React.useEffect(() => {
-    if (visible && apiKey) {
-      resetStates();
-      fetchOffers(apiKey);
-    }
-  }, [visible, apiKey, fetchOffers, resetStates]);
+    const fetchData = async () => {
+      if (visible && apiKey) {
+        try {
+          resetStates();
+          await fetchOffers(apiKey, '0', '0', isDevelopment, {
+            adpx_fp: generateUniqueID(),
+            ua: await getUserAgent(),
+          });
+        } catch (error) {
+          Logger.log('Error fetching offers:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [visible, apiKey, fetchOffers, resetStates, isDevelopment]);
 
   // Handle modal close via back button
   const handleModalClose = () => {
@@ -63,10 +77,20 @@ function OffersScreen({visible, onClose, apiKey}) {
         {error && !offers && (
           <View style={styles.centerContainer}>
             <Text style={styles.errorText}>{error}</Text>
+
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={[styles.button, styles.tryAgainButton]}
-                onPress={() => fetchOffers(apiKey)}>
+                onPress={async () => {
+                  try {
+                    await fetchOffers(apiKey, '0', '0', isDevelopment, {
+                      adpx_fp: generateUniqueID(),
+                      ua: await getUserAgent(),
+                    });
+                  } catch (err) {
+                    Logger.log('Error:', err);
+                  }
+                }}>
                 <Text style={styles.buttonText}>Try Again</Text>
               </TouchableOpacity>
               <TouchableOpacity

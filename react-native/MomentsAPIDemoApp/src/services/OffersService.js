@@ -4,12 +4,14 @@
  * Service module responsible for handling all API interactions related to offers.
  * Provides methods for fetching and processing offer data from the backend.
  *
- * Features:
+ * Key Features:
  * - API request handling with axios
  * - Error handling and logging
  * - Request payload sanitization
  * - Response normalization
  * - Development mode support
+ * - Tracking pixel implementation
+ * - Offer data transformation
  */
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -19,6 +21,12 @@ import Logger from '../utils/logger';
 
 /**
  * Makes a direct API call to fetch offers from the backend
+ *
+ * Handles the complete request lifecycle including:
+ * - Header configuration
+ * - Query parameter processing
+ * - Payload sanitization
+ * - Error handling
  *
  * @param {string} apiKey - Authentication key for API access
  * @param {Object} queryParameters - URL query parameters
@@ -93,7 +101,9 @@ const fetchMomentOffers = async (
 
 /**
  * Fires a tracking pixel for offer-related events
- * Used for analytics and tracking in the offers flow
+ *
+ * Used for analytics and tracking in the offers flow.
+ * Silently fails if URL is invalid or request fails.
  *
  * @param {string} url - The tracking pixel URL
  * @returns {Promise<void>}
@@ -114,19 +124,22 @@ const fireOfferPixel = async url => {
 /**
  * High-level function to fetch and process offers
  *
- * This function:
- * 1. Sets up default query parameters
- * 2. Generates unique user identifier
- * 3. Makes API request
- * 4. Processes and normalizes response
- * 5. Handles errors
+ * This function orchestrates the complete offer fetching process:
+ * 1. Validates API key
+ * 2. Sets up default query parameters
+ * 3. Generates unique user identifier
+ * 4. Makes API request
+ * 5. Processes and normalizes response
+ * 6. Handles errors
  *
  * @param {string} apiKey - API key for authentication
  * @param {string} loyaltyBoost - Loyalty boost parameter
  * @param {string} creative - Creative parameter
  * @param {boolean} isDevelopment - Development mode flag
  * @param {Object} payload - Additional request payload
- * @returns {Promise<Object>} Object containing normalized offers and styles
+ * @returns {Promise<Object>} Object containing:
+ *   @property {Array} offers - Normalized offer objects
+ *   @property {Object} styles - Style configurations
  * @throws {Error} When no offers are available or API request fails
  */
 export const getOffers = async (

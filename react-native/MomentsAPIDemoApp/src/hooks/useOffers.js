@@ -3,6 +3,13 @@
  *
  * Custom hook that manages the business logic and state for offers feature.
  * Handles offer fetching, loading states, error handling, and offer lifecycle.
+ *
+ * Key Features:
+ * - Manages API calls to fetch offers and styles
+ * - Tracks loading and error states
+ * - Handles offer closure with tracking pixel support
+ * - Provides offer reloading functionality
+ * - Maintains clean state management
  */
 import {useState, useCallback} from 'react';
 import {getOffers, fireOfferPixel} from '../services/OffersService';
@@ -11,16 +18,22 @@ import Logger from '../utils/logger';
 /**
  * Custom hook for offer management
  *
+ * Provides a comprehensive interface for working with offers including:
+ * - Data fetching
+ * - State management
+ * - Error handling
+ * - Lifecycle events
+ *
  * @returns {Object} Hook state and methods
  *   @returns {Array|null} offers - Array of offer objects or null if not loaded
- *   @returns {Array|null} styles - Array of style objects or null if not loaded
+ *   @returns {Array|null} apiStyles - Array of style objects or null if not loaded
  *   @returns {boolean} isOfferClosed - Whether the current offer is closed
  *   @returns {boolean} isLoading - Whether offers are currently being fetched
  *   @returns {string|null} error - Error message if fetch failed, null otherwise
  *   @returns {Function} fetchOffers - Function to fetch offers from API
- *   @returns {Function} handleCloseOffer - Function to handle offer closure
+ *   @returns {Function} handleCloseOffer - Function to handle offer closure (fires tracking pixel if configured)
  *   @returns {Function} reloadOffers - Function to reload offers and reset state
- *   @returns {Function} resetStates - Function to reset the state of the hook
+ *   @returns {Function} resetStates - Function to completely reset the hook state
  */
 export const useOffers = () => {
   // State Management
@@ -39,7 +52,15 @@ export const useOffers = () => {
   /** @type {[string|null, Function]} Error state and setter */
   const [error, setError] = useState(null);
 
-  // Add reset function
+  /**
+   * Resets all hook states to initial values
+   *
+   * Clears:
+   * - Offers data
+   * - Styles data
+   * - Closed state
+   * - Error state
+   */
   const resetStates = useCallback(() => {
     setOffers(null);
     setApiStyles(null);
@@ -58,6 +79,11 @@ export const useOffers = () => {
    * 5. Clears loading state
    *
    * @async
+   * @param {string} apiKey - API key for authentication
+   * @param {string} [loyaltyBoost='0'] - Loyalty boost parameter
+   * @param {string} [creative='0'] - Creative parameter
+   * @param {boolean} [isDevelopment=false] - Development mode flag
+   * @param {Object} [payload={}] - Additional payload data
    * @returns {Promise<void>}
    */
   const fetchOffers = useCallback(

@@ -7,6 +7,12 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
  * Renders an individual offer with title, image, description, and call-to-action buttons.
  * All elements are optional and will only render if the corresponding prop is provided.
  *
+ * Key Features:
+ * - Dynamic styling based on API response
+ * - Optional rendering of all UI elements (title, image, description, buttons)
+ * - Click handlers for image and CTA buttons
+ * - Helper function to parse pixel values from API styles
+ *
  * @component
  * @param {Object} props - Component properties
  * @param {string} [props.title] - The title of the offer
@@ -18,7 +24,7 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
  * @param {Function} [props.onPositiveCTA] - Callback function for positive button click
  * @param {string} [props.negativeCTA] - Text for the negative call-to-action button
  * @param {Function} [props.onNegativeCTA] - Callback function for negative button click
- * @param {Object} props.apiStyles - Styles from API response
+ * @param {Object} props.apiStyles - Styles from API response (supports dynamic theming)
  */
 function OfferView({
   title,
@@ -32,14 +38,28 @@ function OfferView({
   onNegativeCTA,
   apiStyles,
 }) {
-  // Helper function to parse pixel values
+  /**
+   * Helper function to parse pixel values from API styles
+   *
+   * @param {string} value - The pixel value string (e.g., '16px')
+   * @returns {number|undefined} - The parsed numeric value or undefined if invalid
+   */
   const parsePixelValue = value => {
     if (!value) return undefined;
     // Remove 'px' and convert to number
     return parseInt(value.replace('px', ''), 10);
   };
 
-  // Create dynamic styles based on API response
+  /**
+   * Dynamic styles derived from API response
+   *
+   * @type {Object}
+   * @property {Object} description - Styles for description text
+   * @property {Object} positiveCTA - Styles for positive CTA button
+   * @property {Object} positiveCTAText - Styles for positive CTA button text
+   * @property {Object} negativeCTA - Styles for negative CTA button
+   * @property {Object} negativeCTAText - Styles for negative CTA button text
+   */
   const dynamicStyles = {
     description: {
       fontSize: apiStyles?.fontSize || 16,
@@ -117,8 +137,18 @@ function OfferView({
 /**
  * Component styles
  *
+ * Defines the base styling for the OfferView component.
+ * These styles are overridden by dynamic styles from the API when provided.
+ *
  * @constant
  * @type {Object}
+ * @property {Object} container - Base container style
+ * @property {Object} title - Title text style
+ * @property {Object} image - Image style
+ * @property {Object} description - Description text style
+ * @property {Object} ctaContainer - CTA buttons container style
+ * @property {Object} cta - Base CTA button style
+ * @property {Object} ctaText - Base CTA button text style
  */
 const styles = StyleSheet.create({
   container: {

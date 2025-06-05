@@ -7,6 +7,12 @@
  * - Error state
  * - Offer display state
  * - Offer closed state
+ *
+ * Key Features:
+ * - Input for API key with a default value
+ * - Toggle for development mode
+ * - Button to load offers, which opens a modal screen
+ * - Handles keyboard dismissal for better UX
  */
 import React, {useState} from 'react';
 import {
@@ -27,20 +33,30 @@ const DEFAULT_API_KEY = '';
 /**
  * Main App Component
  *
- * Component Lifecycle:
- * 1. Shows API key input field with default value
- * 2. Shows Load Offers button (enabled only when API key is present)
- * 3. Opens modal screen when Load Offers is tapped
+ * Manages the application state and renders the UI for:
+ * - API key input
+ * - Development mode toggle
+ * - Load Offers button
+ * - Offers modal screen
  *
  * @component
  * @returns {React.ReactElement} The rendered app component
+ *
+ * State:
+ * @state {string} apiKey - Stores the API key entered by the user
+ * @state {boolean} showOffers - Controls the visibility of the Offers modal
+ * @state {boolean} isDevelopment - Toggles development mode
+ *
+ * Methods:
+ * @method handleLoadOffers - Dismisses the keyboard and shows the Offers modal
+ * @method handleCloseOffers - Closes the Offers modal
  */
 function App() {
   const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
   const [showOffers, setShowOffers] = useState(false);
   const [isDevelopment, setIsDevelopment] = useState(false);
 
-  // Check if button should be enabled
+  // Check if the Load Offers button should be enabled
   const isLoadButtonEnabled = apiKey.trim().length > 0;
 
   // Handler for Load Offers button
@@ -111,10 +127,23 @@ function App() {
 /**
  * Application Styles
  *
+ * Defines the styling for the App component.
+ *
  * Layout:
  * - Uses flex for responsive layout
  * - Centered containers for loading and error states
  * - Consistent styling for buttons and text
+ *
+ * Styles:
+ * @style container - Main container style with white background
+ * @style content - Padding for the content area
+ * @style label - Styling for input labels
+ * @style input - Styling for the API key input field
+ * @style loadButton - Styling for the Load Offers button
+ * @style loadButtonDisabled - Styling for the disabled Load Offers button
+ * @style buttonText - Styling for button text
+ * @style switchContainer - Styling for the development mode switch container
+ * @style switchLabel - Styling for the development mode label
  */
 const styles = StyleSheet.create({
   container: {

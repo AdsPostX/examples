@@ -12,6 +12,13 @@ import Logger from '../utils/logger';
  * - URL handling
  * - CTA (Call-to-Action) interactions
  *
+ * Key Features:
+ * - Tracks current offer and its index in the carousel
+ * - Automatically fires tracking pixels on offer change
+ * - Handles navigation (next/previous) with boundary checks
+ * - Manages all user interactions (positive/negative CTA, image click, close)
+ * - Integrates with external services for URL opening and pixel firing
+ *
  * @param {Array<Object>} offers - Array of offer objects with structure:
  *   @param {string} offers[].pixel - Tracking pixel URL for offer impression
  *   @param {string} offers[].click_url - URL to open when offer is clicked
@@ -20,16 +27,17 @@ import Logger from '../utils/logger';
  *   @param {string} offers[].beacons.close - URL to fire when offer is closed
  * @param {Function} onCloseOfferCTA - Callback when offer is closed
  *   @param {number} currentIndex - Index of current offer
- *   @param {boolean} shouldFirePixel - Whether to fire tracking pixel
+ *   @param {boolean} shouldClose - Whether to close the offer container
  *
  * @returns {Object} Hook state and handlers
  *   @returns {Object} currentOffer - Currently displayed offer
- *   @returns {Function} goToNextOffer - Navigate to next offer
- *   @returns {Function} goToPreviousOffer - Navigate to previous offer
- *   @returns {Function} handlePositiveCTA - Handle positive button click
- *   @returns {Function} handleNegativeCTA - Handle negative button click
- *   @returns {Function} handleImageCTA - Handle image click
- *   @returns {Function} handleClose - Handle close button click
+ *   @returns {number} currentIndex - Index of current offer
+ *   @returns {Function} goToNextOffer - Navigate to next offer or close if at end
+ *   @returns {Function} goToPreviousOffer - Navigate to previous offer if not at start
+ *   @returns {Function} handlePositiveCTA - Handle positive button click (opens URL and navigates)
+ *   @returns {Function} handleNegativeCTA - Handle negative button click (fires beacon and navigates)
+ *   @returns {Function} handleImageCTA - Handle image click (opens URL if available)
+ *   @returns {Function} handleClose - Handle close button click (triggers close callback)
  */
 export const useOfferContainer = (offers, onCloseOfferCTA) => {
   // Track current offer and its index
@@ -37,7 +45,10 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
   const [currentOfferIndex, setCurrentOfferIndex] = useState(0);
 
   /**
-   * Effect to update current offer and fire tracking pixel
+   * Effect to update current offer and fire tracking pixels
+   *
+   * Fires both the main pixel and additional advertiser pixel (if available)
+   * whenever the current offer index changes.
    */
   useEffect(() => {
     setCurrentOffer(offers[currentOfferIndex]);
@@ -48,6 +59,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Navigate to next offer or close if at end
+   *
+   * @param {boolean} shouldClose - Whether to trigger close callback when at end
    */
   const goToNextOffer = useCallback(
     shouldClose => {
@@ -66,6 +79,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Navigate to previous offer if not at start
+   *
+   * No action taken if already at first offer
    */
   const goToPreviousOffer = useCallback(() => {
     if (currentOfferIndex === 0) {
@@ -77,6 +92,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Handle positive CTA button click
+   *
+   * Opens the offer URL (if available) and navigates to next offer
    */
   const handlePositiveCTA = useCallback(() => {
     Logger.log('Positive CTA clicked');
@@ -90,6 +107,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Handle negative CTA button click
+   *
+   * Fires the 'no thanks' beacon and navigates to next offer
    */
   const handleNegativeCTA = useCallback(() => {
     Logger.log('Negative CTA clicked');
@@ -101,7 +120,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Handle offer image click
-   * Opens offer URL if available
+   *
+   * Opens the offer URL if available
    */
   const handleImageCTA = useCallback(() => {
     if (currentOffer?.click_url) {
@@ -111,7 +131,8 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
 
   /**
    * Handle close button click
-   * Triggers close callback with current index
+   *
+   * Triggers the close callback with current index
    */
   const handleClose = useCallback(() => {
     onCloseOfferCTA(currentOfferIndex, true);

@@ -7,11 +7,38 @@ import {
   ActivityIndicator,
   Text,
   TouchableOpacity,
+  Switch,
 } from 'react-native';
 import OfferContainerView from '../components/OfferContainerView';
 import {useOffers} from '../hooks/useOffers';
+import {generateUniqueID, getUserAgent} from '../utils/Util';
+import Logger from '../utils/logger';
 
-function OffersScreen({visible, onClose, apiKey}) {
+/**
+ * OffersScreen Component
+ *
+ * Main screen component for displaying offers in a modal view.
+ * Manages the offer lifecycle including:
+ * - Loading state
+ * - Error handling
+ * - Offer display
+ * - User interactions
+ *
+ * Key Features:
+ * - Uses modal presentation for full-screen display
+ * - Integrates with useOffers hook for data management
+ * - Handles all offer lifecycle events
+ * - Provides loading and error states
+ * - Supports development mode toggle
+ *
+ * @component
+ * @param {Object} props - Component properties
+ * @param {boolean} props.visible - Controls modal visibility
+ * @param {Function} props.onClose - Callback when modal is closed
+ * @param {string} props.apiKey - API key for offer fetching
+ * @param {boolean} props.isDevelopment - Development mode flag
+ */
+function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
   const {
     offers,
     apiStyles,
@@ -24,22 +51,59 @@ function OffersScreen({visible, onClose, apiKey}) {
     resetStates,
   } = useOffers();
 
-  // Handler for when offer container is closed
+  /**
+   * Handles offer container close event
+   *
+   * Performs the following actions:
+   * 1. Triggers offer close handler
+   * 2. Resets all states
+   * 3. Calls parent onClose callback
+   *
+   * @param {number} currentIndex - Index of current offer
+   * @param {boolean} shouldFirePixel - Whether to fire tracking pixel
+   */
   const handleOfferClose = (currentIndex, shouldFirePixel) => {
     handleCloseOffer(currentIndex, shouldFirePixel);
     resetStates();
     onClose();
   };
 
-  // Reset states and fetch offers when visibility changes
+  /**
+   * Effect hook for fetching offers when screen becomes visible
+   *
+   * Automatically fetches offers when:
+   * 1. Screen becomes visible
+   * 2. API key is available
+   *
+   * Also handles:
+   * - State reset before fetch
+   * - Error logging
+   */
   React.useEffect(() => {
-    if (visible && apiKey) {
-      resetStates();
-      fetchOffers(apiKey);
-    }
-  }, [visible, apiKey, fetchOffers, resetStates]);
+    const fetchData = async () => {
+      if (visible && apiKey) {
+        try {
+          resetStates();
+          await fetchOffers(apiKey, '0', '0', isDevelopment, {
+            adpx_fp: generateUniqueID(),
+            ua: await getUserAgent(),
+          });
+        } catch (error) {
+          Logger.log('Error fetching offers:', error);
+        }
+      }
+    };
 
-  // Handle modal close via back button
+    fetchData();
+  }, [visible, apiKey, fetchOffers, resetStates, isDevelopment]);
+
+  /**
+   * Handles modal close via back button
+   *
+   * Triggers offer close with:
+   * - Current index 0
+   * - Pixel firing enabled
+   */
   const handleModalClose = () => {
     handleOfferClose(0, true);
   };
@@ -63,10 +127,20 @@ function OffersScreen({visible, onClose, apiKey}) {
         {error && !offers && (
           <View style={styles.centerContainer}>
             <Text style={styles.errorText}>{error}</Text>
+
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={[styles.button, styles.tryAgainButton]}
-                onPress={() => fetchOffers(apiKey)}>
+                onPress={async () => {
+                  try {
+                    await fetchOffers(apiKey, '0', '0', isDevelopment, {
+                      adpx_fp: generateUniqueID(),
+                      ua: await getUserAgent(),
+                    });
+                  } catch (err) {
+                    Logger.log('Error:', err);
+                  }
+                }}>
                 <Text style={styles.buttonText}>Try Again</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -91,6 +165,25 @@ function OffersScreen({visible, onClose, apiKey}) {
   );
 }
 
+/**
+ * Component styles
+ *
+ * Defines all visual styles for the OffersScreen component
+ *
+ * @constant
+ * @type {Object}
+ * @property {Object} container - Main container style
+ * @property {Object} header - Header area style
+ * @property {Object} closeButton - Close button style
+ * @property {Object} centerContainer - Centered content container
+ * @property {Object} loadingText - Loading text style
+ * @property {Object} errorText - Error text style
+ * @property {Object} buttonContainer - Button container style
+ * @property {Object} button - Base button style
+ * @property {Object} tryAgainButton - Try Again button style
+ * @property {Object} closeButton - Close button style
+ * @property {Object} buttonText - Button text style
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -4,12 +4,14 @@
  * Service module responsible for handling all API interactions related to offers.
  * Provides methods for fetching and processing offer data from the backend.
  *
- * Features:
+ * Key Features:
  * - API request handling with axios
  * - Error handling and logging
  * - Request payload sanitization
  * - Response normalization
  * - Development mode support
+ * - Tracking pixel implementation
+ * - Offer data transformation
  */
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -19,6 +21,12 @@ import Logger from '../utils/logger';
 
 /**
  * Makes a direct API call to fetch offers from the backend
+ *
+ * Handles the complete request lifecycle including:
+ * - Header configuration
+ * - Query parameter processing
+ * - Payload sanitization
+ * - Error handling
  *
  * @param {string} apiKey - Authentication key for API access
  * @param {Object} queryParameters - URL query parameters
@@ -33,7 +41,7 @@ import Logger from '../utils/logger';
  * @returns {Promise<Object>} API response object
  * @throws {Error} When API request fails
  */
-export const fetchMomentOffers = async (
+const fetchMomentOffers = async (
   apiKey,
   queryParameters = {},
   payload = {},
@@ -82,8 +90,8 @@ export const fetchMomentOffers = async (
     return response;
   } catch (error) {
     // Enhanced error logging
-    Logger.error('Error in fetchMomentOffers:', error);
-    Logger.error(
+    Logger.log('Error in fetchMomentOffers:', error);
+    Logger.log(
       'Error details:',
       error.response || error.request || error.message,
     );
@@ -93,7 +101,9 @@ export const fetchMomentOffers = async (
 
 /**
  * Fires a tracking pixel for offer-related events
- * Used for analytics and tracking in the offers flow
+ *
+ * Used for analytics and tracking in the offers flow.
+ * Silently fails if URL is invalid or request fails.
  *
  * @param {string} url - The tracking pixel URL
  * @returns {Promise<void>}
@@ -107,48 +117,61 @@ const fireOfferPixel = async url => {
     const response = await axios.get(url);
     Logger.log('Fire pixel Success:', response.data);
   } catch (error) {
-    Logger.error('Fire pixel Error:', error);
+    Logger.log('Fire pixel Error:', error);
   }
 };
 
 /**
  * High-level function to fetch and process offers
  *
- * This function:
- * 1. Sets up default query parameters
- * 2. Generates unique user identifier
- * 3. Makes API request
- * 4. Processes and normalizes response
- * 5. Handles errors
+ * This function orchestrates the complete offer fetching process:
+ * 1. Validates API key
+ * 2. Sets up default query parameters
+ * 3. Generates unique user identifier
+ * 4. Makes API request
+ * 5. Processes and normalizes response
+ * 6. Handles errors
  *
  * @param {string} apiKey - API key for authentication
- * @returns {Promise<Object>} Object containing normalized offers and styles
+ * @param {string} loyaltyBoost - Loyalty boost parameter
+ * @param {string} creative - Creative parameter
+ * @param {boolean} isDevelopment - Development mode flag
+ * @param {Object} payload - Additional request payload
+ * @returns {Promise<Object>} Object containing:
+ *   @property {Array} offers - Normalized offer objects
+ *   @property {Object} styles - Style configurations
  * @throws {Error} When no offers are available or API request fails
  */
-export const getOffers = async apiKey => {
+export const getOffers = async (
+  apiKey,
+  loyaltyBoost = '0',
+  creative = '0',
+  isDevelopment = false,
+  payload = {},
+) => {
   if (!apiKey) {
     throw new Error('API key is required');
   }
 
-  // Set up default query parameters
+  // Set up query parameters
   const queryParameters = {
-    loyaltyboost: '0',
-    creative: '0',
+    loyaltyboost: loyaltyBoost,
+    creative: creative,
   };
 
   // Prepare request payload
-  const payload = {
-    // Development mode flag
-    // WARNING: Set to '0' in production or just skip it in production
-    dev: '1',
-
-    // Generate unique identifier for user tracking
-    adpx_fp: (await generateUniqueID()).toString(),
+  const requestPayload = {
+    ...(isDevelopment && {dev: '1'}),
+    ...payload,
   };
 
   try {
     // Make API request with provided API key
-    const response = await fetchMomentOffers(apiKey, queryParameters, payload);
+    const response = await fetchMomentOffers(
+      apiKey,
+      queryParameters,
+      requestPayload,
+    );
 
     // Extract offers array and styles
     const rawOffers = response?.data?.data?.offers ?? [];
@@ -166,7 +189,7 @@ export const getOffers = async apiKey => {
     };
   } catch (error) {
     // Log error in development
-    Logger.error('Error while fetching offers:', error);
+    Logger.log('Error while fetching offers:', error);
     // Propagate error for upstream handling
     throw error;
   }

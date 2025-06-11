@@ -121,16 +121,16 @@ class OfferViewModel with ChangeNotifier {
   /// [totalOffers] - The total number of offers.
   Future<bool> handleNegativeAction(dynamic offer, int currentIndex, int totalOffers) async {
     // Send request for no_thanks_click beacon if available, without awaiting completion
-    if (offer['beacons'] != null &&
-        offer['beacons']['no_thanks_click'] != null &&
-        offer['beacons']['no_thanks_click'].isNotEmpty) {
-      sendTrackingRequest(offer['beacons']['no_thanks_click']);
+    final noThanksBeacon = offer?['beacons']?['no_thanks_click'];
+    if (noThanksBeacon != null && noThanksBeacon.isNotEmpty) {
+      sendTrackingRequest(noThanksBeacon);
     }
 
     // If this is the last offer, send the close beacon before dismissing, without awaiting completion
     if (currentIndex >= totalOffers - 1) {
-      if (offer['beacons'] != null && offer['beacons']['close'] != null && offer['beacons']['close'].isNotEmpty) {
-        sendTrackingRequest(offer['beacons']['close']);
+      final closeBeacon = offer?['beacons']?['close'];
+      if (closeBeacon != null && closeBeacon.isNotEmpty) {
+        sendTrackingRequest(closeBeacon);
       }
     }
 
@@ -144,8 +144,9 @@ class OfferViewModel with ChangeNotifier {
   /// [offer] - The current offer object.
   Future<void> handleCloseAction(dynamic offer) async {
     // Send request for close beacon if available
-    if (offer['beacons'] != null && offer['beacons']['close'] != null && offer['beacons']['close'].isNotEmpty) {
-      await sendTrackingRequest(offer['beacons']['close']);
+    final closeBeacon = offer?['beacons']?['close'];
+    if (closeBeacon != null && closeBeacon.isNotEmpty) {
+      await sendTrackingRequest(closeBeacon);
     }
   }
 
@@ -155,12 +156,14 @@ class OfferViewModel with ChangeNotifier {
   /// [offer] - The current offer object.
   Future<void> handleDisplayTracking(dynamic offer) async {
     // Send request for pixel if available
-    if (offer['pixel'] != null && offer['pixel'].isNotEmpty) {
-      await sendTrackingRequest(offer['pixel']);
+    final pixel = offer?['pixel'];
+    if (pixel != null && pixel.isNotEmpty) {
+      await sendTrackingRequest(pixel);
     }
     // Send request for adv_pixel_url if available
-    if (offer['adv_pixel_url'] != null && offer['adv_pixel_url'].isNotEmpty) {
-      await sendTrackingRequest(offer['adv_pixel_url']);
+    final advPixelUrl = offer?['adv_pixel_url'];
+    if (advPixelUrl != null && advPixelUrl.isNotEmpty) {
+      await sendTrackingRequest(advPixelUrl);
     }
   }
 }

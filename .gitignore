@@ -8,3 +8,7 @@ react-native/MomentsAPIDemoApp/Android-Keystore/keystore
 react-native/MomentsAPIDemoApp/Gemfile.lock
 react-native/PerkswallEmbeddedRN/ios/Podfile.lock
 react-native/PerkswallEmbeddedRN/package-lock.json
+google-services.json
+Breakpoints_v2.xcbkptlist
+debug.keystore
+UserInterfaceState.xcuserstate

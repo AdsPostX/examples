@@ -209,18 +209,18 @@ class OffersService {
     /**
      * Sends a tracking beacon request to the specified URL.
      * This method is used to track user interactions and events with the offers system.
-     * The request is executed asynchronously using coroutines.
+     * The request is executed asynchronously using coroutines as a 'send and forget' operation,
+     * meaning we don't wait for or process the response.
      *
      * Implementation Details:
      * - Validates the beacon URL format
      * - Executes the request on IO dispatcher
      * - Provides detailed logging of the request
-     * - Handles various network and URL-related errors
+     * - Does not wait for or handle response status
      *
      * @param url The complete URL for the beacon request
      * 
      * @throws OffersError.InvalidURL When the beacon URL is malformed
-     * @throws OffersError.NetworkError When the beacon request fails
      */
     suspend fun fireBeaconRequest(url: String) = withContext(Dispatchers.IO) {
         try {
@@ -229,20 +229,10 @@ class OffersService {
             
             Log.d(TAG, "👉 Firing beacon request to $url")
             
-            val response = RetrofitProvider.offersApi.fireBeacon(url)
-            
-            if (!response.isSuccessful) {
-                throw OffersError.NetworkError(
-                    IOException("Beacon request failed with status code: ${response.code()}")
-                )
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is IOException -> throw OffersError.NetworkError(e)
-                is IllegalArgumentException -> throw OffersError.InvalidURL
-                is OffersError -> throw e
-                else -> throw OffersError.NetworkError(e)
-            }
+            // Send request but don't wait for or check response
+            RetrofitProvider.offersApi.fireBeacon(url)
+        } catch (e: IllegalArgumentException) {
+            throw OffersError.InvalidURL
         }
     }
 } 

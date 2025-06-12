@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -51,6 +51,8 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
     resetStates,
   } = useOffers();
 
+  const [adpx_fp, setAdpxFp] = useState('');
+
   /**
    * Handles offer container close event
    *
@@ -79,13 +81,13 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
    * - State reset before fetch
    * - Error logging
    */
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       if (visible && apiKey) {
         try {
           resetStates();
           await fetchOffers(apiKey, '0', '0', isDevelopment, {
-            adpx_fp: generateUniqueID(),
+            adpx_fp: adpx_fp,
             ua: await getUserAgent(),
           });
         } catch (error) {
@@ -95,7 +97,7 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
     };
 
     fetchData();
-  }, [visible, apiKey, fetchOffers, resetStates, isDevelopment]);
+  }, [visible, apiKey, fetchOffers, resetStates, isDevelopment, adpx_fp]);
 
   /**
    * Handles modal close via back button
@@ -107,6 +109,19 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
   const handleModalClose = () => {
     handleOfferClose(0, true);
   };
+
+  useEffect(() => {
+    const fetchUniqueID = async () => {
+      try {
+        const uniqueID = await generateUniqueID();
+        setAdpxFp(uniqueID);
+      } catch (error) {
+        console.error('Error fetching unique ID:', error);
+        setAdpxFp('unknown');
+      }
+    };
+    fetchUniqueID();
+  }, []);
 
   return (
     <Modal
@@ -134,7 +149,7 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
                 onPress={async () => {
                   try {
                     await fetchOffers(apiKey, '0', '0', isDevelopment, {
-                      adpx_fp: generateUniqueID(),
+                      adpx_fp: adpx_fp,
                       ua: await getUserAgent(),
                     });
                   } catch (err) {

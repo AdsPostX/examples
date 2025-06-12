@@ -186,7 +186,7 @@ class OffersViewModel(
      * beacon firing and offer navigation.
      *
      * Flow:
-     * 1. Fires "no thanks" beacon
+     * 1. Fires "no thanks" beacon asynchronously
      * 2. Attempts to move to next offer
      * 3. Triggers close event if no more offers
      *
@@ -194,11 +194,13 @@ class OffersViewModel(
      */
     fun onNegativeClick(offer: Offer) {
         viewModelScope.launch {
-            // Fire no thanks beacon
+            // Fire no thanks beacon asynchronously
             offer.beacons?.noThanksClick?.let { url ->
-                fireBeacon(url)
+                launch {
+                    fireBeacon(url)
+                }
             }
-            // Move to next offer or close
+            // Move to next offer or close immediately
             if (!moveToNextOffer()) {
                 _closeEvent.value = true
             }

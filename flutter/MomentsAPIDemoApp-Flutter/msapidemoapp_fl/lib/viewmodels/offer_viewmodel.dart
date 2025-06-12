@@ -101,10 +101,11 @@ class OfferViewModel with ChangeNotifier {
       }
     }
 
-    // If this is the last offer, send the close beacon before dismissing
+    // If this is the last offer, send the close beacon before dismissing, without awaiting completion
     if (currentIndex >= totalOffers - 1) {
-      if (offer['beacons'] != null && offer['beacons']['close'] != null && offer['beacons']['close'].isNotEmpty) {
-        await sendTrackingRequest(offer['beacons']['close']);
+      final closeBeacon = offer?['beacons']?['close'];
+      if (closeBeacon != null && closeBeacon.isNotEmpty) {
+        sendTrackingRequest(closeBeacon);
       }
     }
 
@@ -143,10 +144,10 @@ class OfferViewModel with ChangeNotifier {
   ///
   /// [offer] - The current offer object.
   Future<void> handleCloseAction(dynamic offer) async {
-    // Send request for close beacon if available
+    // Send request for close beacon if available, without awaiting completion
     final closeBeacon = offer?['beacons']?['close'];
     if (closeBeacon != null && closeBeacon.isNotEmpty) {
-      await sendTrackingRequest(closeBeacon);
+      sendTrackingRequest(closeBeacon);
     }
   }
 
@@ -158,12 +159,12 @@ class OfferViewModel with ChangeNotifier {
     // Send request for pixel if available
     final pixel = offer?['pixel'];
     if (pixel != null && pixel.isNotEmpty) {
-      await sendTrackingRequest(pixel);
+      sendTrackingRequest(pixel);
     }
     // Send request for adv_pixel_url if available
     final advPixelUrl = offer?['adv_pixel_url'];
     if (advPixelUrl != null && advPixelUrl.isNotEmpty) {
-      await sendTrackingRequest(advPixelUrl);
+      sendTrackingRequest(advPixelUrl);
     }
   }
 }

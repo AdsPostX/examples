@@ -15,6 +15,7 @@ import com.momentscience.android.msapidemoapp.model.OffersStyles
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
+import com.momentscience.android.msapidemoapp.util.toValidHex
 
 /**
  * A composable container that displays offers in a carousel-like interface with navigation controls.
@@ -98,7 +99,7 @@ fun OfferContainerView(
     // Get background color from styles or fallback to Material theme
     val backgroundColor = remember(styles.popup?.background, defaultBackgroundColor) {
         styles.popup?.background?.let { colorString ->
-            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
         } ?: defaultBackgroundColor
     }
 

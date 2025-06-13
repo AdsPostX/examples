@@ -21,6 +21,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.momentscience.android.msapidemoapp.model.Offer
 import com.momentscience.android.msapidemoapp.model.OffersStyles
+import com.momentscience.android.msapidemoapp.util.toValidHex
 
 /**
  * A composable that renders a single offer with its associated content and styling.
@@ -105,41 +106,40 @@ fun OfferView(
         "italic" -> FontStyle.Italic
         else -> FontStyle.Normal
     }
-    
+
     // Parse colors with error handling and fallback values
     // Description text color
-    val descriptionColor = try {
-        styles.offerText?.textColor?.let { Color(it.toColorInt()) } ?: defaultTextColor
-    } catch (e: Exception) {
-        defaultTextColor // Fallback on parsing error
+    val descriptionColor = remember(styles.offerText?.textColor, defaultTextColor) {
+        styles.offerText?.textColor?.let { colorString ->
+            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
+        } ?: defaultTextColor
     }
 
     // Positive button background color
     val positiveButtonColor = remember(styles.offerText?.buttonYes?.background) {
         styles.offerText?.buttonYes?.background?.let { colorString ->
-            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
         } ?: defaultPrimaryColor
     }
-
 
     // Negative button background color
     val negativeButtonColor = remember(styles.offerText?.buttonNo?.background) {
         styles.offerText?.buttonNo?.background?.let { colorString ->
-            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
         } ?: defaultSurfaceColor
     }
 
     // Positive button text color
     val positiveButtonTextColor = remember(styles.offerText?.buttonYes?.color, defaultOnPrimaryColor) {
         styles.offerText?.buttonYes?.color?.let { colorString ->
-            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
         } ?: defaultOnPrimaryColor
     }
 
     // Negative button text color
     val negativeButtonTextColor = remember(styles.offerText?.buttonNo?.color, defaultOnSurfaceColor) {
         styles.offerText?.buttonNo?.color?.let { colorString ->
-            runCatching { Color(colorString.toColorInt()) }.getOrNull()
+            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
         } ?: defaultOnSurfaceColor
     }
 
@@ -155,7 +155,7 @@ fun OfferView(
         offer.title?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium.copy(Color.Black),
                 textAlign = TextAlign.Center
             )
         }

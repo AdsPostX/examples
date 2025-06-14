@@ -72,7 +72,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     // State management for API key input and offers screen visibility
-    val defaultAPIKey = ""  // Default API key for testing
+    val defaultAPIKey = "7c80e6b06365c231"  // Default API key for testing
     var apiKey by remember { mutableStateOf(defaultAPIKey) }
     var showOffers by remember { mutableStateOf(false) }
     var isDevelopmentMode by remember { mutableStateOf(false) }  // Development mode state

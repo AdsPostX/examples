@@ -34,7 +34,7 @@ struct ContentView: View {
     /// Controls the presentation of the offers view
     @State private var showOffers = false
     /// Stores the user's API key input
-    @State private var apiKey: String = ""
+    @State private var apiKey: String = "7c80e6b06365c231"
     /// Controls the presentation of error alerts
     @State private var showError: Bool = false
     /// Stores the current error message

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// Keeps business logic separate from UI logic.
 class HomeViewModel with ChangeNotifier {
   /// The API key used for authenticating API requests.
-  String _apiKey = '';
+  String _apiKey = '7c80e6b06365c231';
 
   /// Whether the app is in development mode.
   bool _isDevelopmentMode = false;

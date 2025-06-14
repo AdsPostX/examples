@@ -28,7 +28,7 @@ import {
 } from 'react-native';
 import OffersScreen from './src/screens/OffersScreen';
 
-const DEFAULT_API_KEY = '';
+const DEFAULT_API_KEY = '7c80e6b06365c231';
 
 /**
  * Main App Component

@@ -48,7 +48,7 @@ This demo app supports two integration modes that prefetch offers and display th
 
    ```bash
    git clone https://github.com/AdsPostX/examples.git
-   cd examples/flutter/MomentScienceSDKDemoApp-Flutter
+   cd examples/flutter/MSSDKDemoApp-Flutter
    ```
 2. Open in your preferred Flutter IDE (e.g., VS Code, Android Studio).
 3. Replace the placeholder SDK ID in the code with your own.

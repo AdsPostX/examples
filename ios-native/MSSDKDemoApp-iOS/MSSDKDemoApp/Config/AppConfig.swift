@@ -15,7 +15,7 @@ enum AppConfig {
         static let baseURL = "https://api.adspostx.com/native/v4/offers.json"
         
         /// Default SDK ID for demo purposes
-        static let defaultSDKId = "<use_your_sdkid_here>"
+        static let defaultSDKId = "99e58babc94df55a"
     }
     
     /// WebView related configuration

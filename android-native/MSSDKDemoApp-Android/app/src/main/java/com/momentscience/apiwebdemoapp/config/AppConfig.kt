@@ -7,7 +7,7 @@ object AppConfig {
     /**
      * Default SDK ID for the MomentScience API
      */
-    const val DEFAULT_SDK_ID = "<use_your_sdkid_here>"
+    const val DEFAULT_SDK_ID = "99e58babc94df55a"
 
     /**
      * Base URL for the MomentScience API

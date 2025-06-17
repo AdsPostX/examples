@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		C30E46342DBFB6C8000FD42D /* MomentsAPIWebDemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MomentsAPIWebDemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C30E46342DBFB6C8000FD42D /* MSSDKDemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSSDKDemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		C30E46362DBFB6C8000FD42D /* MomentsAPIWebDemoApp */ = {
+		C30E46362DBFB6C8000FD42D /* MSSDKDemoApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MomentsAPIWebDemoApp;
+			path = MSSDKDemoApp;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		C30E462B2DBFB6C8000FD42D = {
 			isa = PBXGroup;
 			children = (
-				C30E46362DBFB6C8000FD42D /* MomentsAPIWebDemoApp */,
+				C30E46362DBFB6C8000FD42D /* MSSDKDemoApp */,
 				C30E46352DBFB6C8000FD42D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		C30E46352DBFB6C8000FD42D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C30E46342DBFB6C8000FD42D /* MomentsAPIWebDemoApp.app */,
+				C30E46342DBFB6C8000FD42D /* MSSDKDemoApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C30E46332DBFB6C8000FD42D /* MomentsAPIWebDemoApp */ = {
+		C30E46332DBFB6C8000FD42D /* MSSDKDemoApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C30E46422DBFB6CA000FD42D /* Build configuration list for PBXNativeTarget "MomentsAPIWebDemoApp" */;
+			buildConfigurationList = C30E46422DBFB6CA000FD42D /* Build configuration list for PBXNativeTarget "MSSDKDemoApp" */;
 			buildPhases = (
 				C30E46302DBFB6C8000FD42D /* Sources */,
 				C30E46312DBFB6C8000FD42D /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				C30E46362DBFB6C8000FD42D /* MomentsAPIWebDemoApp */,
+				C30E46362DBFB6C8000FD42D /* MSSDKDemoApp */,
 			);
-			name = MomentsAPIWebDemoApp;
+			name = MSSDKDemoApp;
 			packageProductDependencies = (
 			);
 			productName = PerkswallAPIWebDemoApp;
-			productReference = C30E46342DBFB6C8000FD42D /* MomentsAPIWebDemoApp.app */;
+			productReference = C30E46342DBFB6C8000FD42D /* MSSDKDemoApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C30E462F2DBFB6C8000FD42D /* Build configuration list for PBXProject "MomentsAPIWebDemoApp" */;
+			buildConfigurationList = C30E462F2DBFB6C8000FD42D /* Build configuration list for PBXProject "MSSDKDemoApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C30E46332DBFB6C8000FD42D /* MomentsAPIWebDemoApp */,
+				C30E46332DBFB6C8000FD42D /* MSSDKDemoApp */,
 			);
 		};
 /* End PBXProject section */
@@ -251,7 +251,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PerkswallAPIWebDemoApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"MSSDKDemoApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 9B7S93K87K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -285,7 +285,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"PerkswallAPIWebDemoApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"MSSDKDemoApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 9B7S93K87K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -315,7 +315,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C30E462F2DBFB6C8000FD42D /* Build configuration list for PBXProject "MomentsAPIWebDemoApp" */ = {
+		C30E462F2DBFB6C8000FD42D /* Build configuration list for PBXProject "MSSDKDemoApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C30E46402DBFB6CA000FD42D /* Debug */,
@@ -324,7 +324,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C30E46422DBFB6CA000FD42D /* Build configuration list for PBXNativeTarget "MomentsAPIWebDemoApp" */ = {
+		C30E46422DBFB6CA000FD42D /* Build configuration list for PBXNativeTarget "MSSDKDemoApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C30E46432DBFB6CA000FD42D /* Debug */,

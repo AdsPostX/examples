@@ -40,7 +40,7 @@ This demo app supports both SDK and API-based integrations, allowing you to pref
 1. Clone the repo:
    ```bash
    git clone https://github.com/AdsPostX/examples.git
-   cd examples/android-native/MomentScienceAPIWebDemoApp-Android-Native
+   cd examples/android-native/MSSDKDemoApp-Android
 2. Open in Android Studio.
 3. Replace the placeholder SDK ID in the code.
 4. Run the app on Android 8.0+ (API 26+).

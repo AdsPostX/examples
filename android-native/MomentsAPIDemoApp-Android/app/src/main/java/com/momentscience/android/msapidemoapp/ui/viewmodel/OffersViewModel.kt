@@ -97,6 +97,7 @@ class OffersViewModel(
      * @param apiKey Authentication key for the API
      * @param loyaltyBoost Loyalty boost level (default: "0")
      * @param creative Creative variant (default: "0")
+     * @param campaignId Optional campaign ID to filter offers (default: null)
      * @param isDevelopment Whether to use development mode (default: false)
      * @param payload Additional parameters to be sent with the request (default: empty map)
      *
@@ -110,6 +111,7 @@ class OffersViewModel(
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
+        campaignId: String? = null,
         isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
     ) {
@@ -120,6 +122,7 @@ class OffersViewModel(
                 apiKey = apiKey,
                 loyaltyBoost = loyaltyBoost,
                 creative = creative,
+                campaignId = campaignId,
                 isDevelopment = isDevelopment,
                 payload = payload
             ).onSuccess { offers ->

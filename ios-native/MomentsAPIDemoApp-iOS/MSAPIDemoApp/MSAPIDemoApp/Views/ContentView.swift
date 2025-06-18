@@ -34,7 +34,7 @@ struct ContentView: View {
     /// Controls the presentation of the offers view
     @State private var showOffers = false
     /// Stores the user's API key input
-    @State private var apiKey: String = "7c80e6b06365c231"
+    @State private var apiKey: String = "b167f9d7-c479-41d8-b58f-4a5b26e561f1"
     /// Controls the presentation of error alerts
     @State private var showError: Bool = false
     /// Stores the current error message
@@ -116,6 +116,8 @@ struct ContentView: View {
         
         let payload: [String: String] = [
             "adpx_fp": UUID().uuidString,
+            "pub_user_id": "1234567890",
+            "placement": "checkout",
             "ua": viewModel.getUserAgent()
         ]
         

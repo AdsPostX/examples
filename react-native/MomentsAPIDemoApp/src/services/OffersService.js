@@ -132,23 +132,26 @@ const fireOfferPixel = async url => {
  * 5. Processes and normalizes response
  * 6. Handles errors
  *
- * @param {string} apiKey - API key for authentication
- * @param {string} loyaltyBoost - Loyalty boost parameter
- * @param {string} creative - Creative parameter
- * @param {boolean} isDevelopment - Development mode flag
- * @param {Object} payload - Additional request payload
+ * @param {Object} params - The parameters object
+ * @param {string} params.apiKey - API key for authentication
+ * @param {string} [params.loyaltyBoost='0'] - Loyalty boost parameter
+ * @param {string} [params.creative='0'] - Creative parameter
+ * @param {boolean} [params.isDevelopment=false] - Development mode flag
+ * @param {Object} [params.payload={}] - Additional request payload
+ * @param {string|null} [params.campaignId=null] - Optional campaign ID for filtering offers
  * @returns {Promise<Object>} Object containing:
  *   @property {Array} offers - Normalized offer objects
  *   @property {Object} styles - Style configurations
  * @throws {Error} When no offers are available or API request fails
  */
-export const getOffers = async (
+export const getOffers = async ({
   apiKey,
   loyaltyBoost = '0',
   creative = '0',
   isDevelopment = false,
   payload = {},
-) => {
+  campaignId = null,
+}) => {
   if (!apiKey) {
     throw new Error('API key is required');
   }
@@ -157,6 +160,7 @@ export const getOffers = async (
   const queryParameters = {
     loyaltyboost: loyaltyBoost,
     creative: creative,
+    ...(campaignId && {campaignId: campaignId}),
   };
 
   // Prepare request payload

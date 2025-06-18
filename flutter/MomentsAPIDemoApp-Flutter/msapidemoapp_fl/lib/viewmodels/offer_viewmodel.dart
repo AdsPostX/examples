@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../service/offer_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -38,24 +36,26 @@ class OfferViewModel with ChangeNotifier {
   /// [isDevelopment] - Whether to use development mode.
   /// [loyaltyBoost] - Loyalty boost parameter.
   /// [creative] - Creative parameter.
+  /// [campaignId] - Campaign ID parameter.
   /// [payload] - Additional payload data.
   Future<void> loadOffers({
     required String apiKey,
     bool isDevelopment = false,
     String loyaltyBoost = "0",
     String creative = "0",
+    String? campaignId,
     Map<String, String> payload = const {},
   }) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
     try {
+      _isLoading = true;
+      notifyListeners();
+
       final response = await _apiService.loadOffers(
         apiKey: apiKey,
         isDevelopment: isDevelopment,
         loyaltyBoost: loyaltyBoost,
         creative: creative,
+        campaignId: campaignId,
         payload: payload,
       );
       _offerResponse = response;

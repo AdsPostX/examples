@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../viewmodels/home_viewmodel.dart';
 import '../../viewmodels/offer_viewmodel.dart';
 import '../components/offer_container_view.dart';
+import '../utils/user_agent_util.dart';
 
 /// The OfferPage is responsible for displaying offers to the user.
 /// It loads offers using the [OfferViewModel] and displays them using [OfferContainerView].
@@ -35,22 +36,16 @@ class _OfferPageState extends State<OfferPage> {
   void _loadOffers() {
     final offerViewModel = Provider.of<OfferViewModel>(context, listen: false);
     final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-    String userAgent;
+    // Get the user agent string
+    final String userAgent = UserAgentUtil.getUserAgent();
 
-    /// user agent used below are just examples, you can get fetch user agent dynamically.
-    if (Theme.of(context).platform == TargetPlatform.iOS) {
-      userAgent =
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1';
-    } else {
-      userAgent =
-          'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36';
-    }
+    /// You need to pass a unique value for adpx_fp, pub_user_id. value passed here are just for example.
     offerViewModel.loadOffers(
       apiKey: homeViewModel.apiKey,
       isDevelopment: homeViewModel.isDevelopmentMode,
       loyaltyBoost: "0",
       creative: "0",
-      payload: {'ua': userAgent},
+      payload: {'ua': userAgent, "adpx_fp": "1234567890", "pub_user_id": "1234567890", "placement": "checkout"},
     );
   }
 

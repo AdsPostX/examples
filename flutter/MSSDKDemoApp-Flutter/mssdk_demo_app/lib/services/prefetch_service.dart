@@ -46,7 +46,7 @@ class PrefetchService {
       final userAgent = await DeviceUtils.getUserAgent();
 
       // Create payload here in the business logic layer
-      final payload = createPayload();
+      final payload = await createPayload();
       _lastUsedPayload = payload;
 
       debugPrint('Prefetching content with API for SDK ID: $sdkId');
@@ -54,11 +54,10 @@ class PrefetchService {
 
       // Make the API call to fetch offers
       final response = await _networkService.fetchOffers(
-        sdkId: sdkId,
-        ua: userAgent,
-        dev: '1', // Use test mode for demo
-        payload: payload, // Use the created payload
-      );
+          sdkId: sdkId,
+          isDevelopment: true, // Use test mode for demo
+          payload: payload // Include user agent in payload
+          );
 
       // Cache the API response for later use
       _cachedApiResponse = response;
@@ -84,7 +83,7 @@ class PrefetchService {
       }
 
       // Create payload for WebSDK (same as API for consistency)
-      final payload = createPayload();
+      final payload = await createPayload();
       _lastUsedPayload = payload;
 
       // Get SDK CDN URL from AppConfig
@@ -216,11 +215,13 @@ class PrefetchService {
   }
 
   /// Creates a standard payload for API and WebSDK requests
-  Map<String, String> createPayload() {
+  Future<Map<String, String>> createPayload() async {
     return {
       'pub_user_id': DateTime.now().millisecondsSinceEpoch.toString(), // Simple unique ID
-      'placement': 'checkout',
+      'adpx_fp': DateTime.now().millisecondsSinceEpoch.toString(), // unique value
+      'ua': await DeviceUtils.getUserAgent(),
       'themeId': 'demo',
+      'placement': 'checkout',
     };
   }
 }

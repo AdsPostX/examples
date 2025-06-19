@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import com.momentscience.apiwebdemoapp.PrefetchMode
 import com.momentscience.apiwebdemoapp.config.AppConfig
+import com.momentscience.apiwebdemoapp.utils.UserAgentUtil
 
 /**
  * ViewModel responsible for managing the state and business logic related to offers.
@@ -65,9 +66,6 @@ class OffersViewModel : ViewModel() {
     // Network service instance for making API calls
     private val networkService: NetworkService = AppModule.networkService
 
-    // User agent string used in network requests
-    private val userAgent = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko)    Chrome/120.0.6099.43 Mobile Safari/537.36"
-
     /**
      * Sets the current SDK ID.
      * @param id The SDK ID to set.
@@ -107,16 +105,8 @@ class OffersViewModel : ViewModel() {
                 // Make the network request to fetch offers
                 val response = networkService.fetchOffers(
                     sdkId = sdkId,
-                    ua = userAgent,
-                    placement = null,
-                    ip = null,
-                    adpxFp = getUniqueId(),
-                    dev = "1",
-                    subid = null,
-                    pubUserId = getUniqueId(),
                     payload = payload,
-                    loyaltyboost = null,
-                    creative = null
+                    isDevelopment = true
                 )
                 _jsonResponse.value = response
                 
@@ -295,10 +285,11 @@ class OffersViewModel : ViewModel() {
     // Add this method to create a standard payload
     private fun createPayload(): Map<String, String> {
         return mapOf(
-            "user_id" to getUniqueId(),
-            "email" to "user@example.com",
+            "adpx_fp" to getUniqueId(),
+            "pub_user_id" to getUniqueId(),
+            "ua" to UserAgentUtil.getUserAgent(),
             "themeId" to "demo",
-            "session_id" to getUniqueId()
+            "placement" to "checkout"
         )
     }
 

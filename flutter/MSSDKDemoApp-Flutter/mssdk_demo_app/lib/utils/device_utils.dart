@@ -17,6 +17,7 @@ class DeviceUtils {
       String userAgent = 'MomentScienceSDK-Flutter/1.0';
 
       // Get detailed device information based on platform
+      // User agent below are just for example, you can get user agent dynamically.
       if (Platform.isAndroid) {
         final androidInfo = await _deviceInfoPlugin.androidInfo;
         userAgent = 'Mozilla/5.0 (Linux; Android ${androidInfo.version.release}; ${androidInfo.model}) '

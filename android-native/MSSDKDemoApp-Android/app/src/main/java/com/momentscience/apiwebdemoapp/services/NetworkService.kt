@@ -13,15 +13,6 @@ interface NetworkService {
      * Contains various parameters that can be sent to the offers API.
      */
     data class MomentsAPIRequest(
-        val ua: String,                       // User agent string
-        val placement: String? = null,        // Optional placement identifier
-        val ip: String? = null,               // Optional IP address
-        @SerializedName("adpx_fp")
-        val adpxFp: String? = null,           // Optional unique value
-        val dev: String? = null,              // Optional dev flag
-        val subid: String? = null,            // Optional subid
-        @SerializedName("pub_user_id")
-        val pubUserId: String? = null,        // Optional publisher user ID, this value is passed as pub_user_id to the API
         val payload: Map<String, String>? = null // Optional payload data
     )
 
@@ -30,30 +21,20 @@ interface NetworkService {
      * Makes a network request with the provided parameters and returns the JSON response.
      *
      * @param sdkId The account/SDK ID.
-     * @param ua User agent string.
-     * @param placement Optional placement identifier.
-     * @param ip Optional IP address.
-     * @param adpxFp Optional unique value.
-     * @param dev Optional dev flag.
-     * @param subid Optional subid.
-     * @param pubUserId Optional publisher user ID, this value is passed as pub_user_id to the API
      * @param payload Optional payload data.
-     * @param loyaltyboost Optional loyalty boost flag.
-     * @param creative Optional creative flag.
+     * @param loyaltyboost Optional loyalty boost flag. (default value "0")
+     * @param creative Optional creative flag. (default value "0")
+     * @param campaignId Optional campaign ID .
+     * @param isDevelopment Optional flag to indicate development mode. If true, adds 'dev=1' to payload.
      * @return The JSON response from the API.
      */
     suspend fun fetchOffers(
         sdkId: String,
-        ua: String,
-        placement: String? = null,
-        ip: String? = null,
-        adpxFp: String? = null,
-        dev: String? = null,
-        subid: String? = null,
-        pubUserId: String? = null,
         payload: Map<String, String>? = null,
-        loyaltyboost: String? = null,
-        creative: String? = null
+        loyaltyboost: String? = "0",
+        creative: String? = "0",
+        campaignId: String? = null,
+        isDevelopment: Boolean = false
     ): JsonElement
 }
 

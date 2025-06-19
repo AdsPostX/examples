@@ -38,6 +38,7 @@ interface OffersApi {
      * @param apiKey The API key for authentication (passed as query parameter)
      * @param loyaltyBoost Loyalty boost parameter (valid values: "0", "1", "2")
      * @param creative Creative parameter (valid values: "0", "1")
+     * @param campaignId Optional campaign ID to filter offers (optional)
      * @param payload Additional parameters for the request, sent as JSON body.
      *                Common payload fields include:
      *                - "dev": Development mode flag ("0" or "1")
@@ -58,6 +59,7 @@ interface OffersApi {
         @Query("api_key") apiKey: String,
         @Query("loyaltyboost") loyaltyBoost: String = "0",
         @Query("creative") creative: String = "0",
+        @Query("campaignId") campaignId: String? = null,
         @Body payload: Map<String, String>
     ): Response<OffersResponse>
 

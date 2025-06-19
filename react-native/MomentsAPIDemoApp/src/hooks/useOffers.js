@@ -84,27 +84,30 @@ export const useOffers = () => {
    * @param {string} [creative='0'] - Creative parameter
    * @param {boolean} [isDevelopment=false] - Development mode flag
    * @param {Object} [payload={}] - Additional payload data
+   * @param {string|null} [campaignId=null] - Campaign ID
    * @returns {Promise<void>}
    */
   const fetchOffers = useCallback(
-    async (
+    async ({
       apiKey,
       loyaltyBoost = '0',
       creative = '0',
       isDevelopment = false,
       payload = {},
-    ) => {
+      campaignId = null,
+    }) => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await getOffers(
+        const response = await getOffers({
           apiKey,
           loyaltyBoost,
           creative,
           isDevelopment,
           payload,
-        );
+          campaignId,
+        });
         setOffers(response.offers);
         setApiStyles(response.styles);
       } catch (err) {

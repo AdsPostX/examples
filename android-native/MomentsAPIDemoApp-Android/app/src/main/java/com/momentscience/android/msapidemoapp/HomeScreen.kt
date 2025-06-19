@@ -72,7 +72,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     // State management for API key input and offers screen visibility
-    val defaultAPIKey = "7c80e6b06365c231"  // Default API key for testing
+    val defaultAPIKey = "b167f9d7-c479-41d8-b58f-4a5b26e561f1"  // Default API key for testing
     var apiKey by remember { mutableStateOf(defaultAPIKey) }
     var showOffers by remember { mutableStateOf(false) }
     var isDevelopmentMode by remember { mutableStateOf(false) }  // Development mode state
@@ -89,6 +89,8 @@ fun HomeScreen(
             isDevelopment = isDevelopmentMode,
             payload = mapOf(
                 "adpx_fp" to "unique_user_id",  // Example payload parameter
+                "pub_user_id" to "unique_user_id",
+                "placement" to "checkout",
                 "ua" to offersViewModel.getUserAgent(),
             ),
             onClose = { showOffers = false }

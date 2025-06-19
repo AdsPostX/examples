@@ -144,6 +144,7 @@ class OffersService {
      * @param apiKey The authentication key for the API
      * @param loyaltyBoost Controls the loyalty boost level for offers (default: "0")
      * @param creative Determines the creative variant to use (default: "0")
+     * @param campaignId Optional campaign ID to filter offers (default: null)
      * @param isDevelopment Toggles development mode for testing (default: false)
      * @param payload Additional parameters to include in the request
      * 
@@ -161,6 +162,7 @@ class OffersService {
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
+        campaignId: String? = null,
         isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
     ): OffersResponse = withContext(Dispatchers.IO) {
@@ -180,6 +182,7 @@ class OffersService {
                 apiKey = apiKey,
                 loyaltyBoost = loyaltyBoost,
                 creative = creative,
+                campaignId = campaignId,
                 payload = finalPayload
             )
 

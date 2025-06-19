@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../utils/user_agent_util.dart';
 
 /// A service class responsible for interacting with the Moments API.
 ///
@@ -18,6 +19,7 @@ class OfferService {
   /// [apiKey] - The API key for authentication (required).
   /// [loyaltyBoost] - Optional parameter for loyalty boost (default: '0').
   /// [creative] - Optional parameter for creative (default: '0').
+  /// [campaignId] - Optional parameter for filtering offers by campaign ID.
   /// [isDevelopment] - If true, adds a development flag to the payload.
   /// [payload] - Additional payload data to send in the request body.
   ///
@@ -27,6 +29,7 @@ class OfferService {
     required String apiKey,
     String loyaltyBoost = '0',
     String creative = '0',
+    String? campaignId,
     bool isDevelopment = false,
     Map<String, String> payload = const {},
   }) async {
@@ -35,9 +38,14 @@ class OfferService {
     }
 
     // Construct the URI with query parameters.
-    final Uri uri = Uri.parse(
-      '$_baseUrl/$_path',
-    ).replace(queryParameters: {'api_key': apiKey, 'loyaltyboost': loyaltyBoost, 'creative': creative});
+    final queryParams = {'api_key': apiKey, 'loyaltyboost': loyaltyBoost, 'creative': creative};
+
+    // Add campaignId to query parameters if it's not null
+    if (campaignId != null) {
+      queryParams['campaignId'] = campaignId;
+    }
+
+    final Uri uri = Uri.parse('$_baseUrl/$_path').replace(queryParameters: queryParams);
 
     // Prepare the payload, adding the development flag if needed.
     final Map<String, String> updatedPayload = Map.from(payload);
@@ -46,12 +54,15 @@ class OfferService {
     }
 
     try {
+      // Prepare headers with user agent
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'User-Agent': payload['ua'] ?? UserAgentUtil.getUserAgent(),
+      };
+
       // Make the POST request to the offers API.
-      final response = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-        body: jsonEncode(updatedPayload),
-      );
+      final response = await http.post(uri, headers: headers, body: jsonEncode(updatedPayload));
 
       // If the response is successful, decode and return the JSON.
       if (response.statusCode == 200) {

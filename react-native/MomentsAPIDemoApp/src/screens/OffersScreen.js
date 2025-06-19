@@ -86,9 +86,15 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
       if (visible && apiKey) {
         try {
           resetStates();
-          await fetchOffers(apiKey, '0', '0', isDevelopment, {
-            adpx_fp: adpx_fp,
-            ua: await getUserAgent(),
+          await fetchOffers({
+            apiKey,
+            isDevelopment,
+            payload: {
+              adpx_fp: adpx_fp,
+              pub_user_id: '1234567890', // should be a unique identifier for the user
+              placement: 'checkout',
+              ua: await getUserAgent(),
+            },
           });
         } catch (error) {
           Logger.log('Error fetching offers:', error);
@@ -148,9 +154,13 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
                 style={[styles.button, styles.tryAgainButton]}
                 onPress={async () => {
                   try {
-                    await fetchOffers(apiKey, '0', '0', isDevelopment, {
-                      adpx_fp: adpx_fp,
-                      ua: await getUserAgent(),
+                    await fetchOffers({
+                      apiKey,
+                      isDevelopment,
+                      payload: {
+                        adpx_fp: adpx_fp,
+                        ua: await getUserAgent(),
+                      },
                     });
                   } catch (err) {
                     Logger.log('Error:', err);

@@ -47,7 +47,7 @@ This demo app supports two integration modes that prefetch offers and display th
 
    ```bash
    git clone https://github.com/AdsPostX/examples.git
-   cd examples/ios-native/MomentsAPIWebDemoApp
+   cd examples/ios-native/MSSDKDemoApp-iOS
    ```
 2. Open the project in **Xcode 15+**.
 3. Replace the placeholder SDK ID in the code with your own.

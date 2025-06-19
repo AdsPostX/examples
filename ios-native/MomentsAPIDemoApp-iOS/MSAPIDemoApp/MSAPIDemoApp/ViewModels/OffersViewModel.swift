@@ -61,7 +61,7 @@ class OffersViewModel: ObservableObject {
     ///   - apiKey: Optional API key to use for this request
     ///   - isDevelopment: Whether to run in development mode (default: false)
     /// - Note: If no API key is provided, uses the stored API key
-    func loadOffers(apiKey: String? = nil, loyaltyBoost: String = "0", creative: String = "0", isDevelopment: Bool = false, payload: [String: String]? = nil) {
+    func loadOffers(apiKey: String? = nil, loyaltyBoost: String = "0", creative: String = "0", isDevelopment: Bool = false, payload: [String: String]? = nil, campaignId: String? = nil) {
         // If a new API key is provided, update it
         if let newApiKey = apiKey {
             updateApiKey(newApiKey)
@@ -78,7 +78,14 @@ class OffersViewModel: ObservableObject {
                 self.isLoading = true
                 self.error = nil
                 
-                let response = try await self.offersService.fetchOffers(apiKey: self.apiKey, loyaltyBoost: loyaltyBoost, creative: creative, isDevelopment: isDevelopment, payload: payload)
+                let response = try await self.offersService.fetchOffers(
+                    apiKey: self.apiKey,
+                    loyaltyBoost: loyaltyBoost,
+                    creative: creative,
+                    isDevelopment: isDevelopment,
+                    payload: payload,
+                    campaignId: campaignId
+                )
                 self.offers = response.data?.offers ?? []
                 self.styles = response.data?.styles
                 self.currentOfferIndex = 0

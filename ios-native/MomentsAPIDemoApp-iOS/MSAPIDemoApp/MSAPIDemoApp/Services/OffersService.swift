@@ -51,6 +51,7 @@ class OffersService {
     ///   - isDevelopment: Whether to run in development mode (default: false)
     ///   - payload: Optional custom payload dictionary to send in the request body
     ///     If isDevelopment is true, 'dev' = '1' will be included in the payload.
+    ///   - campaignId: Optional campaign ID to filter offers (default: nil)
     /// - Returns: The complete offers response including styles and other metadata
     /// - Throws: OffersError for various failure scenarios
     func fetchOffers(
@@ -58,7 +59,8 @@ class OffersService {
         loyaltyBoost: String = "0",
         creative: String = "0",
         isDevelopment: Bool = false,
-        payload: [String: String]? = nil
+        payload: [String: String]? = nil,
+        campaignId: String? = nil
     ) async throws -> OffersResponse {
         // Validate loyaltyBoost parameter
         guard["0","1","2"].contains(loyaltyBoost) else {
@@ -78,11 +80,18 @@ class OffersService {
 
         // Construct URL with query parameters
         var urlComponents = URLComponents(string: "\(baseURL)/offers.json")
-        urlComponents?.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "api_key", value: apiKey),
             URLQueryItem(name: "loyaltyboost", value: loyaltyBoost),
             URLQueryItem(name: "creative", value: creative)
         ]
+        
+        // Add campaignId to query parameters if available
+        if let campaignId = campaignId {
+            queryItems.append(URLQueryItem(name: "campaignId", value: campaignId))
+        }
+        
+        urlComponents?.queryItems = queryItems
         
         guard let url = urlComponents?.url else {
             throw OffersError.invalidURL
@@ -93,6 +102,10 @@ class OffersService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        // Set User-Agent header from payload["ua"] or getUserAgent()
+        let userAgent = finalPayload["ua"] ?? getUserAgent()
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         
         // Serialize the final payload
         request.httpBody = try? JSONSerialization.data(withJSONObject: finalPayload)

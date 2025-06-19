@@ -33,6 +33,7 @@ interface OffersRepository {
      * @param apiKey The API key for authentication
      * @param loyaltyBoost Loyalty boost parameter (valid values: "0", "1", "2")
      * @param creative Creative parameter (valid values: "0", "1")
+     * @param campaignId Optional campaign ID to filter offers
      * @param isDevelopment Whether to run in development mode
      * @param payload Additional parameters to be sent with the request
      * @return [Result] containing either [OffersResponse] on success or an error on failure
@@ -49,6 +50,7 @@ interface OffersRepository {
         apiKey: String,
         loyaltyBoost: String = "0",
         creative: String = "0",
+        campaignId: String? = null,
         isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
     ): Result<OffersResponse>
@@ -107,6 +109,7 @@ class OffersRepositoryImpl(
         apiKey: String,
         loyaltyBoost: String,
         creative: String,
+        campaignId: String?,
         isDevelopment: Boolean,
         payload: Map<String, String>
     ): Result<OffersResponse> = runCatching {
@@ -114,6 +117,7 @@ class OffersRepositoryImpl(
             apiKey = apiKey,
             loyaltyBoost = loyaltyBoost,
             creative = creative,
+            campaignId = campaignId,
             isDevelopment = isDevelopment,
             payload = payload
         )

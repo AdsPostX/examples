@@ -2,3 +2,4 @@ msapidemoapp_fl/pubspec.lock
 .DS_Store
 msapidemoapp_fl/android/app/google-services.json
 msapidemoapp_fl/ios/Podfile.lock
+.idea/

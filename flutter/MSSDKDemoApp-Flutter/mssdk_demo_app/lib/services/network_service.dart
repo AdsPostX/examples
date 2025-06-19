@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
+import '../utils/device_utils.dart';
 
 /// Represents possible errors that can occur during network requests.
 /// These provide specific error information for better debugging and user feedback.
@@ -44,45 +45,30 @@ class NetworkService {
   /// Fetches offers from the API using the provided parameters.
   ///
   /// [sdkId] The account ID for the SDK.
-  /// [ua] The user agent string.
-  /// [placement] (Optional) Placement identifier.
-  /// [ip] (Optional) IP address.
-  /// [adpxFp] (Optional) should be unique for each user.
-  /// [dev] (Optional) test mode flag ("0" or "1").
-  /// [subid] (Optional) Sub ID.
-  /// [pubUserId] (Optional) Publisher ID.
-  /// [payload] (Optional) Additional custom attributes.
-  /// [loyaltyboost] (Optional) Loyalty boost flag ("0", "1", or "2").
-  /// [creative] (Optional) Creative flag ("0" or "1").
+  /// [isDevelopment] (Optional) When true, sets dev=1 in payload for test mode. Defaults to false.
+  /// [payload] (Optional) Additional custom attributes. If it contains 'ua', it will be used as User-Agent.
+  /// [loyaltyboost] (Optional) Loyalty boost flag ("0", "1", or "2"). Defaults to "0".
+  /// [creative] (Optional) Creative flag ("0" or "1"). Defaults to "0".
+  /// [campaignId] (Optional) Campaign identifier. Defaults to null.
   ///
   /// Returns a Map representing the JSON response.
   /// Throws [NetworkException] if any validation or network error occurs.
   Future<Map<String, dynamic>> fetchOffers({
     required String sdkId,
-    required String ua,
-    String? placement,
-    String? ip,
-    String? adpxFp,
-    String? dev,
-    String? subid,
-    String? pubUserId,
+    bool isDevelopment = false,
     Map<String, String>? payload,
-    String? loyaltyboost,
-    String? creative,
+    String loyaltyboost = "0",
+    String creative = "0",
+    String? campaignId,
   }) async {
     // Validate loyaltyboost parameter
-    if (loyaltyboost != null && !['0', '1', '2'].contains(loyaltyboost)) {
+    if (!['0', '1', '2'].contains(loyaltyboost)) {
       throw NetworkException(NetworkError.invalidParameter, 'loyaltyboost must be 0, 1, or 2');
     }
 
     // Validate creative parameter
-    if (creative != null && !['0', '1'].contains(creative)) {
+    if (!['0', '1'].contains(creative)) {
       throw NetworkException(NetworkError.invalidParameter, 'creative must be 0 or 1');
-    }
-
-    // Validate dev parameter
-    if (dev != null && !['0', '1'].contains(dev)) {
-      throw NetworkException(NetworkError.invalidParameter, 'dev must be 0 or 1');
     }
 
     try {
@@ -91,16 +77,15 @@ class NetworkService {
 
       // Add query parameters
       final queryParams = {
-        'accountId': sdkId,
+        'api_key': sdkId,
         'country': 'US',
+        'loyaltyboost': loyaltyboost,
+        'creative': creative,
       };
 
-      if (loyaltyboost != null) {
-        queryParams['loyaltyboost'] = loyaltyboost;
-      }
-
-      if (creative != null) {
-        queryParams['creative'] = creative;
+      // Add campaignId to query parameters if provided
+      if (campaignId != null) {
+        queryParams['campaignId'] = campaignId;
       }
 
       final url = Uri(
@@ -111,20 +96,20 @@ class NetworkService {
       );
 
       // Create the request body as a map
-      final requestBody = <String, dynamic>{
-        'ua': ua,
-      };
+      final requestBody = <String, dynamic>{};
 
-      // Add optional parameters to the request body if they exist
-      if (placement != null) requestBody['placement'] = placement;
-      if (ip != null) requestBody['ip'] = ip;
-      if (adpxFp != null) requestBody['adpx_fp'] = adpxFp;
-      if (dev != null) requestBody['dev'] = dev;
-      if (subid != null) requestBody['subid'] = subid;
-      if (pubUserId != null) requestBody['pub_user_id'] = pubUserId;
+      // Add dev parameter only if isDevelopment is true
+      if (isDevelopment) {
+        requestBody['dev'] = '1';
+      }
+
+      // Add optional payload parameters if they exist
       if (payload != null) {
         requestBody.addAll(payload);
       }
+
+      // Get User-Agent either from payload or DeviceUtils
+      final String userAgent = payload?['ua'] ?? await DeviceUtils.getUserAgent();
 
       // Encode the request body as JSON
       final jsonBody = jsonEncode(requestBody);
@@ -134,7 +119,7 @@ class NetworkService {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': ua,
+          'User-Agent': userAgent,
         },
         body: jsonBody,
       );

@@ -28,10 +28,11 @@ class OffersViewModel: ObservableObject {
     
     /// User payload for customization options (optional)
     @Published var userPayload: [String: String]? = [
-        "user_id": "12345",
-        "email": "demo@example.com",
+        "ua": UserAgentService.shared.userAgent,
+        "placement": "checkout",
+        "pub_user_id": UUID().uuidString,
         "themeId": "demo", // make sure to pass the themeId
-        "session_id": UUID().uuidString
+        "adpx_fp": UUID().uuidString // should be unique value
     ]
     
     /// Stores the latest offers API response or WebSDK response for passing to checkout.
@@ -57,11 +58,6 @@ class OffersViewModel: ObservableObject {
     let baseURL = AppConfig.WebView.baseURL
     
     // MARK: - Computed Properties
-    
-    /// Returns the user agent string for the current device.
-    private var userAgent: String {
-        (WKWebView().value(forKey: "userAgent") as? String) ?? "unknown"
-    }
     
     /// Returns the number of offers in the current response.
     var offersCount: Int {
@@ -126,16 +122,11 @@ class OffersViewModel: ObservableObject {
             // Call the network service to fetch offers
             let response = try await networkService.fetchOffers(
                 sdkId: sdkId,
-                ua: userAgent,
-                placement: nil,
-                ip: nil,
-                adpxFp: adpxFp,
-                dev: "1",
-                subid: nil,
-                pubUserId: adpxFp,
+                isDevelopment: true,
                 payload: userPayload,
-                loyaltyboost: nil,
-                creative: nil
+                loyaltyboost: "0",
+                creative: "0",
+                campaignId: "123"
             )
             momentsAPIResponse = response
             showCheckout = hasOffers

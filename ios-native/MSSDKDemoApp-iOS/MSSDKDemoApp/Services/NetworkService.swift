@@ -26,51 +26,30 @@ class NetworkService {
     /// Fetches offers from the API using the provided parameters.
     /// - Parameters:
     ///   - sdkId: The account ID for the SDK.
-    ///   - ua: The user agent string.
-    ///   - placement: (Optional) Placement identifier.
-    ///   - ip: (Optional) IP address.
-    ///   - adpxFp: (Optional) should be unique for each user.
-    ///   - dev: (Optional) test mode flag ("0" or "1").
-    ///   - subid: (Optional) Sub ID.
-    ///   - pubUserId: (Optional) Publisher ID.
+    ///   - isDevelopment: (Optional) Enable test mode. Defaults to false.
     ///   - payload: (Optional) Additional custom attributes.
-    ///   - loyaltyboost: (Optional) Loyalty boost flag ("0", "1", or "2").
-    ///   - creative: (Optional) Creative flag ("0" or "1").
+    ///   - loyaltyboost: (Optional) Loyalty boost flag ("0", "1", or "2"). Defaults to "0".
+    ///   - creative: (Optional) Creative flag ("0" or "1"). Defaults to "0".
+    ///   - campaignId: (Optional) Campaign identifier.
     /// - Returns: A dictionary representing the JSON response.
     /// - Throws: `NetworkError` if any validation or network error occurs.
     func fetchOffers(
         sdkId: String,
-        ua: String,
-        placement: String? = nil,
-        ip: String? = nil,
-        adpxFp: String? = nil,
-        dev: String? = nil,
-        subid: String? = nil,
-        pubUserId: String? = nil,
+        isDevelopment: Bool = false,
         payload: [String: String]? = nil,
-        loyaltyboost: String? = nil,
-        creative: String? = nil
+        loyaltyboost: String = "0",
+        creative: String = "0",
+        campaignId: String? = nil
     ) async throws -> [String: Any] {
-        
+
         // Validate loyaltyboost parameter
-        if let loyaltyboost = loyaltyboost {
-            guard ["0", "1", "2"].contains(loyaltyboost) else {
-                throw NetworkError.invalidParameter("loyaltyboost must be 0, 1, or 2")
-            }
+        guard ["0", "1", "2"].contains(loyaltyboost) else {
+            throw NetworkError.invalidParameter("loyaltyboost must be 0, 1, or 2")
         }
         
         // Validate creative parameter
-        if let creative = creative {
-            guard ["0", "1"].contains(creative) else {
-                throw NetworkError.invalidParameter("creative must be 0 or 1")
-            }
-        }
-        
-        // Validate dev parameter
-        if let dev = dev {
-            guard ["0", "1"].contains(dev) else {
-                throw NetworkError.invalidParameter("dev must be 0 or 1")
-            }
+        guard ["0", "1"].contains(creative) else {
+            throw NetworkError.invalidParameter("creative must be 0 or 1")
         }
         
         // Build the URL with query parameters
@@ -80,12 +59,11 @@ class NetworkService {
         
         // Add required and optional query parameters
         var queryItems: [URLQueryItem] = []
-        queryItems.append(URLQueryItem(name: "accountId", value: sdkId))
-        if let loyaltyboost = loyaltyboost {
-            queryItems.append(URLQueryItem(name: "loyaltyboost", value: loyaltyboost))
-        }
-        if let creative = creative {
-            queryItems.append(URLQueryItem(name: "creative", value: creative))
+        queryItems.append(URLQueryItem(name: "api_key", value: sdkId))
+        queryItems.append(URLQueryItem(name: "loyaltyboost", value: loyaltyboost))
+        queryItems.append(URLQueryItem(name: "creative", value: creative))
+        if let campaignId = campaignId {
+            queryItems.append(URLQueryItem(name: "campaign_id", value: campaignId))
         }
         queryItems.append(URLQueryItem(name: "country", value: "US"))
         
@@ -96,15 +74,10 @@ class NetworkService {
         }
         
         // Create the request body as a dictionary
-        var requestBody: [String: Any] = ["ua": ua]
+        var requestBody: [String: Any] = [:]
                 
         // Add optional parameters to the request body if they exist
-        if let placement = placement { requestBody["placement"] = placement }
-        if let ip = ip { requestBody["ip"] = ip }
-        if let adpxFp = adpxFp { requestBody["adpx_fp"] = adpxFp }
-        if let dev = dev { requestBody["dev"] = dev }
-        if let subid = subid { requestBody["subid"] = subid }
-        if let pubUserId = pubUserId { requestBody["pub_user_id"] = pubUserId }
+        if isDevelopment { requestBody["dev"] = "1" }
         if let payload = payload {
             for (key, value) in payload {
                 requestBody[key] = value
@@ -115,7 +88,10 @@ class NetworkService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue(ua, forHTTPHeaderField: "User-Agent")
+        
+        // Set User-Agent header from payload or UserAgentService
+        let userAgent = payload?["ua"] ?? UserAgentService.shared.userAgent
+        request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
         
         // Encode the request body as JSON
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)

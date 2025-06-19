@@ -14,6 +14,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import com.google.gson.JsonObject
 import com.momentscience.apiwebdemoapp.config.AppConfig
+import com.momentscience.apiwebdemoapp.utils.UserAgentUtil
 
 /**
  * Implementation of the NetworkService interface using OkHttp and Gson.
@@ -30,71 +31,64 @@ class NetworkServiceImpl : NetworkService {
      * Builds the request URL and body, sends the request, and parses the response.
      * 
      * @param sdkId The account/SDK ID.
-     * @param ua User agent string.
-     * @param placement Optional placement identifier.
-     * @param ip Optional IP address.
-     * @param adpxFp Optional unique value.
-     * @param dev Optional dev flag.
-     * @param subid Optional subid.
-     * @param pubUserId Optional publisher user ID, this value is passed as pub_user_id to the API
      * @param payload Optional payload data.
      * @param loyaltyboost Optional loyalty boost flag.
      * @param creative Optional creative flag.
+     * @param campaignId Optional campaign ID.
+     * @param isDevelopment Optional flag to indicate development mode. If true, adds 'dev=1' to payload.
      * @return The JSON response from the API.
      * @throws NetworkError if the request fails or has invalid parameters.
      */
     override suspend fun fetchOffers(
         sdkId: String,
-        ua: String,
-        placement: String?,
-        ip: String?,
-        adpxFp: String?,
-        dev: String?,
-        subid: String?,
-        pubUserId: String?,
         payload: Map<String, String>?,
         loyaltyboost: String?,
-        creative: String?
+        creative: String?,
+        campaignId: String?,
+        isDevelopment: Boolean
     ): JsonElement = withContext(Dispatchers.IO) {
         try {
             // Validate input parameters for allowed values
-            validateParameters(loyaltyboost, creative, dev)
+            validateParameters(loyaltyboost, creative)
 
             // Build the request URL with query parameters
             val urlBuilder = StringBuilder(baseUrl)
-            urlBuilder.append("?accountId=$sdkId")
+            urlBuilder.append("?api_key=$sdkId")
             loyaltyboost?.let { urlBuilder.append("&loyaltyboost=$it") }
             creative?.let { urlBuilder.append("&creative=$it") }
+            campaignId?.let { urlBuilder.append("&campaignId=$it") }
             urlBuilder.append("&country=us")
 
             // Create the request body as JSON, including payload as direct parameters
             val requestJson = JsonObject().apply {
-                addProperty("ua", ua)
-                
-                placement?.let { addProperty("placement", it) }
-                ip?.let { addProperty("ip", it) }
-                adpxFp?.let { addProperty("adpx_fp", it) }
-                dev?.let { addProperty("dev", it) }
-                subid?.let { addProperty("subid", it) }
-                pubUserId?.let { addProperty("pub_user_id", it) }
-                
                 // Add payload values directly to the request body
                 payload?.forEach { (key, value) ->
                     addProperty(key, value)
+                }
+                
+                // Add dev=1 to payload if isDevelopment is true
+                if (isDevelopment) {
+                    addProperty("dev", "1")
                 }
             }
 
             val jsonBody = gson.toJson(requestJson)
             val requestBody = jsonBody.toRequestBody("application/json".toMediaType())
 
-            // Build the OkHttp request
+            // Get user agent from payload or default
+            val userAgent = payload?.get("ua")?.takeIf { it.isNotBlank() }
+                ?: UserAgentUtil.getUserAgent()
+
+            // Build the OkHttp request with User-Agent header
             val request = Request.Builder()
                 .url(urlBuilder.toString())
                 .post(requestBody)
+                .header("User-Agent", userAgent)
                 .build()
 
             Log.d(TAG, "Making request to: ${request.url}")
             Log.d(TAG, "Request body: $jsonBody")
+            Log.d(TAG, "User-Agent: $userAgent")
 
             // Execute the request
             val response = client.newCall(request).execute()
@@ -129,18 +123,14 @@ class NetworkServiceImpl : NetworkService {
      * 
      * @param loyaltyboost The loyalty boost parameter.
      * @param creative The creative parameter.
-     * @param dev The dev parameter.
      * @throws NetworkError.InvalidParameter if a parameter has an invalid value.
      */
-    private fun validateParameters(loyaltyboost: String?, creative: String?, dev: String?) {
+    private fun validateParameters(loyaltyboost: String?, creative: String?) {
         if (loyaltyboost != null && !listOf("0", "1", "2").contains(loyaltyboost)) {
             throw NetworkError.InvalidParameter("loyaltyboost must be 0, 1, or 2")
         }
         if (creative != null && !listOf("0", "1").contains(creative)) {
             throw NetworkError.InvalidParameter("creative must be 0 or 1")
-        }
-        if (dev != null && !listOf("0", "1").contains(dev)) {
-            throw NetworkError.InvalidParameter("dev must be 0 or 1")
         }
     }
 } 

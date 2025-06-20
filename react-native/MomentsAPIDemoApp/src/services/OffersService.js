@@ -126,7 +126,7 @@ const fireOfferPixel = async url => {
  *
  * This function orchestrates the complete offer fetching process:
  * 1. Validates API key
- * 2. Sets up default query parameters
+ * 2. Sets up query parameters (loyaltyBoost and creative are optional)
  * 3. Generates unique user identifier
  * 4. Makes API request
  * 5. Processes and normalizes response
@@ -134,8 +134,8 @@ const fireOfferPixel = async url => {
  *
  * @param {Object} params - The parameters object
  * @param {string} params.apiKey - API key for authentication
- * @param {string} [params.loyaltyBoost='0'] - Loyalty boost parameter
- * @param {string} [params.creative='0'] - Creative parameter
+ * @param {string} [params.loyaltyBoost] - Optional loyalty boost parameter (must be '0', '1', or '2')
+ * @param {string} [params.creative] - Optional creative parameter (must be '0' or '1')
  * @param {boolean} [params.isDevelopment=false] - Development mode flag
  * @param {Object} [params.payload={}] - Additional request payload
  * @param {string|null} [params.campaignId=null] - Optional campaign ID for filtering offers
@@ -146,8 +146,8 @@ const fireOfferPixel = async url => {
  */
 export const getOffers = async ({
   apiKey,
-  loyaltyBoost = '0',
-  creative = '0',
+  loyaltyBoost,
+  creative,
   isDevelopment = false,
   payload = {},
   campaignId = null,
@@ -156,11 +156,26 @@ export const getOffers = async ({
     throw new Error('API key is required');
   }
 
-  // Set up query parameters
+  // Validate loyaltyBoost if provided and not null
+  if (loyaltyBoost !== undefined) {
+    if (loyaltyBoost !== null && !['0', '1', '2'].includes(loyaltyBoost)) {
+      throw new Error('loyaltyBoost must be one of: "0", "1", "2", or null');
+    }
+  }
+
+  // Validate creative if provided and not null
+  if (creative !== undefined) {
+    if (creative !== null && !['0', '1'].includes(creative)) {
+      throw new Error('creative must be one of: "0", "1", or null');
+    }
+  }
+
+  // Set up query parameters - only include if provided and not null
   const queryParameters = {
-    loyaltyboost: loyaltyBoost,
-    creative: creative,
-    ...(campaignId && {campaignId: campaignId}),
+    ...(loyaltyBoost !== undefined &&
+      loyaltyBoost !== null && {loyaltyboost: loyaltyBoost}),
+    ...(creative !== undefined && creative !== null && {creative}),
+    ...(campaignId !== undefined && campaignId !== null && {campaignId}),
   };
 
   // Prepare request payload

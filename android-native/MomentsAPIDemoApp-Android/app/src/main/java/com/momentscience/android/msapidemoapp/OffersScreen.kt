@@ -120,7 +120,9 @@ fun OffersScreen(
         viewModel.fetchOffers(
             apiKey = apiKey,
             isDevelopment = isDevelopment,
-            payload = payload
+            payload = payload,
+            creative = "0",
+            loyaltyBoost = "0"
         )
     }
 

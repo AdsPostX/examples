@@ -39,7 +39,7 @@ class _OfferPageState extends State<OfferPage> {
     // Get the user agent string
     final String userAgent = UserAgentUtil.getUserAgent();
 
-    /// You need to pass a unique value for adpx_fp, pub_user_id. value passed here are just for example.
+    /// Need to pass a unique value for adpx_fp, pub_user_id. value passed here are just for example.
     offerViewModel.loadOffers(
       apiKey: homeViewModel.apiKey,
       isDevelopment: homeViewModel.isDevelopmentMode,

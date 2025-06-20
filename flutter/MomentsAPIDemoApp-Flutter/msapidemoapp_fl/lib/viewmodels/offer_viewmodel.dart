@@ -34,15 +34,15 @@ class OfferViewModel with ChangeNotifier {
   ///
   /// [apiKey] - The API key.
   /// [isDevelopment] - Whether to use development mode.
-  /// [loyaltyBoost] - Loyalty boost parameter.
-  /// [creative] - Creative parameter.
+  /// [loyaltyBoost] - Optional loyalty boost parameter. Must be '0', '1', or '2' when provided.
+  /// [creative] - Optional creative parameter. Must be '0' or '1' when provided.
   /// [campaignId] - Campaign ID parameter.
   /// [payload] - Additional payload data.
   Future<void> loadOffers({
     required String apiKey,
     bool isDevelopment = false,
-    String loyaltyBoost = "0",
-    String creative = "0",
+    String? loyaltyBoost,
+    String? creative,
     String? campaignId,
     Map<String, String> payload = const {},
   }) async {

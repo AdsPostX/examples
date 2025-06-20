@@ -122,7 +122,7 @@ struct ContentView: View {
         ]
         
         // Load offers and show the offers view
-        viewModel.loadOffers(apiKey: trimmedApiKey, isDevelopment: isDevelopment, payload: payload)
+        viewModel.loadOffers(apiKey: trimmedApiKey, loyaltyBoost: "0", creative: "0", isDevelopment: isDevelopment, payload: payload)
         showOffers = true
     }
     

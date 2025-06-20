@@ -17,18 +17,19 @@ class OfferService {
   /// Loads offers from the Moments API.
   ///
   /// [apiKey] - The API key for authentication (required).
-  /// [loyaltyBoost] - Optional parameter for loyalty boost (default: '0').
-  /// [creative] - Optional parameter for creative (default: '0').
+  /// [loyaltyBoost] - Optional parameter for loyalty boost. Must be '0', '1', or '2'.
+  /// [creative] - Optional parameter for creative. Must be '0' or '1'.
   /// [campaignId] - Optional parameter for filtering offers by campaign ID.
   /// [isDevelopment] - If true, adds a development flag to the payload.
   /// [payload] - Additional payload data to send in the request body.
   ///
   /// Returns a [Map] representing the decoded JSON response.
-  /// Throws an [Exception] if the API key is empty, or if the request fails.
+  /// Throws an [Exception] if the API key is empty, or if the request fails,
+  /// or if loyaltyBoost/creative values are invalid.
   Future<Map<String, dynamic>> loadOffers({
     required String apiKey,
-    String loyaltyBoost = '0',
-    String creative = '0',
+    String? loyaltyBoost,
+    String? creative,
     String? campaignId,
     bool isDevelopment = false,
     Map<String, String> payload = const {},
@@ -37,10 +38,32 @@ class OfferService {
       throw Exception('API Key cannot be empty');
     }
 
-    // Construct the URI with query parameters.
-    final queryParams = {'api_key': apiKey, 'loyaltyboost': loyaltyBoost, 'creative': creative};
+    // Validate loyaltyBoost if provided
+    if (loyaltyBoost != null) {
+      final validLoyaltyBoostValues = ['0', '1', '2'];
+      if (!validLoyaltyBoostValues.contains(loyaltyBoost)) {
+        throw Exception('loyaltyBoost must be one of these values: 0, 1, or 2');
+      }
+    }
 
-    // Add campaignId to query parameters if it's not null
+    // Validate creative if provided
+    if (creative != null) {
+      final validCreativeValues = ['0', '1'];
+      if (!validCreativeValues.contains(creative)) {
+        throw Exception('creative must be either 0 or 1');
+      }
+    }
+
+    // Construct the URI with query parameters.
+    final queryParams = {'api_key': apiKey};
+
+    // Add optional parameters only if they are provided
+    if (loyaltyBoost != null) {
+      queryParams['loyaltyboost'] = loyaltyBoost;
+    }
+    if (creative != null) {
+      queryParams['creative'] = creative;
+    }
     if (campaignId != null) {
       queryParams['campaignId'] = campaignId;
     }

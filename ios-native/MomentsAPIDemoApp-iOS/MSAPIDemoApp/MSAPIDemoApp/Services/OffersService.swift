@@ -46,8 +46,8 @@ class OffersService {
     /// Fetches offers from the Moments API using the provided API key
     /// - Parameters:
     ///   - apiKey: The API key to use for authentication
-    ///   - loyaltyBoost: Loyalty boost parameter (default: "0")
-    ///   - creative: Creative parameter (default: "0")
+    ///   - loyaltyBoost: Optional loyalty boost parameter. If provided, must be "0", "1", or "2"
+    ///   - creative: Optional creative parameter. If provided, must be "0" or "1"
     ///   - isDevelopment: Whether to run in development mode (default: false)
     ///   - payload: Optional custom payload dictionary to send in the request body
     ///     If isDevelopment is true, 'dev' = '1' will be included in the payload.
@@ -56,20 +56,24 @@ class OffersService {
     /// - Throws: OffersError for various failure scenarios
     func fetchOffers(
         apiKey: String,
-        loyaltyBoost: String = "0",
-        creative: String = "0",
+        loyaltyBoost: String? = nil,
+        creative: String? = nil,
         isDevelopment: Bool = false,
         payload: [String: String]? = nil,
         campaignId: String? = nil
     ) async throws -> OffersResponse {
-        // Validate loyaltyBoost parameter
-        guard["0","1","2"].contains(loyaltyBoost) else {
-            throw OffersError.invalidParameter(message: "Invalid loyaltyBoost parameter: \(loyaltyBoost)")
+        // Validate loyaltyBoost parameter if provided
+        if let loyaltyBoost = loyaltyBoost {
+            guard["0","1","2"].contains(loyaltyBoost) else {
+                throw OffersError.invalidParameter(message: "Invalid loyaltyBoost parameter: \(loyaltyBoost)")
+            }
         }
 
-        // Validate creative parameter
-        guard["0","1"].contains(creative) else {
-            throw OffersError.invalidParameter(message: "Invalid creative parameter: \(creative)")
+        // Validate creative parameter if provided
+        if let creative = creative {
+            guard["0","1"].contains(creative) else {
+                throw OffersError.invalidParameter(message: "Invalid creative parameter: \(creative)")
+            }
         }
 
         // Construct the payload, ensuring 'dev' = '1' is included if isDevelopment is true
@@ -81,10 +85,17 @@ class OffersService {
         // Construct URL with query parameters
         var urlComponents = URLComponents(string: "\(baseURL)/offers.json")
         var queryItems = [
-            URLQueryItem(name: "api_key", value: apiKey),
-            URLQueryItem(name: "loyaltyboost", value: loyaltyBoost),
-            URLQueryItem(name: "creative", value: creative)
+            URLQueryItem(name: "api_key", value: apiKey)
         ]
+        
+        // Add optional parameters to query items if they exist
+        if let loyaltyBoost = loyaltyBoost {
+            queryItems.append(URLQueryItem(name: "loyaltyboost", value: loyaltyBoost))
+        }
+        
+        if let creative = creative {
+            queryItems.append(URLQueryItem(name: "creative", value: creative))
+        }
         
         // Add campaignId to query parameters if available
         if let campaignId = campaignId {

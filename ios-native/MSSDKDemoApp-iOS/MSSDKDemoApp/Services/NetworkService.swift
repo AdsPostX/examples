@@ -28,8 +28,8 @@ class NetworkService {
     ///   - sdkId: The account ID for the SDK.
     ///   - isDevelopment: (Optional) Enable test mode. Defaults to false.
     ///   - payload: (Optional) Additional custom attributes.
-    ///   - loyaltyboost: (Optional) Loyalty boost flag ("0", "1", or "2"). Defaults to "0".
-    ///   - creative: (Optional) Creative flag ("0" or "1"). Defaults to "0".
+    ///   - loyaltyboost: (Optional) Loyalty boost flag ("0", "1", or "2"). 
+    ///   - creative: (Optional) Creative flag ("0" or "1"). 
     ///   - campaignId: (Optional) Campaign identifier.
     /// - Returns: A dictionary representing the JSON response.
     /// - Throws: `NetworkError` if any validation or network error occurs.
@@ -37,19 +37,23 @@ class NetworkService {
         sdkId: String,
         isDevelopment: Bool = false,
         payload: [String: String]? = nil,
-        loyaltyboost: String = "0",
-        creative: String = "0",
+        loyaltyboost: String?,
+        creative: String?,
         campaignId: String? = nil
     ) async throws -> [String: Any] {
 
-        // Validate loyaltyboost parameter
-        guard ["0", "1", "2"].contains(loyaltyboost) else {
-            throw NetworkError.invalidParameter("loyaltyboost must be 0, 1, or 2")
+        // Validate loyaltyboost parameter if provided
+        if let loyaltyboost = loyaltyboost {
+            guard ["0", "1", "2"].contains(loyaltyboost) else {
+                throw NetworkError.invalidParameter("loyaltyboost must be 0, 1, or 2")
+            }
         }
         
-        // Validate creative parameter
-        guard ["0", "1"].contains(creative) else {
-            throw NetworkError.invalidParameter("creative must be 0 or 1")
+        // Validate creative parameter if provided
+        if let creative = creative {
+            guard ["0", "1"].contains(creative) else {
+                throw NetworkError.invalidParameter("creative must be 0 or 1")
+            }
         }
         
         // Build the URL with query parameters
@@ -60,10 +64,17 @@ class NetworkService {
         // Add required and optional query parameters
         var queryItems: [URLQueryItem] = []
         queryItems.append(URLQueryItem(name: "api_key", value: sdkId))
-        queryItems.append(URLQueryItem(name: "loyaltyboost", value: loyaltyboost))
-        queryItems.append(URLQueryItem(name: "creative", value: creative))
+        
+        // Only add loyaltyboost and creative if they are provided
+        if let loyaltyboost = loyaltyboost {
+            queryItems.append(URLQueryItem(name: "loyaltyboost", value: loyaltyboost))
+        }
+        if let creative = creative {
+            queryItems.append(URLQueryItem(name: "creative", value: creative))
+        }
+        
         if let campaignId = campaignId {
-            queryItems.append(URLQueryItem(name: "campaign_id", value: campaignId))
+            queryItems.append(URLQueryItem(name: "campaignId", value: campaignId))
         }
         queryItems.append(URLQueryItem(name: "country", value: "US"))
         

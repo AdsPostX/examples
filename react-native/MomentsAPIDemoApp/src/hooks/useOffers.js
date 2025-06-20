@@ -80,8 +80,8 @@ export const useOffers = () => {
    *
    * @async
    * @param {string} apiKey - API key for authentication
-   * @param {string} [loyaltyBoost='0'] - Loyalty boost parameter
-   * @param {string} [creative='0'] - Creative parameter
+   * @param {string} [loyaltyBoost] - Optional loyalty boost parameter
+   * @param {string} [creative] - Optional creative parameter
    * @param {boolean} [isDevelopment=false] - Development mode flag
    * @param {Object} [payload={}] - Additional payload data
    * @param {string|null} [campaignId=null] - Campaign ID
@@ -90,8 +90,8 @@ export const useOffers = () => {
   const fetchOffers = useCallback(
     async ({
       apiKey,
-      loyaltyBoost = '0',
-      creative = '0',
+      loyaltyBoost,
+      creative,
       isDevelopment = false,
       payload = {},
       campaignId = null,

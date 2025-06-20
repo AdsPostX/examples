@@ -31,8 +31,8 @@ interface NetworkService {
     suspend fun fetchOffers(
         sdkId: String,
         payload: Map<String, String>? = null,
-        loyaltyboost: String? = "0",
-        creative: String? = "0",
+        loyaltyboost: String?,
+        creative: String?,
         campaignId: String? = null,
         isDevelopment: Boolean = false
     ): JsonElement

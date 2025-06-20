@@ -56,6 +56,8 @@ class PrefetchService {
       final response = await _networkService.fetchOffers(
           sdkId: sdkId,
           isDevelopment: true, // Use test mode for demo
+          creative: '0',
+          loyaltyboost: '0',
           payload: payload // Include user agent in payload
           );
 

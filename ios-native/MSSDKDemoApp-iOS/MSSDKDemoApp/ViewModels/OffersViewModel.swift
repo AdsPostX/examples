@@ -125,8 +125,7 @@ class OffersViewModel: ObservableObject {
                 isDevelopment: true,
                 payload: userPayload,
                 loyaltyboost: "0",
-                creative: "0",
-                campaignId: "123"
+                creative: "0"
             )
             momentsAPIResponse = response
             showCheckout = hasOffers

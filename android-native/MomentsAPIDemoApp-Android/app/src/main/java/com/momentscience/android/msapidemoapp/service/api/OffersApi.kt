@@ -36,8 +36,8 @@ interface OffersApi {
      * Makes a POST request to "offers.json" endpoint with query parameters and payload.
      *
      * @param apiKey The API key for authentication (passed as query parameter)
-     * @param loyaltyBoost Loyalty boost parameter (valid values: "0", "1", "2")
-     * @param creative Creative parameter (valid values: "0", "1")
+     * @param loyaltyBoost Optional loyalty boost parameter (valid values: "0", "1", "2")
+     * @param creative Optional creative parameter (valid values: "0", "1")
      * @param campaignId Optional campaign ID to filter offers (optional)
      * @param payload Additional parameters for the request, sent as JSON body.
      *                Common payload fields include:
@@ -57,8 +57,8 @@ interface OffersApi {
     @POST("offers.json")
     suspend fun fetchOffers(
         @Query("api_key") apiKey: String,
-        @Query("loyaltyboost") loyaltyBoost: String = "0",
-        @Query("creative") creative: String = "0",
+        @Query("loyaltyboost") loyaltyBoost: String? = null,
+        @Query("creative") creative: String? = null,
         @Query("campaignId") campaignId: String? = null,
         @Body payload: Map<String, String>
     ): Response<OffersResponse>

@@ -47,8 +47,8 @@ class NetworkService {
   /// [sdkId] The account ID for the SDK.
   /// [isDevelopment] (Optional) When true, sets dev=1 in payload for test mode. Defaults to false.
   /// [payload] (Optional) Additional custom attributes. If it contains 'ua', it will be used as User-Agent.
-  /// [loyaltyboost] (Optional) Loyalty boost flag ("0", "1", or "2"). Defaults to "0".
-  /// [creative] (Optional) Creative flag ("0" or "1"). Defaults to "0".
+  /// [loyaltyboost] (Optional) Loyalty boost flag ("0", "1", or "2").
+  /// [creative] (Optional) Creative flag ("0" or "1").
   /// [campaignId] (Optional) Campaign identifier. Defaults to null.
   ///
   /// Returns a Map representing the JSON response.
@@ -57,17 +57,17 @@ class NetworkService {
     required String sdkId,
     bool isDevelopment = false,
     Map<String, String>? payload,
-    String loyaltyboost = "0",
-    String creative = "0",
+    String? loyaltyboost,
+    String? creative,
     String? campaignId,
   }) async {
     // Validate loyaltyboost parameter
-    if (!['0', '1', '2'].contains(loyaltyboost)) {
+    if (loyaltyboost != null && !['0', '1', '2'].contains(loyaltyboost)) {
       throw NetworkException(NetworkError.invalidParameter, 'loyaltyboost must be 0, 1, or 2');
     }
 
     // Validate creative parameter
-    if (!['0', '1'].contains(creative)) {
+    if (creative != null && !['0', '1'].contains(creative)) {
       throw NetworkException(NetworkError.invalidParameter, 'creative must be 0 or 1');
     }
 
@@ -79,9 +79,17 @@ class NetworkService {
       final queryParams = {
         'api_key': sdkId,
         'country': 'US',
-        'loyaltyboost': loyaltyboost,
-        'creative': creative,
       };
+
+      // Add loyaltyboost to query parameters if provided
+      if (loyaltyboost != null) {
+        queryParams['loyaltyboost'] = loyaltyboost;
+      }
+
+      // Add creative to query parameters if provided
+      if (creative != null) {
+        queryParams['creative'] = creative;
+      }
 
       // Add campaignId to query parameters if provided
       if (campaignId != null) {

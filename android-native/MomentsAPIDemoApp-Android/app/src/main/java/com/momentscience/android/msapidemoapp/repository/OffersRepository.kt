@@ -31,8 +31,8 @@ interface OffersRepository {
      * Returns a [Result] that encapsulates either the successful response or an error.
      *
      * @param apiKey The API key for authentication
-     * @param loyaltyBoost Loyalty boost parameter (valid values: "0", "1", "2")
-     * @param creative Creative parameter (valid values: "0", "1")
+     * @param loyaltyBoost Optional loyalty boost parameter (valid values: "0", "1", "2")
+     * @param creative Optional creative parameter (valid values: "0", "1")
      * @param campaignId Optional campaign ID to filter offers
      * @param isDevelopment Whether to run in development mode
      * @param payload Additional parameters to be sent with the request
@@ -48,8 +48,8 @@ interface OffersRepository {
      */
     suspend fun fetchOffers(
         apiKey: String,
-        loyaltyBoost: String = "0",
-        creative: String = "0",
+        loyaltyBoost: String? = null,
+        creative: String? = null,
         campaignId: String? = null,
         isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
@@ -107,8 +107,8 @@ class OffersRepositoryImpl(
      */
     override suspend fun fetchOffers(
         apiKey: String,
-        loyaltyBoost: String,
-        creative: String,
+        loyaltyBoost: String?,
+        creative: String?,
         campaignId: String?,
         isDevelopment: Boolean,
         payload: Map<String, String>

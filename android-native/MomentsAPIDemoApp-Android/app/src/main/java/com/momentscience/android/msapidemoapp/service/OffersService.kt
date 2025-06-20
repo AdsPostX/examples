@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.URL
-import java.util.UUID
 
 /**
  * A comprehensive error hierarchy for the Offers API operations.
@@ -142,8 +141,8 @@ class OffersService {
      * before making the API request.
      *
      * @param apiKey The authentication key for the API
-     * @param loyaltyBoost Controls the loyalty boost level for offers (default: "0")
-     * @param creative Determines the creative variant to use (default: "0")
+     * @param loyaltyBoost Optional loyalty boost level for offers
+     * @param creative Optional creative variant to use
      * @param campaignId Optional campaign ID to filter offers (default: null)
      * @param isDevelopment Toggles development mode for testing (default: false)
      * @param payload Additional parameters to include in the request
@@ -160,16 +159,16 @@ class OffersService {
      */
     suspend fun fetchOffers(
         apiKey: String,
-        loyaltyBoost: String = "0",
-        creative: String = "0",
+        loyaltyBoost: String? = null,
+        creative: String? = null,
         campaignId: String? = null,
         isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
-    ): OffersResponse = withContext(Dispatchers.IO) {
+    ): OffersResponse {
         try {
-            // Validate parameters
-            validateLoyaltyBoost(loyaltyBoost)
-            validateCreative(creative)
+            // Validate parameters only if they are provided
+            loyaltyBoost?.let { validateLoyaltyBoost(it) }
+            creative?.let { validateCreative(it) }
 
             // Add dev parameter to payload only if isDevelopment is true
             val finalPayload = payload.toMutableMap().apply {
@@ -197,7 +196,7 @@ class OffersService {
                     throw OffersError.NoOffers
                 }
                 else -> {
-                    response.body()!!
+                    return response.body()!!
                 }
             }
         } catch (e: Exception) {

@@ -95,8 +95,8 @@ class OffersViewModel(
      * and initial beacon firing.
      *
      * @param apiKey Authentication key for the API
-     * @param loyaltyBoost Loyalty boost level (default: "0")
-     * @param creative Creative variant (default: "0")
+     * @param loyaltyBoost Optional loyalty boost level
+     * @param creative Optional creative variant
      * @param campaignId Optional campaign ID to filter offers (default: null)
      * @param isDevelopment Whether to use development mode (default: false)
      * @param payload Additional parameters to be sent with the request (default: empty map)
@@ -109,8 +109,8 @@ class OffersViewModel(
      */
     fun fetchOffers(
         apiKey: String,
-        loyaltyBoost: String = "0",
-        creative: String = "0",
+        loyaltyBoost: String? = null,
+        creative: String? = null,
         campaignId: String? = null,
         isDevelopment: Boolean = false,
         payload: Map<String, String> = emptyMap()
@@ -141,6 +141,8 @@ class OffersViewModel(
                     is OffersError.NoOffers -> "No offers available"
                     is OffersError.DecodingError -> "Error processing response"
                     is OffersError.InvalidAPIKey -> "Invalid API key"
+                    is OffersError.InvalidLoyaltyBoost -> "Invalid loyalty boost value"
+                    is OffersError.InvalidCreative -> "Invalid creative value"
                     else -> "An unexpected error occurred"
                 }
                 _uiState.value = OffersUiState.Error(errorMessage)

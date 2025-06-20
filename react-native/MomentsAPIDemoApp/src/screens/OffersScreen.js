@@ -88,6 +88,8 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
           resetStates();
           await fetchOffers({
             apiKey,
+            loyaltyBoost: '0',
+            creative: '0',
             isDevelopment,
             payload: {
               adpx_fp: adpx_fp,

@@ -106,6 +106,8 @@ class OffersViewModel : ViewModel() {
                 val response = networkService.fetchOffers(
                     sdkId = sdkId,
                     payload = payload,
+                    creative = "0",
+                    loyaltyboost = "0",
                     isDevelopment = true
                 )
                 _jsonResponse.value = response

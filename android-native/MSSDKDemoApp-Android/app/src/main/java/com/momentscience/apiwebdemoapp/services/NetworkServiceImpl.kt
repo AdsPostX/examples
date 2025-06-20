@@ -42,8 +42,8 @@ class NetworkServiceImpl : NetworkService {
     override suspend fun fetchOffers(
         sdkId: String,
         payload: Map<String, String>? = null,
-        loyaltyboost: String? = "0",
-        creative: String? = "0",
+        loyaltyboost: String?,
+        creative: String?,
         campaignId: String?,
         isDevelopment: Boolean = false
     ): JsonElement = withContext(Dispatchers.IO) {

@@ -59,9 +59,13 @@ class OffersViewModel: ObservableObject {
     /// Loads offers using the stored or provided API key
     /// - Parameters:
     ///   - apiKey: Optional API key to use for this request
+    ///   - loyaltyBoost: Optional loyalty boost parameter. If provided, must be "0", "1", or "2"
+    ///   - creative: Optional creative parameter. If provided, must be "0" or "1"
     ///   - isDevelopment: Whether to run in development mode (default: false)
+    ///   - payload: Optional custom payload dictionary to send in the request body
+    ///   - campaignId: Optional campaign ID to filter offers
     /// - Note: If no API key is provided, uses the stored API key
-    func loadOffers(apiKey: String? = nil, loyaltyBoost: String = "0", creative: String = "0", isDevelopment: Bool = false, payload: [String: String]? = nil, campaignId: String? = nil) {
+    func loadOffers(apiKey: String? = nil, loyaltyBoost: String? = nil, creative: String? = nil, isDevelopment: Bool = false, payload: [String: String]? = nil, campaignId: String? = nil) {
         // If a new API key is provided, update it
         if let newApiKey = apiKey {
             updateApiKey(newApiKey)

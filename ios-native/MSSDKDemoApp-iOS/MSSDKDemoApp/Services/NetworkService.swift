@@ -63,7 +63,7 @@ class NetworkService {
         queryItems.append(URLQueryItem(name: "loyaltyboost", value: loyaltyboost))
         queryItems.append(URLQueryItem(name: "creative", value: creative))
         if let campaignId = campaignId {
-            queryItems.append(URLQueryItem(name: "campaign_id", value: campaignId))
+            queryItems.append(URLQueryItem(name: "campaignId", value: campaignId))
         }
         queryItems.append(URLQueryItem(name: "country", value: "US"))
         

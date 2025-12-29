@@ -118,11 +118,6 @@ After changing `.env`:
 - **iOS:** Clean build folder and rebuild
 - **Android:** Run `./gradlew clean` and rebuild
 
-## Testing
-
-```bash
-npm test
-```
 
 ## License
 

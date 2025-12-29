@@ -2,11 +2,11 @@
 
 ## Overview
 
-This sample demonstrates how to integrate the Moments API into a native Android application using Kotlin. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API Android Integration Playbook](https://docs.momentscience.com/moments-api-android-integration-playbook).
+This sample demonstrates how to integrate the Moments API into a native Android application using Kotlin. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API Android Integration Playbook](https://docs.momentscience.com/kotlin-moments-api-integration-guide).
 
 ## Prerequisites
 
-- API key ([get yours here](https://docs.momentscience.com/apis-documentation#YET9v))
+- API key ([get yours here](https://app.momentscience.com/))
 - Android Studio (latest)
 - Android SDK 26+
 - Add to `AndroidManifest.xml`:
@@ -25,7 +25,7 @@ This sample demonstrates how to integrate the Moments API into a native Android 
 3. **Track Interactions:**
    Use `fireBeaconRequest` to fire beacons for user events (display, close, negative action).
 
-See the demo code for implementation patterns. For advanced usage, consult the [official documentation](https://docs.momentscience.com/moments-api-android-integration-playbook).
+See the demo code for implementation patterns. For advanced usage, consult the [official documentation](https://docs.momentscience.com/momentperks).
 
 ## Getting Started
 

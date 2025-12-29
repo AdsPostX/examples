@@ -2,11 +2,11 @@
 
 ## Overview
 
-This sample demonstrates how to integrate the Moments API into a native iOS application using Swift. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API iOS Integration Playbook](https://docs.momentscience.com/moments-api-ios-swift-integration-playbook).
+This sample demonstrates how to integrate the Moments API into a native iOS application using Swift. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API iOS Integration Playbook](https://docs.momentscience.com/swift-moments-api-integration-guide).
 
 ## Prerequisites
 
-- API key ([get yours here]([https://adspostx.com/](https://docs.momentscience.com/apis-documentation#YET9v)))
+- API key ([get yours here]([https://app.momentscience.com/))
 - Xcode (latest)
 - iOS 15.0 or higher
 
@@ -19,7 +19,7 @@ This sample demonstrates how to integrate the Moments API into a native iOS appl
 3. **Track Interactions:**
    Use `fireBeaconRequest` to fire beacons for user events (display, close, negative action).
 
-See the demo code for implementation patterns. For advanced usage, consult the [official documentation](https://docs.momentscience.com/moments-api-ios-swift-integration-playbook).
+See the demo code for implementation patterns. For advanced usage, consult the [official documentation](https://docs.momentscience.com/momentperks).
 
 ## Getting Started
 

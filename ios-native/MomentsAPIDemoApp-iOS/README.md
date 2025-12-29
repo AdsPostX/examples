@@ -6,7 +6,7 @@ This sample demonstrates how to integrate the Moments API into a native iOS appl
 
 ## Prerequisites
 
-- API key ([get yours here]([https://app.momentscience.com/))
+- API key ([get yours here](https://app.momentscience.com/))
 - Xcode (latest)
 - iOS 15.0 or higher
 

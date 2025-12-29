@@ -2,11 +2,16 @@
 
 A React Native demonstration app for integrating the Moments API to display offers.
 
+## About MomentPerks
+
+MomentPerks is a platform that helps you engage users with personalized offers. Learn more at the [MomentPerks Overview](https://docs.momentscience.com/momentperks).
+
 ## Prerequisites
 
 - Node.js >= 18
 - React Native development environment
 - iOS/Android development tools
+- MomentScience API key (get yours at [MomentScience Dashboard](https://app.momentscience.com/))
 
 ## Setup
 
@@ -33,6 +38,10 @@ API_BASE_URL=https://api.adspostx.com/native/v4
 # Your API Key (replace with your actual API key)
 DEFAULT_API_KEY=your-actual-api-key-here
 ```
+
+**Getting Your API Key:**
+- Sign in to the [MomentScience Dashboard](https://app.momentscience.com/)
+- Navigate to your account settings to find or generate your API key
 
 **⚠️ Important:** Never commit the `.env` file to version control. It's already added to `.gitignore`.
 
@@ -100,8 +109,16 @@ src/
 - ✅ Error handling and retry logic
 - ✅ Clean architecture with hooks
 
-### External Resources
-- [Official Docs](https://docs.momentscience.com/react-native-moments-api-integration-guide) - Moments API integration guide
+## Documentation & Resources
+
+### Official Documentation
+- [React Native Integration Guide](https://docs.momentscience.com/react-native-moments-api-integration-guide) - Complete integration guide for React Native
+- [MomentPerks API Documentation](https://docs.momentscience.com/momentperks-api) - Full API reference and specifications
+- [MomentPerks Overview](https://docs.momentscience.com/momentperks) - Learn about MomentPerks platform
+
+### Tools & Support
+- [MomentScience Dashboard](https://app.momentscience.com/) - Get your API keys and manage your account
+- **Support:** For help and questions, contact [help@momentscience.com](mailto:help@momentscience.com)
 
 ## Troubleshooting
 
@@ -123,6 +140,9 @@ After changing `.env`:
 
 See LICENSE file for details.
 
----
+## Support
 
-For integration help, visit: https://docs.momentscience.com/react-native-moments-api-integration-guide
+Need help? We're here for you:
+- 📧 Email: [help@momentscience.com](mailto:help@momentscience.com)
+- 📖 Documentation: [MomentScience Docs](https://docs.momentscience.com/momentperks)
+- 🚀 Integration Guide: [React Native Guide](https://docs.momentscience.com/react-native-moments-api-integration-guide)

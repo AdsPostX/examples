@@ -49,8 +49,26 @@ export const useOfferContainer = (offers, onCloseOfferCTA) => {
    *
    * Fires both the main pixel and additional advertiser pixel (if available)
    * whenever the current offer index changes.
+   *
+   * Includes boundary check to prevent invalid index access if the offers
+   * array changes while the user is viewing offers.
    */
   useEffect(() => {
+    // Boundary check: Reset to first offer if index is out of bounds
+    if (currentOfferIndex >= offers.length) {
+      Logger.log('Offer index out of bounds, resetting to 0');
+      setCurrentOfferIndex(0);
+      return;
+    }
+
+    // Additional safety check: Ensure offers array is not empty
+    if (offers.length === 0) {
+      Logger.log('No offers available');
+      setCurrentOffer(null);
+      return;
+    }
+
+    // Update current offer and fire tracking pixels
     setCurrentOffer(offers[currentOfferIndex]);
     Logger.log('Firing pixel/beacon now');
     fireOfferPixel(offers[currentOfferIndex]?.pixel);

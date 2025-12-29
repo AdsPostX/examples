@@ -15,9 +15,10 @@
  */
 import axios from 'axios';
 import Config from 'react-native-config';
-import {getUserAgent, generateUniqueID} from '../utils/Util';
+import {getUserAgent} from '../utils/Util';
 import {normalizeOffer} from '../models/OfferModel';
 import Logger from '../utils/logger';
+import {validateEnum, validateRequired} from '../utils/validation';
 
 /**
  * Makes a direct API call to fetch offers from the backend
@@ -152,23 +153,12 @@ export const getOffers = async ({
   payload = {},
   campaignId = null,
 }) => {
-  if (!apiKey) {
-    throw new Error('API key is required');
-  }
+  // Validate required parameters
+  validateRequired(apiKey, 'apiKey');
 
-  // Validate loyaltyBoost if provided and not null
-  if (loyaltyBoost !== undefined) {
-    if (loyaltyBoost !== null && !['0', '1', '2'].includes(loyaltyBoost)) {
-      throw new Error('loyaltyBoost must be one of: "0", "1", "2", or null');
-    }
-  }
-
-  // Validate creative if provided and not null
-  if (creative !== undefined) {
-    if (creative !== null && !['0', '1'].includes(creative)) {
-      throw new Error('creative must be one of: "0", "1", or null');
-    }
-  }
+  // Validate optional enum parameters
+  validateEnum(loyaltyBoost, ['0', '1', '2'], 'loyaltyBoost');
+  validateEnum(creative, ['0', '1'], 'creative');
 
   // Set up query parameters - only include if provided and not null
   const queryParameters = {

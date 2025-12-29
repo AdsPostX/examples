@@ -8,7 +8,7 @@
  * - Manages API calls to fetch offers and styles
  * - Tracks loading and error states
  * - Handles offer closure with tracking pixel support
- * - Provides offer reloading functionality
+ * - Provides state reset functionality
  * - Maintains clean state management
  */
 import {useState, useCallback} from 'react';
@@ -32,7 +32,6 @@ import Logger from '../utils/logger';
  *   @returns {string|null} error - Error message if fetch failed, null otherwise
  *   @returns {Function} fetchOffers - Function to fetch offers from API
  *   @returns {Function} handleCloseOffer - Function to handle offer closure (fires tracking pixel if configured)
- *   @returns {Function} reloadOffers - Function to reload offers and reset state
  *   @returns {Function} resetStates - Function to completely reset the hook state
  */
 export const useOffers = () => {
@@ -144,25 +143,6 @@ export const useOffers = () => {
     [offers],
   );
 
-  /**
-   * Reloads offers and resets the view state
-   *
-   * Performs the following actions in sequence:
-   * 1. Resets the closed state
-   * 2. Clears existing offers
-   * 3. Shows loading indicator
-   * 4. Initiates new offer fetch
-   *
-   * This ensures a clean slate when reloading offers and
-   * provides immediate feedback to the user via loading state.
-   */
-  const reloadOffers = useCallback(() => {
-    setOfferClosed(false); // Reset closed state
-    setOffers(null); // Clear existing offers
-    setApiStyles(null); // Clear existing styles
-    setIsLoading(true); // Show loading immediately
-    fetchOffers(); // Fetch new offers
-  }, [fetchOffers]);
 
   // Return state and handlers
   return {
@@ -176,7 +156,6 @@ export const useOffers = () => {
     // Handlers
     fetchOffers, // Fetch offers from API
     handleCloseOffer, // Handle offer closure
-    reloadOffers, // Reload offers and reset state
-    resetStates, // Include reset function in return
+    resetStates, // Reset function for clearing state
   };
 };

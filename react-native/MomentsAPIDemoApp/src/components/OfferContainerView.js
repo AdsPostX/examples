@@ -3,6 +3,7 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OfferView from './OfferView';
 import {useOfferContainer} from '../hooks/useOfferContainer';
 import Logger from '../utils/logger';
+import {Colors} from '../constants/theme';
 
 /**
  * OfferContainerView Component
@@ -45,8 +46,13 @@ function OfferContainerView({offers, OnCloseOfferCTA, apiStyles}) {
         {backgroundColor: apiStyles?.popup?.background || '#fff'},
       ]}>
       {/* Close button at the top */}
-      <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-        <Text style={{color: 'black'}}>Close</Text>
+      <TouchableOpacity
+        onPress={handleClose}
+        style={styles.closeButton}
+        accessibilityLabel="Close offers"
+        accessibilityRole="button"
+        accessibilityHint="Closes the offer screen and returns to main screen">
+        <Text style={styles.closeButtonText}>Close</Text>
       </TouchableOpacity>
 
       {/* Render current offer if available */}
@@ -70,13 +76,21 @@ function OfferContainerView({offers, OnCloseOfferCTA, apiStyles}) {
         {/* Previous offer button */}
         <TouchableOpacity
           onPress={goToPreviousOffer}
-          style={styles.navigationButton}>
+          style={styles.navigationButton}
+          accessibilityLabel="Previous offer"
+          accessibilityRole="button"
+          accessibilityHint="Shows the previous offer in the list"
+          disabled={currentIndex === 0}>
           <Text>{'<'}</Text>
         </TouchableOpacity>
         {/* Next offer button */}
         <TouchableOpacity
           onPress={() => goToNextOffer(false)}
-          style={styles.navigationButton}>
+          style={styles.navigationButton}
+          accessibilityLabel="Next offer"
+          accessibilityRole="button"
+          accessibilityHint="Shows the next offer in the list"
+          disabled={currentIndex === offers.length - 1}>
           <Text>{'>'}</Text>
         </TouchableOpacity>
       </View>
@@ -86,12 +100,13 @@ function OfferContainerView({offers, OnCloseOfferCTA, apiStyles}) {
 
 /**
  * Component styles
+ * Uses theme constants for consistent styling
  */
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
     flexDirection: 'column',
-    borderColor: 'black',
+    borderColor: Colors.borderDark,
     borderRadius: 8,
     borderWidth: 1,
     margin: 8,
@@ -100,16 +115,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse', // Aligns close button to the right
     padding: 8,
   },
+  closeButtonText: {
+    color: Colors.text,
+    fontSize: 16,
+    fontWeight: '500',
+  },
   bottomToolBar: {
     height: 44,
     width: '100%',
-    backgroundColor: 'black',
+    backgroundColor: Colors.navigationBackground,
     alignItems: 'center',
     justifyContent: 'space-evenly',
     flexDirection: 'row',
   },
   navigationButton: {
-    backgroundColor: 'grey',
+    backgroundColor: Colors.navigationButton,
     padding: 8,
     paddingStart: 16,
     paddingEnd: 16,

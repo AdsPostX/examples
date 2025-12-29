@@ -16,6 +16,47 @@ enum OffersError: Error {
     case invalidParameter(message: String)
 }
 
+/// Protocol defining the interface for offers service operations
+/// This protocol enables dependency injection and improves testability by allowing mock implementations
+///
+/// Usage:
+/// ```swift
+/// class MockOffersService: OffersServiceProtocol {
+///     func fetchOffers(...) async throws -> OffersResponse {
+///         // Return mock data for testing
+///     }
+/// }
+/// ```
+protocol OffersServiceProtocol {
+    /// Fetches offers from the Moments API using the provided API key
+    /// - Parameters:
+    ///   - apiKey: The API key to use for authentication
+    ///   - loyaltyBoost: Optional loyalty boost parameter. If provided, must be "0", "1", or "2"
+    ///   - creative: Optional creative parameter. If provided, must be "0" or "1"
+    ///   - isDevelopment: Whether to run in development mode (default: false)
+    ///   - payload: Optional custom payload dictionary to send in the request body
+    ///   - campaignId: Optional campaign ID to filter offers (default: nil)
+    /// - Returns: The complete offers response including styles and other metadata
+    /// - Throws: OffersError for various failure scenarios
+    func fetchOffers(
+        apiKey: String,
+        loyaltyBoost: String?,
+        creative: String?,
+        isDevelopment: Bool,
+        payload: [String: String]?,
+        campaignId: String?
+    ) async throws -> OffersResponse
+    
+    /// Fires a beacon request to track user interactions
+    /// - Parameter url: The beacon URL to send the request to
+    /// - Throws: OffersError if the request fails
+    func fireBeaconRequest(url: URL) async throws
+    
+    /// Returns a standardized user agent string for API requests
+    /// - Returns: A user agent string for iOS
+    func getUserAgent() -> String
+}
+
 /// OffersService.swift
 /// A service class responsible for handling API interactions with the Moments Offers API.
 /// This service manages fetching offers and sending beacon/tracking requests.
@@ -33,7 +74,7 @@ enum OffersError: Error {
 /// ```
 
 /// Service responsible for handling all API interactions related to offers
-class OffersService {
+class OffersService: OffersServiceProtocol {
     /// Base URL for the Moments API
     private let baseURL: String
     
@@ -62,15 +103,20 @@ class OffersService {
         payload: [String: String]? = nil,
         campaignId: String? = nil
     ) async throws -> OffersResponse {
+        // Validate API key is not empty
+        guard !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw OffersError.invalidAPIKey
+        }
+        
         // Validate loyaltyBoost parameter if provided
-        if let loyaltyBoost = loyaltyBoost {
+        if let loyaltyBoost = loyaltyBoost, !loyaltyBoost.isEmpty {
             guard["0","1","2"].contains(loyaltyBoost) else {
                 throw OffersError.invalidParameter(message: "Invalid loyaltyBoost parameter: \(loyaltyBoost)")
             }
         }
 
         // Validate creative parameter if provided
-        if let creative = creative {
+        if let creative = creative, !creative.isEmpty {
             guard["0","1"].contains(creative) else {
                 throw OffersError.invalidParameter(message: "Invalid creative parameter: \(creative)")
             }
@@ -153,13 +199,18 @@ class OffersService {
             let (_, response) = try await URLSession.shared.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ Beacon request failed: Invalid response type")
                 throw OffersError.networkError(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response type"]))
             }
             
             guard (200...299).contains(httpResponse.statusCode) else {
+                print("❌ Beacon request failed with status code: \(httpResponse.statusCode)")
                 throw OffersError.networkError(NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Beacon request failed with status code: \(httpResponse.statusCode)"]))
             }
+            
+            print("✅ Beacon request succeeded with status code: \(httpResponse.statusCode)")
         } catch {
+            print("❌ Beacon request failed with error: \(error.localizedDescription)")
             throw OffersError.networkError(error)
         }
     }

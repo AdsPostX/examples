@@ -7,6 +7,7 @@ A comprehensive Flutter demo application showcasing the integration of the [Mome
 This demo implements the patterns described in the official MomentScience documentation:
 
 - **[Flutter - Moments API Integration Guide](https://docs.momentscience.com/flutter-moments-api-integration-guide)** - Complete integration guide
+- **[MomentPerks API](https://docs.momentscience.com/momentperks-api)** - API reference documentation
 - **[Getting Your API Key](https://app.momentscience.com/)** - How to obtain your API credentials
 - **[MomentPerks Overview](https://docs.momentscience.com/momentperks)** - Understanding MomentPerks
 
@@ -254,6 +255,7 @@ This is a demo application provided for integration reference. For suggestions o
 
 ### Additional Resources
 - [MomentPerks Overview](https://docs.momentscience.com/momentperks)
+- [MomentPerks API](https://docs.momentscience.com/momentperks-api)
 - [MomentPerks Integration Checklist](https://docs.momentscience.com/momentperks-integration-checklist)
 - [MomentScience Dashboard](https://app.momentscience.com/)
 

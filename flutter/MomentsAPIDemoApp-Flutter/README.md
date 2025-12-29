@@ -157,7 +157,6 @@ This app follows **MVVM (Model-View-ViewModel)** architecture:
 - Safe navigation operators (`?.`) throughout
 - Fallback values for missing data
 - Comprehensive null checks prevent runtime crashes
-- See [NULL_SAFETY_IMPROVEMENTS.md](NULL_SAFETY_IMPROVEMENTS.md) for details
 
 ### Error Handling
 - HTTP request timeouts (30s for offers, 10s for tracking)

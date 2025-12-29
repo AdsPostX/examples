@@ -19,8 +19,8 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Use the HomeViewModel provided at app level in main.dart
     return Scaffold(
-      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text(title)),
-      body: const SafeArea(child: _HomePageBody()),
+        appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text(title)),
+        body: const SafeArea(child: _HomePageBody()),
     );
   }
 }
@@ -76,7 +76,7 @@ class _HomePageBodyState extends State<_HomePageBody> {
           Semantics(
             label: 'Enter your API key',
             child: TextField(
-              controller: _apiKeyController,
+            controller: _apiKeyController,
               decoration: const InputDecoration(
                 labelText: 'API Key',
                 border: OutlineInputBorder(),
@@ -92,13 +92,13 @@ class _HomePageBodyState extends State<_HomePageBody> {
               label: viewModel.isDevelopmentMode ? 'Development mode enabled' : 'Development mode disabled',
               toggled: viewModel.isDevelopmentMode,
               child: Row(
-                children: <Widget>[
-                  const Text('Development Mode'),
+              children: <Widget>[
+                const Text('Development Mode'),
                   Switch(
                     value: viewModel.isDevelopmentMode,
                     onChanged: viewModel.setDevelopmentMode,
                   ),
-                ],
+              ],
               ),
             ),
           ),

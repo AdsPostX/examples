@@ -115,11 +115,6 @@ This app follows **MVVM (Model-View-ViewModel)** architecture:
 - Separate ViewModels for Home and Offer screens
 - Dependency injection for testability
 
-### Null Safety
-- All model fields are optional except required ones
-- Safe navigation operators throughout
-- Fallback values for missing data
-- See [NULL_SAFETY_IMPROVEMENTS.md](../NULL_SAFETY_IMPROVEMENTS.md)
 
 ### Error Handling
 - HTTP request timeouts (30s for offers, 10s for tracking)
@@ -159,15 +154,10 @@ This app follows **MVVM (Model-View-ViewModel)** architecture:
 - Clear cache: `flutter clean`
 - Re-fetch packages: `flutter pub get`
 
-### Firebase/Google Services
-- Firebase dependencies are included for app distribution
-- Ensure `google-services.json` is present for Android builds
 
 ## Documentation
 
 - [ENV_SETUP.md](ENV_SETUP.md) - Environment variables setup guide
-- [NULL_SAFETY_IMPROVEMENTS.md](../NULL_SAFETY_IMPROVEMENTS.md) - Null safety documentation
-- [CODE_REVIEW.md](../CODE_REVIEW.md) - Comprehensive code review
 
 ## License
 

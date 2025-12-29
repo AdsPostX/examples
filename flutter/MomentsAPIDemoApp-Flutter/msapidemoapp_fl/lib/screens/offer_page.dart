@@ -68,20 +68,20 @@ class _OfferPageState extends State<OfferPage> {
         child: Semantics(
           container: true,
           label: '$title. $message',
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
               ExcludeSemantics(
                 child: Icon(icon, color: iconColor, size: 48),
               ),
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
               Semantics(
                 header: true,
                 child: Text(title, style: Theme.of(context).textTheme.titleLarge),
               ),
-              const SizedBox(height: 8),
-              Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
-              const SizedBox(height: 24),
+            const SizedBox(height: 8),
+            Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -90,10 +90,10 @@ class _OfferPageState extends State<OfferPage> {
                   button: true,
                   label: 'Try again to load offers',
                   child: ElevatedButton(
-                    onPressed: () {
-                      _loadOffers(); // Retry loading offers
-                    },
-                    child: const Text('Try Again'),
+                  onPressed: () {
+                    _loadOffers(); // Retry loading offers
+                  },
+                  child: const Text('Try Again'),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -102,15 +102,15 @@ class _OfferPageState extends State<OfferPage> {
                   button: true,
                   label: 'Close and return to home',
                   child: OutlinedButton(
-                    onPressed: () {
-                      Provider.of<NavigationService>(context, listen: false).pop(); // Dismiss the screen
-                    },
-                    child: const Text('Close'),
+                  onPressed: () {
+                    Provider.of<NavigationService>(context, listen: false).pop(); // Dismiss the screen
+                  },
+                  child: const Text('Close'),
                   ),
                 ),
               ],
             ),
-            ],
+          ],
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// ViewModel for managing the state and business logic of the Home Page.
 ///
@@ -7,7 +8,8 @@ import 'package:flutter/material.dart';
 /// Keeps business logic separate from UI logic.
 class HomeViewModel with ChangeNotifier {
   /// The API key used for authenticating API requests.
-  String _apiKey = 'b167f9d7-c479-41d8-b58f-4a5b26e561f1';
+  /// Loaded from .env file if available, otherwise empty string.
+  String _apiKey = dotenv.env['MOMENTS_API_KEY'] ?? '';
 
   /// Whether the app is in development mode.
   bool _isDevelopmentMode = false;
@@ -50,9 +52,4 @@ class HomeViewModel with ChangeNotifier {
 
   /// Notifies listeners of any state change.
   void notify() => notifyListeners();
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

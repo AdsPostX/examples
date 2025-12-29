@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../service/offer_service.dart';
+import '../models/offer_response.dart';
+import '../models/offer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// ViewModel for managing offer-related business logic and state.
@@ -9,7 +12,12 @@ import 'package:url_launcher/url_launcher.dart';
 /// Keeps all business logic separate from UI logic.
 class OfferViewModel with ChangeNotifier {
   /// Service for making API and tracking requests.
-  final OfferService _apiService = OfferService();
+  final OfferService _apiService;
+
+  /// Creates an [OfferViewModel] with an optional [apiService].
+  /// If [apiService] is not provided, a default [OfferService] instance is created.
+  /// This allows for dependency injection, making the ViewModel easier to test.
+  OfferViewModel({OfferService? apiService}) : _apiService = apiService ?? OfferService();
 
   /// Whether offers are currently being loaded.
   bool _isLoading = false;
@@ -18,7 +26,7 @@ class OfferViewModel with ChangeNotifier {
   String? _errorMessage;
 
   /// Stores the latest offer response data.
-  dynamic _offerResponse = {};
+  OfferResponse? _offerResponse;
 
   /// Gets whether offers are being loaded.
   bool get isLoading => _isLoading;
@@ -27,7 +35,7 @@ class OfferViewModel with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   /// Gets the current offer response data.
-  dynamic get offerResponse => _offerResponse;
+  OfferResponse? get offerResponse => _offerResponse;
 
   /// Loads offers from the API using the provided parameters.
   /// Notifies listeners of loading, success, or error states.
@@ -90,22 +98,22 @@ class OfferViewModel with ChangeNotifier {
   /// [offer] - The current offer object.
   /// [currentIndex] - The index of the current offer.
   /// [totalOffers] - The total number of offers.
-  Future<bool> handlePositiveAction(dynamic offer, int currentIndex, int totalOffers) async {
+  Future<bool> handlePositiveAction(Offer offer, int currentIndex, int totalOffers) async {
     // Open the click_url in external browser if available
-    if (offer['click_url'] != null && offer['click_url'].isNotEmpty) {
-      final Uri url = Uri.parse(offer['click_url']);
+    if (offer.clickUrl != null && offer.clickUrl!.isNotEmpty) {
+      final Uri url = Uri.parse(offer.clickUrl!);
       try {
         await launchUrl(url, mode: LaunchMode.externalApplication);
       } catch (e) {
-        debugPrint('Could not launch URL: ${offer['click_url']}. Error: $e');
+        debugPrint('Could not launch URL: ${offer.clickUrl}. Error: $e');
       }
     }
 
-    // If this is the last offer, send the close beacon before dismissing, without awaiting completion
+    // If this is the last offer, send the close beacon (fire-and-forget)
     if (currentIndex >= totalOffers - 1) {
-      final closeBeacon = offer?['beacons']?['close'];
+      final closeBeacon = offer.beacons?.close;
       if (closeBeacon != null && closeBeacon.isNotEmpty) {
-        sendTrackingRequest(closeBeacon);
+        unawaited(sendTrackingRequest(closeBeacon));
       }
     }
 
@@ -120,18 +128,18 @@ class OfferViewModel with ChangeNotifier {
   /// [offer] - The current offer object.
   /// [currentIndex] - The index of the current offer.
   /// [totalOffers] - The total number of offers.
-  Future<bool> handleNegativeAction(dynamic offer, int currentIndex, int totalOffers) async {
-    // Send request for no_thanks_click beacon if available, without awaiting completion
-    final noThanksBeacon = offer?['beacons']?['no_thanks_click'];
+  Future<bool> handleNegativeAction(Offer offer, int currentIndex, int totalOffers) async {
+    // Send request for no_thanks_click beacon (fire-and-forget)
+    final noThanksBeacon = offer.beacons?.noThanksClick;
     if (noThanksBeacon != null && noThanksBeacon.isNotEmpty) {
-      sendTrackingRequest(noThanksBeacon);
+      unawaited(sendTrackingRequest(noThanksBeacon));
     }
 
-    // If this is the last offer, send the close beacon before dismissing, without awaiting completion
+    // If this is the last offer, send the close beacon (fire-and-forget)
     if (currentIndex >= totalOffers - 1) {
-      final closeBeacon = offer?['beacons']?['close'];
+      final closeBeacon = offer.beacons?.close;
       if (closeBeacon != null && closeBeacon.isNotEmpty) {
-        sendTrackingRequest(closeBeacon);
+        unawaited(sendTrackingRequest(closeBeacon));
       }
     }
 
@@ -140,31 +148,31 @@ class OfferViewModel with ChangeNotifier {
   }
 
   /// Handles the close action for an offer page.
-  /// Sends a close beacon if available.
+  /// Sends a close beacon if available (fire-and-forget).
   ///
   /// [offer] - The current offer object.
-  Future<void> handleCloseAction(dynamic offer) async {
-    // Send request for close beacon if available, without awaiting completion
-    final closeBeacon = offer?['beacons']?['close'];
+  Future<void> handleCloseAction(Offer offer) async {
+    // Send request for close beacon (fire-and-forget)
+    final closeBeacon = offer.beacons?.close;
     if (closeBeacon != null && closeBeacon.isNotEmpty) {
-      sendTrackingRequest(closeBeacon);
+      unawaited(sendTrackingRequest(closeBeacon));
     }
   }
 
   /// Sends initial display tracking requests for an offer.
-  /// Fires both 'pixel' and 'adv_pixel_url' beacons if available.
+  /// Fires both 'pixel' and 'adv_pixel_url' beacons (fire-and-forget).
   ///
   /// [offer] - The current offer object.
-  Future<void> handleDisplayTracking(dynamic offer) async {
-    // Send request for pixel if available
-    final pixel = offer?['pixel'];
+  Future<void> handleDisplayTracking(Offer offer) async {
+    // Send request for pixel (fire-and-forget)
+    final pixel = offer.pixel;
     if (pixel != null && pixel.isNotEmpty) {
-      sendTrackingRequest(pixel);
+      unawaited(sendTrackingRequest(pixel));
     }
-    // Send request for adv_pixel_url if available
-    final advPixelUrl = offer?['adv_pixel_url'];
+    // Send request for adv_pixel_url (fire-and-forget)
+    final advPixelUrl = offer.advPixelUrl;
     if (advPixelUrl != null && advPixelUrl.isNotEmpty) {
-      sendTrackingRequest(advPixelUrl);
+      unawaited(sendTrackingRequest(advPixelUrl));
     }
   }
 }

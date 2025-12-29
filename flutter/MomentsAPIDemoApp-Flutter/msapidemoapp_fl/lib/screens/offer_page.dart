@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/home_viewmodel.dart';
 import '../../viewmodels/offer_viewmodel.dart';
+import '../../services/navigation_service.dart';
 import '../components/offer_container_view.dart';
 import '../utils/user_agent_util.dart';
 
@@ -64,36 +65,53 @@ class _OfferPageState extends State<OfferPage> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: iconColor, size: 48),
-            const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
-            const SizedBox(height: 24),
+        child: Semantics(
+          container: true,
+          label: '$title. $message',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ExcludeSemantics(
+                child: Icon(icon, color: iconColor, size: 48),
+              ),
+              const SizedBox(height: 16),
+              Semantics(
+                header: true,
+                child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+              ),
+              const SizedBox(height: 8),
+              Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Retry button to reload offers
-                ElevatedButton(
-                  onPressed: () {
-                    _loadOffers(); // Retry loading offers
-                  },
-                  child: const Text('Try Again'),
+                Semantics(
+                  button: true,
+                  label: 'Try again to load offers',
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _loadOffers(); // Retry loading offers
+                    },
+                    child: const Text('Try Again'),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 // Close button to dismiss the offer page
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Dismiss the screen
-                  },
-                  child: const Text('Close'),
+                Semantics(
+                  button: true,
+                  label: 'Close and return to home',
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Provider.of<NavigationService>(context, listen: false).pop(); // Dismiss the screen
+                    },
+                    child: const Text('Close'),
+                  ),
                 ),
               ],
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -124,15 +142,20 @@ class _OfferPageState extends State<OfferPage> {
       body: SafeArea(
         child: offerViewModel.isLoading
             // Show loading indicator while offers are being fetched.
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(
+                child: Semantics(
+                  label: 'Loading offers, please wait',
+                  child: const CircularProgressIndicator(),
+                ),
+              )
             // Show error view if there is an error message.
             : offerViewModel.errorMessage != null
             ? _buildErrorView(offerViewModel.errorMessage!)
             // Show a message with retry and close buttons if there are no offers available.
-            : offerViewModel.offerResponse['data']?['offers']?.isEmpty ?? true
+            : offerViewModel.offerResponse == null || !offerViewModel.offerResponse!.hasOffers
             ? _buildNoOffersView()
             // Show the offers using OfferContainerView.
-            : OfferContainerView(offers: offerViewModel.offerResponse['data']?['offers'] ?? []),
+            : OfferContainerView(offers: offerViewModel.offerResponse?.data?.offers ?? []),
       ),
     );
   }

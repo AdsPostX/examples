@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor2/tinycolor2.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../models/offer_styles.dart';
 
 /// A stateless widget that displays the details of a single offer,
 /// including title, description, image, and action buttons.
@@ -31,7 +33,7 @@ class OfferView extends StatelessWidget {
   final VoidCallback? onNegativePressed;
 
   /// Styles from API response to customize UI elements.
-  final Map<String, dynamic>? styles;
+  final OfferStyles? styles;
 
   /// Creates an [OfferView] widget.
   ///
@@ -61,19 +63,34 @@ class OfferView extends StatelessWidget {
     }
   }
 
+  /// Safely parses a color string using TinyColor.
+  /// Returns [fallback] if parsing fails.
+  ///
+  /// [colorString] - The color string to parse (hex, rgb, etc.)
+  /// [fallback] - The fallback color to use if parsing fails
+  Color _parseColor(String colorString, Color fallback) {
+    try {
+      final tinyColor = TinyColor.fromString(colorString);
+      return tinyColor.color;
+    } catch (e) {
+      debugPrint('Failed to parse color: $colorString. Using fallback. Error: $e');
+      return fallback;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Extract style values from the API response styles or use defaults
-    final offerTextStyles = styles?['offerText'] ?? {};
-    final descriptionColor = TinyColor.fromString(offerTextStyles['textColor'] ?? '#000000').color;
-    final descriptionFontSize = double.tryParse(offerTextStyles['fontSize']?.toString() ?? '14') ?? 14.0;
-    final ctaFontSizeStr = offerTextStyles['cta_text_size']?.toString() ?? '14px';
+    // Extract style values from the API response styles or use defaults with safe color parsing
+    final descriptionColor = _parseColor(styles?.textColor ?? '#000000', Colors.black);
+    final titleColor = _parseColor(styles?.textColor ?? '#000000', Colors.black);
+    final descriptionFontSize = double.tryParse(styles?.fontSize ?? '14') ?? 14.0;
+    final ctaFontSizeStr = styles?.ctaTextSize ?? '14px';
     final ctaFontSize = double.tryParse(ctaFontSizeStr.replaceAll('px', '')) ?? 14.0;
-    final ctaFontStyle = offerTextStyles['cta_text_style'] ?? 'normal';
-    final positiveBgColor = TinyColor.fromString(offerTextStyles['buttonYes']?['background'] ?? '#1C64F2').color;
-    final negativeBgColor = TinyColor.fromString(offerTextStyles['buttonNo']?['background'] ?? '#FFFFFF').color;
-    final positiveTextColor = TinyColor.fromString(offerTextStyles['buttonYes']?['color'] ?? '#FFFFFF').color;
-    final negativeTextColor = TinyColor.fromString(offerTextStyles['buttonNo']?['color'] ?? '#6B7280').color;
+    final ctaFontStyle = styles?.ctaTextStyle ?? 'normal';
+    final positiveBgColor = _parseColor(styles?.buttonYesBackground ?? '#1C64F2', const Color(0xFF1C64F2));
+    final negativeBgColor = _parseColor(styles?.buttonNoBackground ?? '#FFFFFF', Colors.white);
+    final positiveTextColor = _parseColor(styles?.buttonYesColor ?? '#FFFFFF', Colors.white);
+    final negativeTextColor = _parseColor(styles?.buttonNoColor ?? '#6B7280', const Color(0xFF6B7280));
     final ctaFontWeight = _getFontWeight(ctaFontStyle);
 
     return Column(
@@ -81,34 +98,53 @@ class OfferView extends StatelessWidget {
       children: [
         // Display the offer title if provided and not empty.
         if (title != null && title!.isNotEmpty)
-          Text(title!, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+          Semantics(
+            header: true,
+            child: Text(
+              title!,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: titleColor, // Set title color from styles.offerText.textColor
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         if (title != null && title!.isNotEmpty) const SizedBox(height: 8),
 
         // Display the offer description if provided and not empty with API styles.
         if (description != null && description!.isNotEmpty)
-          Text(
-            description!,
-            style: TextStyle(
-              color: descriptionColor, // Set description color from styles.offerText.textColor
-              fontSize: descriptionFontSize, // Set description font size from styles.offerText.fontSize
+          Semantics(
+            label: 'Offer description: $description',
+            child: Text(
+              description!,
+              style: TextStyle(
+                color: descriptionColor, // Set description color from styles.offerText.textColor
+                fontSize: descriptionFontSize, // Set description font size from styles.offerText.fontSize
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         if (description != null && description!.isNotEmpty) const SizedBox(height: 16),
 
-        // Display the offer image if a URL is provided and not empty.
+        // Display the offer image if a URL is provided and not empty with caching.
         if (imageUrl != null && imageUrl!.isNotEmpty)
-          Image.network(
-            imageUrl!,
-            fit: BoxFit.contain,
-            height: 200,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              // Show a loading indicator while the image is loading.
-              return const Center(child: CircularProgressIndicator());
-            },
-            // Show an error icon if the image fails to load.
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.error, size: 50),
+          Semantics(
+            image: true,
+            label: 'Offer promotional image',
+            child: CachedNetworkImage(
+              imageUrl: imageUrl!,
+              fit: BoxFit.contain,
+              height: 200,
+              placeholder: (context, url) => Center(
+                child: Semantics(
+                  label: 'Loading image',
+                  child: const CircularProgressIndicator(),
+                ),
+              ),
+              errorWidget: (context, url, error) => Semantics(
+                label: 'Image failed to load',
+                child: const Icon(Icons.error, size: 50),
+              ),
+            ),
           ),
         if ((imageUrl ?? '').isNotEmpty) const SizedBox(height: 16),
 
@@ -119,28 +155,36 @@ class OfferView extends StatelessWidget {
             if (positiveCta != null && positiveCta!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0), // Add spacing between buttons
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: positiveBgColor, foregroundColor: positiveTextColor),
-                  onPressed: onPositivePressed,
-                  child: Text(
-                    positiveCta!,
-                    style: TextStyle(fontSize: ctaFontSize, fontWeight: ctaFontWeight),
+                child: Semantics(
+                  button: true,
+                  label: 'Accept offer: $positiveCta',
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: positiveBgColor, foregroundColor: positiveTextColor),
+                    onPressed: onPositivePressed,
+                    child: Text(
+                      positiveCta!,
+                      style: TextStyle(fontSize: ctaFontSize, fontWeight: ctaFontWeight),
+                    ),
                   ),
                 ),
               ),
             if (negativeCta != null && negativeCta!.isNotEmpty)
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor:
-                      negativeBgColor, // Set negative CTA background color from styles.offerText.buttonNo.background
-                ),
-                onPressed: onNegativePressed,
-                child: Text(
-                  negativeCta!,
-                  style: TextStyle(
-                    color: negativeTextColor, // Set negative CTA text color from styles.offerText.buttonNo.color
-                    fontSize: ctaFontSize, // Set CTA font size from styles.offerText.cta_text_size, converted from px
-                    fontWeight: ctaFontWeight, // Set CTA font weight from styles.offerText.cta_text_style
+              Semantics(
+                button: true,
+                label: 'Decline offer: $negativeCta',
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor:
+                        negativeBgColor, // Set negative CTA background color from styles.offerText.buttonNo.background
+                  ),
+                  onPressed: onNegativePressed,
+                  child: Text(
+                    negativeCta!,
+                    style: TextStyle(
+                      color: negativeTextColor, // Set negative CTA text color from styles.offerText.buttonNo.color
+                      fontSize: ctaFontSize, // Set CTA font size from styles.offerText.cta_text_size, converted from px
+                      fontWeight: ctaFontWeight, // Set CTA font weight from styles.offerText.cta_text_style
+                    ),
                   ),
                 ),
               ),

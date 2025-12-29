@@ -17,8 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.momentscience.android.msapidemoapp.di.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.momentscience.android.msapidemoapp.di.OffersViewModelFactory
+import com.momentscience.android.msapidemoapp.ui.theme.Dimensions
+import com.momentscience.android.msapidemoapp.ui.viewmodel.OffersViewModel
 
 /**
  * The main entry screen of the application that handles API key input and offers loading.
@@ -77,8 +81,12 @@ fun HomeScreen(
     var showOffers by remember { mutableStateOf(false) }
     var isDevelopmentMode by remember { mutableStateOf(false) }  // Development mode state
     
-    // Initialize ViewModel instance that persists across recompositions
-    val offersViewModel = remember { ViewModelProvider.provideOffersViewModel() }
+    // Initialize ViewModel with proper lifecycle scoping
+    // The ViewModel is automatically scoped to this Composable's lifecycle
+    // and will be cleared when the Composable leaves composition
+    val offersViewModel: OffersViewModel = viewModel(
+        factory = OffersViewModelFactory()
+    )
 
     // Conditional rendering of the offers screen
     // Only shown when showOffers is true
@@ -107,7 +115,7 @@ fun HomeScreen(
         OutlinedTextField(
             value = apiKey,
             onValueChange = { apiKey = it.trim() },  // Remove leading/trailing whitespace
-            label = { Text("Enter API Key") },
+            label = { Text(stringResource(R.string.enter_api_key)) },
             singleLine = true,  // Prevent multi-line input
             modifier = Modifier
                 .fillMaxWidth()  // Use full available width
@@ -122,7 +130,7 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Development Mode")
+            Text(stringResource(R.string.development_mode))
             Switch(
                 checked = isDevelopmentMode,
                 onCheckedChange = { isDevelopmentMode = it }
@@ -137,9 +145,9 @@ fun HomeScreen(
             enabled = apiKey.isNotEmpty(),  // Disable button when API key is empty
             modifier = Modifier
                 .fillMaxWidth()  // Use full available width
-                .height(50.dp)  // Fixed height for better touch target
+                .height(Dimensions.ButtonHeight)  // Fixed height for better touch target
         ) {
-            Text("Load Offers")
+            Text(stringResource(R.string.load_offers))
         }
     }
 }

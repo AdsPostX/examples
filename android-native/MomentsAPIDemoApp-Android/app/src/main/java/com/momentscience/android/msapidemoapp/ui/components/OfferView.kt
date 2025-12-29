@@ -1,7 +1,11 @@
 package com.momentscience.android.msapidemoapp.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -11,17 +15,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.momentscience.android.msapidemoapp.R
 import com.momentscience.android.msapidemoapp.model.Offer
 import com.momentscience.android.msapidemoapp.model.OffersStyles
-import com.momentscience.android.msapidemoapp.util.toValidHex
+import com.momentscience.android.msapidemoapp.ui.theme.Dimensions
+import com.momentscience.android.msapidemoapp.util.toComposeColor
 
 /**
  * A composable that renders a single offer with its associated content and styling.
@@ -110,37 +116,31 @@ fun OfferView(
     // Parse colors with error handling and fallback values
     // Description text color
     val descriptionColor = remember(styles.offerText?.textColor, defaultTextColor) {
-        styles.offerText?.textColor?.let { colorString ->
-            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
-        } ?: defaultTextColor
+        styles.offerText?.textColor?.toComposeColor(defaultTextColor) ?: defaultTextColor
+    }
+
+    val titleColor = remember(styles.offerText?.textColor, defaultTextColor) {
+        styles.offerText?.textColor?.toComposeColor(defaultTextColor) ?: defaultTextColor
     }
 
     // Positive button background color
     val positiveButtonColor = remember(styles.offerText?.buttonYes?.background) {
-        styles.offerText?.buttonYes?.background?.let { colorString ->
-            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
-        } ?: defaultPrimaryColor
+        styles.offerText?.buttonYes?.background?.toComposeColor(defaultPrimaryColor) ?: defaultPrimaryColor
     }
 
     // Negative button background color
     val negativeButtonColor = remember(styles.offerText?.buttonNo?.background) {
-        styles.offerText?.buttonNo?.background?.let { colorString ->
-            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
-        } ?: defaultSurfaceColor
+        styles.offerText?.buttonNo?.background?.toComposeColor(defaultSurfaceColor) ?: defaultSurfaceColor
     }
 
     // Positive button text color
     val positiveButtonTextColor = remember(styles.offerText?.buttonYes?.color, defaultOnPrimaryColor) {
-        styles.offerText?.buttonYes?.color?.let { colorString ->
-            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
-        } ?: defaultOnPrimaryColor
+        styles.offerText?.buttonYes?.color?.toComposeColor(defaultOnPrimaryColor) ?: defaultOnPrimaryColor
     }
 
     // Negative button text color
     val negativeButtonTextColor = remember(styles.offerText?.buttonNo?.color, defaultOnSurfaceColor) {
-        styles.offerText?.buttonNo?.color?.let { colorString ->
-            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
-        } ?: defaultOnSurfaceColor
+        styles.offerText?.buttonNo?.color?.toComposeColor(defaultOnSurfaceColor) ?: defaultOnSurfaceColor
     }
 
     // Main content column with centered alignment and spacing
@@ -155,13 +155,13 @@ fun OfferView(
         offer.title?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.headlineMedium.copy(Color.Black),
+                style = MaterialTheme.typography.headlineMedium.copy(color = titleColor),
                 textAlign = TextAlign.Center
             )
         }
 
-        // Image section with rounded corners and crossfade loading
-        AsyncImage(
+        // Image section with rounded corners, crossfade loading, and error handling
+        SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(offer.image)
                 .crossfade(true)
@@ -169,8 +169,61 @@ fun OfferView(
             contentDescription = null, // Decorative image
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .size(200.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(Dimensions.OfferImageSize)
+                .clip(RoundedCornerShape(8.dp)),
+            loading = {
+                // Placeholder shown while image is loading
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            contentDescription = stringResource(R.string.loading),
+                            modifier = Modifier.size(Dimensions.IconSizeLarge),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.SpacingMedium))
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(Dimensions.IconSizeSmall),
+                            strokeWidth = Dimensions.ProgressIndicatorStrokeWidth
+                        )
+                    }
+                }
+            },
+            error = {
+                // Error placeholder shown when image fails to load
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.errorContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.BrokenImage,
+                            contentDescription = stringResource(R.string.failed_to_load_image),
+                            modifier = Modifier.size(Dimensions.IconSizeLarge),
+                            tint = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.SpacingSmall))
+                        Text(
+                            text = stringResource(R.string.image_unavailable),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
         )
 
         // Description section - Only rendered if description exists

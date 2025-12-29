@@ -8,13 +8,13 @@ plugins {
 
 android {
     namespace = "com.momentscience.android.msapidemoapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.momentscience.android.msapidemoapp"
-        minSdk = 26
-        targetSdk = 35
-        versionCode = 10
+        minSdk = 26      // Android 8.0 (Minimum supported version)
+        targetSdk = 36
+        versionCode = 13
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -22,7 +22,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true          // Enable code shrinking and obfuscation
+            isShrinkResources = true        // Enable resource shrinking to reduce APK size
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -38,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true  // Enable BuildConfig generation for DEBUG flag
     }
 }
 

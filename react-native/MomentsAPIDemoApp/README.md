@@ -130,4 +130,4 @@ See LICENSE file for details.
 
 ---
 
-For integration help, visit: https://docs.momentscience.com/react-native
+For integration help, visit: https://docs.momentscience.com/react-native-moments-api-integration-guide

@@ -20,7 +20,6 @@ Production-ready Unity classes for Moments API integration:
 - `QUICKSTART.md` - 5-minute tutorial
 - `INSTALLATION.md` - Detailed setup guide
 - `OVERVIEW.md` - Architecture and design
-- `SUMMARY.md` - Creation summary
 
 ### 2. **MSAPIDemoApp/** - Demo Unity Project
 Complete working Unity project demonstrating the reusable classes:

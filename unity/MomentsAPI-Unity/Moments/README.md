@@ -39,7 +39,6 @@ Unity/
 │   ├── QUICKSTART.md               # 5-minute tutorial
 │   ├── INSTALLATION.md             # Detailed installation
 │   ├── OVERVIEW.md                 # Architecture & design
-│   ├── SUMMARY.md                  # Creation summary
 │   └── README.md                   # This file
 ├── MSAPIDemoApp/                   # Demo Unity project
 │   ├── Assets/

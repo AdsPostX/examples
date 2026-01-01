@@ -13,3 +13,15 @@ Breakpoints_v2.xcbkptlist
 debug.keystore
 UserInterfaceState.xcuserstate
 .xcode.env
+unity/MomentsAPI-Unity/Moments/SUMMARY.md
+unity/MomentsAPI-Unity/Moments/SUMMARY.md.meta
+unity/MomentsAPI-Unity/MSAPIDemoApp/.vscode/
+unity/MomentsAPI-Unity/MSAPIDemoApp/Android/
+unity/MomentsAPI-Unity/MSAPIDemoApp/iOS/
+unity/MomentsAPI-Unity/MSAPIDemoApp/Library/
+unity/MomentsAPI-Unity/MSAPIDemoApp/Packages/packages-lock.json
+unity/MomentsAPI-Unity/MSAPIDemoApp/mono_crash.0.0.json
+unity/MomentsAPI-Unity/MSAPIDemoApp/Logs/
+unity/MomentsAPI-Unity/MSAPIDemoApp/Assets/google-services.json.meta
+unity/MomentsAPI-Unity/MSAPIDemoApp/Keystore/release.keystore
+unity/MomentsAPI-Unity/MSAPIDemoApp/UserSettings/

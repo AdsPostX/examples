@@ -44,8 +44,23 @@ extension Color {
     /// - Parameter hexString: A string containing the hex color code
     /// - Note: Alpha channel in 8-digit format is currently ignored, opacity is always set to 1
     init(hexString: String) {
+        // Handle empty string gracefully
+        guard !hexString.isEmpty else {
+            // Default to clear color for empty strings
+            self.init(.sRGB, red: 0, green: 0, blue: 0, opacity: 0)
+            return
+        }
+        
         // Remove any non-alphanumeric characters (like '#')
         let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        
+        // Validate we have a valid hex string after trimming
+        guard !hex.isEmpty else {
+            // Default to clear color if only special characters
+            self.init(.sRGB, red: 0, green: 0, blue: 0, opacity: 0)
+            return
+        }
+        
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)
         let r, g, b: UInt64

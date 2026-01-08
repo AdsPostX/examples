@@ -2,13 +2,21 @@
 
 ## Overview
 
-This sample demonstrates how to integrate the Moments API into a native iOS application using Swift. Use it as a reference for offer retrieval, UI display, and event tracking. For full details, refer to the [official Moments API iOS Integration Playbook](https://docs.momentscience.com/moments-api-ios-swift-integration-playbook).
+This sample demonstrates how to integrate the Moments API into a native iOS application using Swift. Use it as a reference for offer retrieval, UI display, and event tracking.
+
+Learn more about [MomentPerks](https://docs.momentscience.com/momentperks) and how it can help you engage your users with personalized offers.
 
 ## Prerequisites
 
-- API key ([get yours here]([https://adspostx.com/](https://docs.momentscience.com/apis-documentation#YET9v)))
+- API key ([get yours here](https://app.momentscience.com/))
 - Xcode (latest)
 - iOS 15.0 or higher
+
+## Documentation
+
+- **Integration Guide:** [Swift Moments API Integration Guide](https://docs.momentscience.com/swift-moments-api-integration-guide)
+- **API Reference:** [MomentPerks API Documentation](https://docs.momentscience.com/momentperks-api)
+- **Overview:** [MomentPerks Platform](https://docs.momentscience.com/momentperks)
 
 ## Quick Integration Steps
 
@@ -19,7 +27,7 @@ This sample demonstrates how to integrate the Moments API into a native iOS appl
 3. **Track Interactions:**
    Use `fireBeaconRequest` to fire beacons for user events (display, close, negative action).
 
-See the demo code for implementation patterns. For advanced usage, consult the [official documentation](https://docs.momentscience.com/moments-api-ios-swift-integration-playbook).
+For detailed implementation patterns and advanced usage, refer to the [Swift Integration Guide](https://docs.momentscience.com/swift-moments-api-integration-guide).
 
 ## Getting Started
 
@@ -38,3 +46,15 @@ See the demo code for implementation patterns. For advanced usage, consult the [
 - `OfferContainerView.swift` – OfferContainer UI
 - `OfferView.swift` – Individual offer UI
 - `OffersViewModel.swift` – State management, business logic
+
+## Support
+
+Need help? Have questions?
+
+- **Email:** [help@momentscience.com](mailto:help@momentscience.com)
+- **Documentation:** [MomentPerks Docs](https://docs.momentscience.com/momentperks)
+- **Dashboard:** [Get your API key](https://app.momentscience.com/)
+
+## License
+
+See LICENSE file for details.

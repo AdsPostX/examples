@@ -36,11 +36,11 @@ class OffersViewModel: ObservableObject {
     private var apiKey: String
     
     /// Service instance for handling API operations
-    private let offersService: OffersService
+    private let offersService: OffersServiceProtocol
     
     /// Initializes the view model with an offers service
-    /// - Parameter service: The service instance to use for API operations
-    init(service: OffersService) {
+    /// - Parameter service: The service instance to use for API operations (conforms to OffersServiceProtocol)
+    init(service: OffersServiceProtocol) {
         self.offersService = service
         self.apiKey = ""
     }
@@ -115,13 +115,18 @@ class OffersViewModel: ObservableObject {
     /// Gets the appropriate font for CTA buttons based on API styles
     /// - Returns: SwiftUI Font configured with the correct size and weight
     /// - Note: Defaults to system font size 13 if not specified in styles
+    /// - Note: Font size is clamped between 8 and 72 points for safety
     func getButtonFont() -> Font {
-        // Parse font size
+        // Parse font size safely
         let sizeString = styles?.offerText?.ctaTextSize ?? "13px"
-        let size = Double(sizeString.replacingOccurrences(of: "px", with: "")) ?? 13.0
+        let cleanedString = sizeString.replacingOccurrences(of: "px", with: "").trimmingCharacters(in: .whitespaces)
+        let parsedSize = Double(cleanedString) ?? 13.0
         
-        // Get font style
-        let style = styles?.offerText?.ctaTextStyle?.lowercased() ?? "normal"
+        // Clamp size to reasonable bounds (8pt to 72pt)
+        let size = max(8.0, min(72.0, parsedSize))
+        
+        // Get font style safely
+        let style = styles?.offerText?.ctaTextStyle?.lowercased().trimmingCharacters(in: .whitespaces) ?? "normal"
         
         // Create font with weight
         switch style {
@@ -141,9 +146,13 @@ class OffersViewModel: ObservableObject {
     /// Gets the font for the offer description text
     /// - Returns: SwiftUI Font with size from API or default
     /// - Note: Defaults to system font size 16 if not specified
+    /// - Note: Font size is clamped between 8 and 72 points for safety
     func getDescriptionFont() -> Font {
         // Get font size from API response, default to 16 if not specified
-        let size = CGFloat(styles?.offerText?.fontSize ?? 16)
+        let fontSize = styles?.offerText?.fontSize ?? 16
+        
+        // Clamp size to reasonable bounds (8pt to 72pt)
+        let size = CGFloat(max(8, min(72, fontSize)))
         return .system(size: size)
     }
     
@@ -153,6 +162,12 @@ class OffersViewModel: ObservableObject {
         return Color(hexString: styles?.offerText?.textColor ?? "#000000")
     }
     
+    /// Gets the color for the offer title text
+    /// - Returns: SwiftUI Color from API or default black
+    func getTitleTextColor() -> Color {
+        return Color(hexString: styles?.offerText?.textColor ?? "#000000")
+    }
+
     /// Gets the color for the popup background
     /// - Returns: SwiftUI Color from API or default overlay color
     func getPopupBackgroundColor() -> Color {
@@ -177,10 +192,16 @@ class OffersViewModel: ObservableObject {
     
     /// Navigates to the previous offer if available
     /// - Note: Also triggers pixel request for the newly displayed offer
+    /// - Note: Includes bounds checking for extra safety
     func showPreviousOffer() {
-        guard hasPreviousOffer else { return }
+        guard hasPreviousOffer, currentOfferIndex > 0 else { return }
         Task { @MainActor in
             currentOfferIndex -= 1
+            // Double-check bounds after decrement
+            guard currentOfferIndex >= 0, currentOfferIndex < offers.count else {
+                currentOfferIndex = 0
+                return
+            }
             // Ensure pixel request fires after state update
             await Task.yield()
             firePixelRequestForCurrentOffer()
@@ -190,10 +211,16 @@ class OffersViewModel: ObservableObject {
     
     /// Navigates to the next offer if available
     /// - Note: Also triggers pixel request for the newly displayed offer
+    /// - Note: Includes bounds checking for extra safety
     func showNextOffer() {
-        guard hasNextOffer else { return }
+        guard hasNextOffer, currentOfferIndex < offers.count - 1 else { return }
         Task { @MainActor in
             currentOfferIndex += 1
+            // Double-check bounds after increment
+            guard currentOfferIndex >= 0, currentOfferIndex < offers.count else {
+                currentOfferIndex = max(0, offers.count - 1)
+                return
+            }
             // Ensure pixel request fires after state update
             await Task.yield()
             firePixelRequestForCurrentOffer()

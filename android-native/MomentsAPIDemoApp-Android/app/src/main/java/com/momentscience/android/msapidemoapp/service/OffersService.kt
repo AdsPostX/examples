@@ -5,6 +5,7 @@ import com.momentscience.android.msapidemoapp.model.OffersResponse
 import com.momentscience.android.msapidemoapp.service.api.RetrofitProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerializationException
 import java.io.IOException
 import java.net.URL
 
@@ -23,7 +24,7 @@ sealed class OffersError : Exception() {
     data object NoOffers : OffersError()
     
     /** Represents failures in parsing or converting the API response to expected data structures */
-    data object DecodingError : OffersError()
+    data class DecodingError(val error: Throwable? = null) : OffersError()
     
     /** Indicates that the provided API credentials are invalid or unauthorized */
     data object InvalidAPIKey : OffersError()
@@ -33,6 +34,9 @@ sealed class OffersError : Exception() {
     
     /** Indicates that the provided creative parameter value is not among the accepted values */
     data class InvalidCreative(val value: String) : OffersError()
+    
+    /** Represents an unexpected error that doesn't fall into other categories */
+    data class UnknownError(val error: Throwable) : OffersError()
 }
 
 /**
@@ -150,12 +154,13 @@ class OffersService {
      * @return OffersResponse containing the complete offer data and metadata
      * 
      * @throws OffersError.InvalidURL When the API URL is malformed
-     * @throws OffersError.NetworkError For any network or connection failures
+     * @throws OffersError.NetworkError For network or connection failures (IOException)
      * @throws OffersError.NoOffers When no offers are available
-     * @throws OffersError.DecodingError When response parsing fails
+     * @throws OffersError.DecodingError When response parsing fails (SerializationException)
      * @throws OffersError.InvalidAPIKey When authentication fails
      * @throws OffersError.InvalidLoyaltyBoost When loyalty boost value is invalid
      * @throws OffersError.InvalidCreative When creative value is invalid
+     * @throws OffersError.UnknownError For unexpected errors that don't match other categories
      */
     suspend fun fetchOffers(
         apiKey: String,
@@ -185,25 +190,34 @@ class OffersService {
                 payload = finalPayload
             )
 
+            // Safely extract response body
+            val responseBody = response.body()
+            
             when {
                 !response.isSuccessful -> {                    
                     throw OffersError.NetworkError(IOException("HTTP ${response.code()}"))
                 }
-                response.body() == null -> {
-                    throw OffersError.DecodingError
+                responseBody == null -> {
+                    throw OffersError.DecodingError()
                 }
-                response.body()?.data?.offers?.isEmpty() == true -> {
+                responseBody.data?.offers?.isEmpty() == true -> {
                     throw OffersError.NoOffers
                 }
                 else -> {
-                    return response.body()!!
+                    // Safe return - body is guaranteed to be non-null at this point
+                    return responseBody
                 }
             }
         } catch (e: Exception) {
             when (e) {
-                is IOException -> throw OffersError.NetworkError(e)
+                // Re-throw OffersError as-is (already the correct type)
                 is OffersError -> throw e
-                else -> throw OffersError.NetworkError(e)
+                // Network-related errors (connection, timeout, HTTP errors)
+                is IOException -> throw OffersError.NetworkError(e)
+                // JSON parsing/serialization errors
+                is SerializationException -> throw OffersError.DecodingError(e)
+                // Any other unexpected errors
+                else -> throw OffersError.UnknownError(e)
             }
         }
     }

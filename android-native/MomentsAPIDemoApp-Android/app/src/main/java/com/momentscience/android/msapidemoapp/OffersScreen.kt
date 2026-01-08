@@ -8,9 +8,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.momentscience.android.msapidemoapp.service.OffersError
 import com.momentscience.android.msapidemoapp.ui.components.OfferContainerView
 import com.momentscience.android.msapidemoapp.ui.viewmodel.OffersUiState
 import com.momentscience.android.msapidemoapp.ui.viewmodel.OffersViewModel
@@ -88,21 +90,36 @@ fun OffersScreen(
 ) {
     // Collect state flows from ViewModel
     val uiState by viewModel.uiState.collectAsState()
-    val navigationEvent by viewModel.navigationEvent.collectAsState()
     val closeEvent by viewModel.closeEvent.collectAsState()
     
     // Get theme and context
     val backgroundColor = MaterialTheme.colorScheme.background
     val context = LocalContext.current
 
-    // Handle external URL navigation events
-    LaunchedEffect(navigationEvent) {
-        navigationEvent?.let { uri ->
-            // Create and launch intent for external URL
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            context.startActivity(intent)
-            // Clear the navigation event to prevent duplicate handling
-            viewModel.clearNavigationEvent()
+    // Handle external URL navigation events with safety checks
+    // Collect navigationEvent as a flow to properly observe changes
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvent.collect { uri ->
+            uri?.let {
+                android.util.Log.d("OffersScreen", "🟢 Opening URL in external browser: $uri")
+                try {
+                    // Create intent to open URL in external browser
+                    val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                        // Add flag to open in a new task (external to this app)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    
+                    // Start the activity - this will open the user's default browser
+                    context.startActivity(intent)
+                    android.util.Log.d("OffersScreen", "✅ External browser opened successfully")
+                } catch (e: Exception) {
+                    // Catch any exception during intent creation or launching
+                    android.util.Log.e("OffersScreen", "Failed to open URL in browser: $uri", e)
+                } finally {
+                    // Always clear the navigation event to prevent stuck state
+                    viewModel.clearNavigationEvent()
+                }
+            }
         }
     }
 
@@ -137,8 +154,11 @@ fun OffersScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
+            // Capture state in local variable to enable smart casting
+            val currentState = uiState
+            
             // Handle different UI states
-            when (uiState) {
+            when (currentState) {
                 // Loading state with centered progress indicator
                 is OffersUiState.Loading -> {
                     CircularProgressIndicator(
@@ -148,7 +168,19 @@ fun OffersScreen(
                 
                 // Error state with message and action buttons
                 is OffersUiState.Error -> {
-                    val error = (uiState as OffersUiState.Error).message
+                    // Kotlin smart cast: currentState is automatically cast to OffersUiState.Error here
+                    val error = currentState.error
+                    val errorMessage = when (error) {
+                        is OffersError.InvalidURL -> stringResource(R.string.error_invalid_url)
+                        is OffersError.NetworkError -> stringResource(R.string.error_network)
+                        is OffersError.NoOffers -> stringResource(R.string.error_no_offers)
+                        is OffersError.DecodingError -> stringResource(R.string.error_decoding)
+                        is OffersError.InvalidAPIKey -> stringResource(R.string.error_invalid_api_key)
+                        is OffersError.InvalidLoyaltyBoost -> stringResource(R.string.error_invalid_loyalty_boost, error.value)
+                        is OffersError.InvalidCreative -> stringResource(R.string.error_invalid_creative, error.value)
+                        is OffersError.UnknownError -> stringResource(R.string.error_unknown)
+                        else -> stringResource(R.string.error_unknown)
+                    }
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -159,7 +191,7 @@ fun OffersScreen(
                     ) {
                         // Error message
                         Text(
-                            text = error,
+                            text = errorMessage,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center
                         )
@@ -176,14 +208,22 @@ fun OffersScreen(
                                     containerColor = MaterialTheme.colorScheme.error
                                 )
                             ) {
-                                Text("Close")
+                                Text(stringResource(R.string.close))
                             }
                             
                             // Retry button
                             Button(
-                                onClick = { viewModel.fetchOffers(apiKey) }
+                                onClick = { 
+                                    viewModel.fetchOffers(
+                                        apiKey = apiKey,
+                                        isDevelopment = isDevelopment,
+                                        payload = payload,
+                                        creative = "0",
+                                        loyaltyBoost = "0"
+                                    )
+                                }
                             ) {
-                                Text("Try Again")
+                                Text(stringResource(R.string.try_again))
                             }
                         }
                     }
@@ -191,15 +231,15 @@ fun OffersScreen(
                 
                 // Success state with offer content
                 is OffersUiState.Success -> {
-                    val state = uiState as OffersUiState.Success
-                    val currentOffer = state.currentOffer
+                    // Kotlin smart cast: currentState is automatically cast to OffersUiState.Success here
+                    val currentOffer = currentState.currentOffer
                     
                     if (currentOffer != null) {
                         // Render offer container with navigation and interaction handlers
                         OfferContainerView(
-                            offers = state.offers.data?.offers ?: emptyList(),
-                            styles = state.offers.data?.styles ?: OffersStyles(),
-                            currentOfferIndex = state.currentOfferIndex,
+                            offers = currentState.offers.data?.offers ?: emptyList(),
+                            styles = currentState.offers.data?.styles ?: OffersStyles(),
+                            currentOfferIndex = currentState.currentOfferIndex,
                             onClose = {
                                 currentOffer.let { viewModel.onClose(it) }
                             },

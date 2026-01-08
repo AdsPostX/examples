@@ -8,6 +8,7 @@ import com.momentscience.android.msapidemoapp.model.Offer
 import com.momentscience.android.msapidemoapp.model.OffersResponse
 import com.momentscience.android.msapidemoapp.repository.OffersRepository
 import com.momentscience.android.msapidemoapp.service.OffersError
+import com.momentscience.android.msapidemoapp.ui.theme.Dimensions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,11 +49,12 @@ sealed interface OffersUiState {
     }
 
     /**
-     * Represents an error state with a user-friendly message.
+     * Represents an error state with the error object.
+     * The UI layer is responsible for formatting the error message using string resources.
      *
-     * @property message Human-readable error message to display to the user
+     * @property error The error that occurred during offer fetching
      */
-    data class Error(val message: String) : OffersUiState
+    data class Error(val error: Throwable) : OffersUiState
 }
 
 /**
@@ -135,17 +137,8 @@ class OffersViewModel(
                     fireBeacon(advPixelUrl)
                 }
             }.onFailure { error ->
-                val errorMessage = when (error) {
-                    is OffersError.InvalidURL -> "Invalid URL"
-                    is OffersError.NetworkError -> "Network error occurred"
-                    is OffersError.NoOffers -> "No offers available"
-                    is OffersError.DecodingError -> "Error processing response"
-                    is OffersError.InvalidAPIKey -> "Invalid API key"
-                    is OffersError.InvalidLoyaltyBoost -> "Invalid loyalty boost value"
-                    is OffersError.InvalidCreative -> "Invalid creative value"
-                    else -> "An unexpected error occurred"
-                }
-                _uiState.value = OffersUiState.Error(errorMessage)
+                // Store the error itself, let the UI layer format the message
+                _uiState.value = OffersUiState.Error(error)
             }
         }
     }
@@ -173,7 +166,7 @@ class OffersViewModel(
 
             // If this is the last offer, add delay before firing close beacon
             if (!currentState.hasNextOffer) {
-                delay(500) // Wait for URL to open
+                delay(Dimensions.BeaconFireDelayMillis) // Wait for URL to open
                 currentState.currentOffer?.beacons?.close?.let { url ->
                     fireBeacon(url)
                 }

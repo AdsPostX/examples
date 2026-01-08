@@ -9,13 +9,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.momentscience.android.msapidemoapp.R
 import com.momentscience.android.msapidemoapp.model.Offer
 import com.momentscience.android.msapidemoapp.model.OffersStyles
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
-import androidx.core.graphics.toColorInt
-import com.momentscience.android.msapidemoapp.util.toValidHex
+import com.momentscience.android.msapidemoapp.util.toComposeColor
 
 /**
  * A composable container that displays offers in a carousel-like interface with navigation controls.
@@ -98,9 +99,7 @@ fun OfferContainerView(
 
     // Get background color from styles or fallback to Material theme
     val backgroundColor = remember(styles.popup?.background, defaultBackgroundColor) {
-        styles.popup?.background?.let { colorString ->
-            runCatching { Color(colorString.toValidHex().toColorInt()) }.getOrNull()
-        } ?: defaultBackgroundColor
+        styles.popup?.background?.toComposeColor(defaultBackgroundColor) ?: defaultBackgroundColor
     }
 
     // Root column that fills the available space and arranges content vertically
@@ -124,7 +123,7 @@ fun OfferContainerView(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close"
+                    contentDescription = stringResource(R.string.close)
                 )
             }
         }
@@ -156,7 +155,7 @@ fun OfferContainerView(
             ) {
                 Icon(
                     imageVector = Icons.Default.NavigateBefore,
-                    contentDescription = "Previous offer",
+                    contentDescription = stringResource(R.string.previous_offer),
                     tint = if (hasPreviousOffer) {
                         MaterialTheme.colorScheme.primary
                     } else {
@@ -172,7 +171,7 @@ fun OfferContainerView(
             ) {
                 Icon(
                     imageVector = Icons.Default.NavigateNext,
-                    contentDescription = "Next offer",
+                    contentDescription = stringResource(R.string.next_offer),
                     tint = if (hasNextOffer) {
                         MaterialTheme.colorScheme.primary
                     } else {

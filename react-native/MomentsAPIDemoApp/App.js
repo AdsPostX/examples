@@ -1,15 +1,14 @@
 /**
  * App.js
  *
- * Main application component for the AdsPostX API Demo.
+ * Main application component for the Moments API Demo.
  * Manages the overall application state and renders different views based on:
- * - Loading state
- * - Error state
- * - Offer display state
- * - Offer closed state
+ * - API key input
+ * - Development mode toggle
+ * - Offer loading and display
  *
  * Key Features:
- * - Input for API key with a default value
+ * - Input for API key with a default value from environment variables
  * - Toggle for development mode
  * - Button to load offers, which opens a modal screen
  * - Handles keyboard dismissal for better UX
@@ -26,9 +25,12 @@ import {
   TouchableWithoutFeedback,
   Switch,
 } from 'react-native';
+import Config from 'react-native-config';
 import OffersScreen from './src/screens/OffersScreen';
+import {Colors, Spacing, Typography, BorderRadius} from './src/constants/theme';
 
-const DEFAULT_API_KEY = 'b167f9d7-c479-41d8-b58f-4a5b26e561f1';
+// Load API key from environment variables for security
+const DEFAULT_API_KEY = Config.DEFAULT_API_KEY || '';
 
 /**
  * Main App Component
@@ -84,7 +86,8 @@ function App() {
             placeholderTextColor="#999"
             autoCapitalize="none"
             autoCorrect={false}
-            defaultValue={DEFAULT_API_KEY}
+            accessibilityLabel="API key input"
+            accessibilityHint="Enter your Moments API key to fetch offers"
           />
 
           {/* Development Mode Switch */}
@@ -95,8 +98,12 @@ function App() {
             <Switch
               value={isDevelopment}
               onValueChange={setIsDevelopment}
-              trackColor={{false: '#767577', true: '#81b0ff'}}
-              thumbColor={isDevelopment ? '#f5dd4b' : '#f4f3f4'}
+              trackColor={{false: Colors.textLight, true: Colors.primaryLight}}
+              thumbColor={isDevelopment ? Colors.warning : Colors.backgroundLight}
+              accessibilityLabel="Development mode toggle"
+              accessibilityRole="switch"
+              accessibilityHint="Enables development mode for testing"
+              accessibilityState={{checked: isDevelopment}}
             />
           </View>
 
@@ -107,7 +114,11 @@ function App() {
               !isLoadButtonEnabled && styles.loadButtonDisabled,
             ]}
             onPress={handleLoadOffers}
-            disabled={!isLoadButtonEnabled}>
+            disabled={!isLoadButtonEnabled}
+            accessibilityLabel="Load offers"
+            accessibilityRole="button"
+            accessibilityHint="Fetches and displays available offers"
+            accessibilityState={{disabled: !isLoadButtonEnabled}}>
             <Text style={styles.buttonText}>Load Offers</Text>
           </TouchableOpacity>
         </View>
@@ -148,55 +159,55 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.background,
   },
   content: {
-    padding: 16,
+    padding: Spacing.base,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
+    fontSize: Typography.body,
+    marginBottom: Spacing.sm,
     fontWeight: 'bold',
-    color: '#000000',
+    color: Colors.text,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 16,
-    color: '#666666',
+    borderColor: Colors.border,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    fontSize: Typography.body,
+    marginBottom: Spacing.base,
+    color: Colors.textLight,
   },
   loadButton: {
-    backgroundColor: '#3565A9',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: Colors.primary,
+    padding: Spacing.base,
+    borderRadius: BorderRadius.md,
     alignItems: 'center',
   },
   loadButtonDisabled: {
-    backgroundColor: '#cccccc',
+    backgroundColor: Colors.disabled,
     opacity: 0.7,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 16,
+    color: Colors.textWhite,
+    fontSize: Typography.body,
     fontWeight: 'bold',
   },
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 12,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
+    padding: Spacing.md,
+    backgroundColor: Colors.backgroundLight,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: Colors.borderLight,
   },
   switchLabel: {
-    fontSize: 16,
+    fontSize: Typography.body,
     fontWeight: '500',
-    color: '#000',
+    color: Colors.text,
   },
 });
 

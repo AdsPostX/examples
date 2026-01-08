@@ -13,6 +13,8 @@ Breakpoints_v2.xcbkptlist
 debug.keystore
 UserInterfaceState.xcuserstate
 .xcode.env
+react-native/MomentsAPIDemoApp/ios/Pods/
+react-native/MomentsAPIDemoApp/node_modules/
 unity/MomentsAPI-Unity/Moments/SUMMARY.md
 unity/MomentsAPI-Unity/Moments/SUMMARY.md.meta
 unity/MomentsAPI-Unity/MSAPIDemoApp/.vscode/

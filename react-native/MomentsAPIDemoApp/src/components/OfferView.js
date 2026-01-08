@@ -1,5 +1,7 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Colors, Spacing, Typography, BorderRadius} from '../constants/theme';
+import CachedImage from './CachedImage';
 
 /**
  * OfferView Component
@@ -41,19 +43,36 @@ function OfferView({
   /**
    * Helper function to parse pixel values from API styles
    *
+   * Safely parses pixel value strings (e.g., '16px') to numbers.
+   * Includes validation to handle edge cases and invalid inputs.
+   *
    * @param {string} value - The pixel value string (e.g., '16px')
    * @returns {number|undefined} - The parsed numeric value or undefined if invalid
+   *
+   * @example
+   * parsePixelValue('16px')  // Returns: 16
+   * parsePixelValue('20')    // Returns: 20
+   * parsePixelValue('invalid') // Returns: undefined
+   * parsePixelValue(null)    // Returns: undefined
    */
   const parsePixelValue = value => {
-    if (!value) return undefined;
-    // Remove 'px' and convert to number
-    return parseInt(value.replace('px', ''), 10);
+    // Return undefined for null, undefined, or non-string values
+    if (!value || typeof value !== 'string') {
+      return undefined;
+    }
+
+    // Remove 'px' suffix and any whitespace, then parse to integer
+    const parsed = parseInt(value.replace(/px/gi, '').trim(), 10);
+
+    // Return undefined if parsing resulted in NaN, otherwise return the number
+    return isNaN(parsed) ? undefined : parsed;
   };
 
   /**
    * Dynamic styles derived from API response
    *
    * @type {Object}
+   * @property {Object} title - Styles for title text
    * @property {Object} description - Styles for description text
    * @property {Object} positiveCTA - Styles for positive CTA button
    * @property {Object} positiveCTAText - Styles for positive CTA button text
@@ -61,6 +80,9 @@ function OfferView({
    * @property {Object} negativeCTAText - Styles for negative CTA button text
    */
   const dynamicStyles = {
+    title: {
+      color: apiStyles?.textColor || '#000',
+    },
     description: {
       fontSize: apiStyles?.fontSize || 16,
       color: apiStyles?.textColor || '#000',
@@ -86,15 +108,21 @@ function OfferView({
   return (
     <View style={styles.container}>
       {/* Title Section - Optional */}
-      {title && <Text style={styles.title}>{title}</Text>}
+      {title && <Text style={[styles.title, dynamicStyles.title]}>{title}</Text>}
 
-      {/* Image Section - Optional, clickable */}
+      {/* Image Section - Optional, clickable, with caching */}
       {imageURL && (
-        <TouchableOpacity onPress={onImageCTA}>
-          <Image
-            source={{uri: `${imageURL}`}}
+        <TouchableOpacity
+          onPress={onImageCTA}
+          accessibilityRole="imagebutton"
+          accessibilityLabel={`Offer image: ${title || 'promotional offer'}`}
+          accessibilityHint="Double tap to view offer details">
+          <CachedImage
+            uri={imageURL}
             resizeMode="contain"
             style={styles.image}
+            priority="high"
+            accessible={false}
           />
         </TouchableOpacity>
       )}
@@ -112,7 +140,10 @@ function OfferView({
         {positiveCTA && (
           <TouchableOpacity
             onPress={onPositiveCTA}
-            style={[styles.cta, dynamicStyles.positiveCTA]}>
+            style={[styles.cta, dynamicStyles.positiveCTA]}
+            accessibilityLabel={positiveCTA}
+            accessibilityRole="button"
+            accessibilityHint="Accept this offer and open the link">
             <Text style={[styles.ctaText, dynamicStyles.positiveCTAText]}>
               {positiveCTA}
             </Text>
@@ -123,7 +154,10 @@ function OfferView({
         {negativeCTA && (
           <TouchableOpacity
             onPress={onNegativeCTA}
-            style={[styles.cta, dynamicStyles.negativeCTA]}>
+            style={[styles.cta, dynamicStyles.negativeCTA]}
+            accessibilityLabel={negativeCTA}
+            accessibilityRole="button"
+            accessibilityHint="Decline this offer and continue">
             <Text style={[styles.ctaText, dynamicStyles.negativeCTAText]}>
               {negativeCTA}
             </Text>
@@ -152,14 +186,14 @@ function OfferView({
  */
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'transparent',
+    backgroundColor: Colors.transparent,
   },
   title: {
     textAlign: 'center',
-    color: 'black',
-    fontSize: 20,
-    padding: 8,
-    marginBottom: 16,
+    color: Colors.text,
+    fontSize: Typography.h2,
+    padding: Spacing.sm,
+    marginBottom: Spacing.base,
   },
   image: {
     height: 150,
@@ -167,9 +201,9 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: 'center',
-    padding: 8,
-    fontSize: 16,
-    marginBottom: 16,
+    padding: Spacing.sm,
+    fontSize: Typography.body,
+    marginBottom: Spacing.base,
   },
   ctaContainer: {
     flexDirection: 'column',
@@ -177,12 +211,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cta: {
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 8,
+    padding: Spacing.base,
+    marginBottom: Spacing.base,
+    borderRadius: BorderRadius.md,
   },
   ctaText: {
-    color: 'white',
+    color: Colors.textWhite,
   },
 });
 

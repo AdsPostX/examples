@@ -11,18 +11,24 @@ import Logger from './logger';
 /**
  * Generates a platform-specific unique identifier for the device
  *
+ * This is an async function because device-specific ID retrieval is asynchronous.
  * Platform-specific implementations:
- * - iOS: Uses IDFV (Vendor Identifier)
- * - Android: Uses AndroidID
+ * - iOS: Uses IDFV (Vendor Identifier) via getUniqueId()
+ * - Android: Uses AndroidID via getAndroidId()
  * - Other platforms: Returns 'unknown'
  *
- * @returns {string} Unique device identifier
+ * @async
+ * @returns {Promise<string>} Unique device identifier
+ *
+ * @example
+ * const deviceId = await generateUniqueID();
+ * console.log('Device ID:', deviceId);
  */
-export const generateUniqueID = () => {
-  return Platform.select({
-    ios: DeviceInfo.getUniqueId(), // IDFV for iOS
-    android: DeviceInfo.getAndroidId(), // AndroidID for Android
-    default: 'unknown',
+export const generateUniqueID = async () => {
+  return await Platform.select({
+    ios: DeviceInfo.getUniqueId(), // IDFV for iOS (async)
+    android: DeviceInfo.getAndroidId(), // AndroidID for Android (async)
+    default: Promise.resolve('unknown'), // Wrap in Promise for consistency
   });
 };
 

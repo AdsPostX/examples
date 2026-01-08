@@ -13,6 +13,7 @@ import OfferContainerView from '../components/OfferContainerView';
 import {useOffers} from '../hooks/useOffers';
 import {generateUniqueID, getUserAgent} from '../utils/Util';
 import Logger from '../utils/logger';
+import {Colors, Spacing, Typography, BorderRadius} from '../constants/theme';
 
 /**
  * OffersScreen Component
@@ -47,11 +48,29 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
     error,
     fetchOffers,
     handleCloseOffer,
-    reloadOffers,
     resetStates,
   } = useOffers();
 
   const [adpx_fp, setAdpxFp] = useState('');
+
+  /**
+   * Initiates offer fetching with all required parameters
+   * Extracted to avoid duplication between initial load and retry
+   */
+  const loadOffers = async () => {
+    await fetchOffers({
+      apiKey,
+      loyaltyBoost: '0',
+      creative: '0',
+      isDevelopment,
+      payload: {
+        adpx_fp: adpx_fp,
+        pub_user_id: '1234567890', // should be a unique identifier for the user
+        placement: 'checkout',
+        ua: await getUserAgent(),
+      },
+    });
+  };
 
   /**
    * Handles offer container close event
@@ -80,32 +99,33 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
    * Also handles:
    * - State reset before fetch
    * - Error logging
+   * - Cleanup to prevent state updates on unmounted component
    */
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       if (visible && apiKey) {
         try {
           resetStates();
-          await fetchOffers({
-            apiKey,
-            loyaltyBoost: '0',
-            creative: '0',
-            isDevelopment,
-            payload: {
-              adpx_fp: adpx_fp,
-              pub_user_id: '1234567890', // should be a unique identifier for the user
-              placement: 'checkout',
-              ua: await getUserAgent(),
-            },
-          });
+          await loadOffers();
         } catch (error) {
-          Logger.log('Error fetching offers:', error);
+          // Only log errors if component is still mounted
+          if (isMounted) {
+            Logger.log('Error fetching offers:', error);
+          }
         }
       }
     };
 
     fetchData();
-  }, [visible, apiKey, fetchOffers, resetStates, isDevelopment, adpx_fp]);
+
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, apiKey, isDevelopment, adpx_fp]);
 
   /**
    * Handles modal close via back button
@@ -124,7 +144,7 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
         const uniqueID = await generateUniqueID();
         setAdpxFp(uniqueID);
       } catch (error) {
-        console.error('Error fetching unique ID:', error);
+        Logger.error('Error fetching unique ID:', error);
         setAdpxFp('unknown');
       }
     };
@@ -141,7 +161,7 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
         {/* Loading State */}
         {isLoading && !offers && (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color={Colors.info} />
             <Text style={styles.loadingText}>Loading offers...</Text>
           </View>
         )}
@@ -156,23 +176,22 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
                 style={[styles.button, styles.tryAgainButton]}
                 onPress={async () => {
                   try {
-                    await fetchOffers({
-                      apiKey,
-                      isDevelopment,
-                      payload: {
-                        adpx_fp: adpx_fp,
-                        ua: await getUserAgent(),
-                      },
-                    });
+                    await loadOffers();
                   } catch (err) {
                     Logger.log('Error:', err);
                   }
-                }}>
+                }}
+                accessibilityLabel="Try again"
+                accessibilityRole="button"
+                accessibilityHint="Retry loading offers">
                 <Text style={styles.buttonText}>Try Again</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.closeButton]}
-                onPress={handleModalClose}>
+                onPress={handleModalClose}
+                accessibilityLabel="Close"
+                accessibilityRole="button"
+                accessibilityHint="Close offers screen">
                 <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </View>
@@ -214,54 +233,55 @@ function OffersScreen({visible, onClose, apiKey, isDevelopment}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    padding: 16,
+    padding: Spacing.base,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.borderLight,
   },
   closeButton: {
-    padding: 8,
+    padding: Spacing.sm,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: Spacing.base,
   },
   loadingText: {
     marginTop: 10,
-    fontSize: 16,
+    fontSize: Typography.body,
+    color: Colors.text,
   },
   errorText: {
-    color: 'red',
-    fontSize: 16,
+    color: Colors.error,
+    fontSize: Typography.body,
     textAlign: 'center',
     marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 16, // Space between buttons
+    gap: Spacing.base, // Space between buttons
   },
   button: {
-    padding: 12,
-    borderRadius: 8,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
     minWidth: 100,
     alignItems: 'center',
   },
   tryAgainButton: {
-    backgroundColor: 'green',
+    backgroundColor: Colors.success,
   },
   closeButton: {
-    backgroundColor: '#666',
+    backgroundColor: Colors.textLight,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 16,
+    color: Colors.textWhite,
+    fontSize: Typography.body,
     fontWeight: 'bold',
   },
 });

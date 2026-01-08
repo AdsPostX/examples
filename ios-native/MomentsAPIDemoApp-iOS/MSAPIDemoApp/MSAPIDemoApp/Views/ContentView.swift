@@ -42,14 +42,22 @@ struct ContentView: View {
     /// Controls development mode
     @State private var isDevelopment: Bool = false
     
-    /// Initializes the view and its dependencies
-    /// - Note: Fails fatally if OffersService cannot be initialized
-    init() {
+    /// Initializes the view with dependency injection
+    /// Uses DependencyContainer to resolve dependencies
+    /// - Parameter container: The dependency container (defaults to shared instance)
+    /// - Note: Container parameter allows for testing with mock dependencies
+    /// - Note: Uses MainActor.assumeIsolated since SwiftUI views are created on the main thread
+    init(container: DependencyContainer = .shared) {
         do {
-            let service = try OffersService()
-            _viewModel = StateObject(wrappedValue: OffersViewModel(service: service))
+            // SwiftUI views are always created on the main thread, so we can safely assume isolation
+            let viewModel = try MainActor.assumeIsolated {
+                try container.makeOffersViewModel()
+            }
+            _viewModel = StateObject(wrappedValue: viewModel)
         } catch {
-            fatalError("Failed to initialize OffersService: \(error)")
+            // For a demo app, we'll still use fatalError, but log the error
+            // In production, you might want to show an error screen instead
+            fatalError("Failed to initialize dependencies: \(error)")
         }
     }
     

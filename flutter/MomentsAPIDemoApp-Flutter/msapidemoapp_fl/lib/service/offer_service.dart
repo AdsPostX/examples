@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 import '../utils/user_agent_util.dart';
+import '../models/offer_response.dart';
 
 /// A service class responsible for interacting with the Moments API.
 ///
@@ -23,10 +25,10 @@ class OfferService {
   /// [isDevelopment] - If true, adds a development flag to the payload.
   /// [payload] - Additional payload data to send in the request body.
   ///
-  /// Returns a [Map] representing the decoded JSON response.
+  /// Returns an [OfferResponse] containing the offers and styling information.
   /// Throws an [Exception] if the API key is empty, or if the request fails,
-  /// or if loyaltyBoost/creative values are invalid.
-  Future<Map<String, dynamic>> loadOffers({
+  /// or if loyaltyBoost/creative values are invalid, or if the request times out (30 seconds).
+  Future<OfferResponse> loadOffers({
     required String apiKey,
     String? loyaltyBoost,
     String? creative,
@@ -84,16 +86,22 @@ class OfferService {
         'User-Agent': payload['ua'] ?? UserAgentUtil.getUserAgent(),
       };
 
-      // Make the POST request to the offers API.
-      final response = await http.post(uri, headers: headers, body: jsonEncode(updatedPayload));
+      // Make the POST request to the offers API with timeout.
+      final response = await http
+          .post(uri, headers: headers, body: jsonEncode(updatedPayload))
+          .timeout(const Duration(seconds: 30));
 
-      // If the response is successful, decode and return the JSON.
+      // If the response is successful, decode and return as typed model.
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return OfferResponse.fromJson(jsonData);
       } else {
         // Throw an exception for non-200 responses.
         throw Exception('API Error: ${response.statusCode} - ${response.body}');
       }
+    } on TimeoutException {
+      // Handle timeout specifically
+      throw Exception('Request timed out. Please check your connection and try again.');
     } catch (e) {
       // Catch and rethrow any errors during the request.
       throw Exception('Error making API call: $e');
@@ -106,7 +114,8 @@ class OfferService {
   ///
   /// [url] - The URL to send the GET request to.
   ///
-  /// Throws an [Exception] if the URL is empty or if the request encounters an error.
+  /// Throws an [Exception] if the URL is empty, if the request encounters an error,
+  /// or if the request times out (10 seconds).
   Future<void> sendRequest(String url) async {
     if (url.isEmpty) {
       throw Exception('URL cannot be empty');
@@ -115,9 +124,14 @@ class OfferService {
     final Uri uri = Uri.parse(url);
 
     try {
-      // Make the GET request for tracking or similar purposes.
-      await http.get(uri, headers: {'Accept': 'application/json'});
+      // Make the GET request for tracking or similar purposes with timeout.
+      await http
+          .get(uri, headers: {'Accept': 'application/json'})
+          .timeout(const Duration(seconds: 10));
       // No response processing or return value needed.
+    } on TimeoutException {
+      // Handle timeout for tracking requests
+      throw Exception('Tracking request timed out: $url');
     } catch (e) {
       // Catch and rethrow any errors during the request.
       throw Exception('Error making GET request: $e');

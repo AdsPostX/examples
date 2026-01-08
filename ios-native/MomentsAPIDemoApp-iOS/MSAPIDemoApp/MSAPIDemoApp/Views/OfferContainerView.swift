@@ -141,6 +141,21 @@ struct OfferContainerView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.secondary)
                 
+            } else {
+                // Fallback state - no offers and no error (should rarely happen)
+                VStack(spacing: 16) {
+                    Text("No offers available")
+                        .foregroundColor(.gray)
+                        .padding()
+                    
+                    Button("Close") {
+                        dismiss()
+                    }
+                    .foregroundColor(.blue)
+                }
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding()
             }
         }
         .statusBar(hidden: true)

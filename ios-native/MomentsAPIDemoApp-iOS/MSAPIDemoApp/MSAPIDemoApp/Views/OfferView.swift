@@ -48,7 +48,7 @@ struct OfferView: View {
                 if let title = offer.title, !title.isEmpty {
                     Text(title)
                         .font(.title2)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(viewModel.getTitleTextColor())
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)

@@ -3,3 +3,4 @@ msapidemoapp_fl/pubspec.lock
 msapidemoapp_fl/android/app/google-services.json
 msapidemoapp_fl/ios/Podfile.lock
 .idea/
+msapidemoapp_fl/android/.kotlin/

@@ -16,3 +16,7 @@ gem 'bigdecimal'
 gem 'logger'
 gem 'benchmark'
 gem 'mutex_m'
+# nkf (provides kconv) was removed from the default gems in Ruby 3.4+; CocoaPods'
+# CFPropertyList path needs it, otherwise `pod install` fails on Ruby 4 with
+# "LoadError: cannot load such file -- kconv".
+gem 'nkf'

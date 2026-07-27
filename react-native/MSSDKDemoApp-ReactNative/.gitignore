@@ -1,6 +1,5 @@
 .DS_Store
 debug.keystore
-package-lock.json
 MSSDKDemoAppRN/android/app/google-services.json
 MSSDKDemoAppRN/android/app/release/
 MSSDKDemoAppRN/android/app/src/main/assets/index.android.bundle

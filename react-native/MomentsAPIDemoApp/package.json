@@ -31,6 +31,17 @@
     "prettier": "^3.6.2",
     "react-test-renderer": "19.2.0"
   },
+  "overrides": {
+    "minimatch@3": "3.1.4",
+    "minimatch@9": "9.0.7",
+    "brace-expansion@1": "1.1.16",
+    "brace-expansion@2": "2.1.2",
+    "js-yaml@3": "3.15.0",
+    "js-yaml@4": "4.3.0",
+    "picomatch@2": "2.3.2",
+    "picomatch@4": "4.0.5",
+    "ws@7": "7.5.13"
+  },
   "engines": {
     "node": ">=18"
   }

@@ -1,0 +1,69 @@
+version: 2
+updates:
+  # ---- JavaScript (npm) : one entry per RN demo app ----
+  - package-ecosystem: npm
+    directory: /react-native/MomentsAPIDemoApp
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      react-native:
+        patterns:
+          - "react-native"
+          - "@react-native/*"
+          - "@react-native-community/*"
+      dev-dependencies:
+        dependency-type: development
+
+  - package-ecosystem: npm
+    directory: /react-native/MSSDKDemoApp-ReactNative/MSSDKDemoAppRN
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      react-native:
+        patterns:
+          - "react-native"
+          - "@react-native/*"
+          - "@react-native-community/*"
+      dev-dependencies:
+        dependency-type: development
+
+  - package-ecosystem: npm
+    directory: /react-native/PerkswallEmbeddedRN
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      react-native:
+        patterns:
+          - "react-native"
+          - "@react-native/*"
+          - "@react-native-community/*"
+      dev-dependencies:
+        dependency-type: development
+
+  # ---- Ruby (bundler) : the CocoaPods build toolchain per app ----
+  - package-ecosystem: bundler
+    directory: /react-native/MomentsAPIDemoApp
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: bundler
+    directory: /react-native/MSSDKDemoApp-ReactNative/MSSDKDemoAppRN
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: bundler
+    directory: /react-native/PerkswallEmbeddedRN
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # ---- GitHub Actions used by this repo's workflows ----
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

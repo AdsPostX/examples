@@ -17,19 +17,19 @@
     "react-native-device-info": "^14.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.0",
-    "@babel/preset-env": "^7.25.0",
-    "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "20.0.0",
-    "@react-native/babel-preset": "0.83.10",
-    "@react-native/eslint-config": "0.83.10",
-    "@react-native/gradle-plugin": "0.83.10",
-    "@react-native/metro-config": "0.83.10",
-    "babel-jest": "^30.2.0",
-    "eslint": "^9.39.1",
-    "jest": "^30.2.0",
-    "prettier": "^3.6.2",
-    "react-test-renderer": "19.2.0"
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
+    "@babel/runtime": "^8.0.0",
+    "@react-native-community/cli": "20.2.0",
+    "@react-native/babel-preset": "0.86.2",
+    "@react-native/eslint-config": "0.86.2",
+    "@react-native/gradle-plugin": "0.86.2",
+    "@react-native/metro-config": "0.86.2",
+    "babel-jest": "^30.4.1",
+    "eslint": "^10.8.0",
+    "jest": "^30.4.2",
+    "prettier": "^3.9.6",
+    "react-test-renderer": "19.2.8"
   },
   "engines": {
     "node": ">=18"

@@ -56,5 +56,15 @@ target 'MSAPIDemoApp' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+    # Xcode 27 rejects deployment targets below iOS 15; lift any pod that still
+    # declares an older one (e.g. RNDeviceInfo's privacy bundle at 9.0).
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |bc|
+        current = bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+        if current && Gem::Version.new(current) < Gem::Version.new(min_ios_version_supported)
+          bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = min_ios_version_supported
+        end
+      end
+    end
   end
 end

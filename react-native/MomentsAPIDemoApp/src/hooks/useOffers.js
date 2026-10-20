@@ -111,7 +111,7 @@ export const useOffers = () => {
         setApiStyles(response.styles);
       } catch (err) {
         Logger.log('Error in fetchOffers:', err);
-        setError('Failed to load offers');
+        setError(err?.message === 'No offers available' ? err.message : 'Failed to load offers');
       } finally {
         setIsLoading(false);
       }

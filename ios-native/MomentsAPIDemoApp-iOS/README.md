@@ -14,7 +14,7 @@ Learn more about [MomentPerks](https://docs.momentscience.com/momentperks) and h
 
 ## Documentation
 
-- **Integration Guide:** [Swift Moments API Integration Guide](https://docs.momentscience.com/swift-moments-api-integration-guide)
+- **Integration Guide:** [Swift Moments API Integration Guide](https://docs.momentscience.com/iosswift-momentperks-api-integration-guide)
 - **API Reference:** [MomentPerks API Documentation](https://docs.momentscience.com/momentperks-api)
 - **Overview:** [MomentPerks Platform](https://docs.momentscience.com/momentperks)
 
@@ -27,7 +27,7 @@ Learn more about [MomentPerks](https://docs.momentscience.com/momentperks) and h
 3. **Track Interactions:**
    Use `fireBeaconRequest` to fire beacons for user events (display, close, negative action).
 
-For detailed implementation patterns and advanced usage, refer to the [Swift Integration Guide](https://docs.momentscience.com/swift-moments-api-integration-guide).
+For detailed implementation patterns and advanced usage, refer to the [Swift Integration Guide](https://docs.momentscience.com/iosswift-momentperks-api-integration-guide).
 
 ## Getting Started
 

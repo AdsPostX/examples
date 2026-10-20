@@ -1,6 +1,6 @@
 # MomentScience Flutter SDK Demo
 
-This repository contains a demo application that demonstrates how to integrate the [MomentScience SDK](https://docs.momentscience.com/flutter-integration-guide) into a Flutter app.
+This repository contains a demo application that demonstrates how to integrate the [MomentScience SDK](https://docs.momentscience.com/flutter-momentperks-prefetch-integration-guide) into a Flutter app.
 This is an official MomentScience example app showing how to integrate the MomentScience SDK in a Flutter application.
 
 **MomentScience** helps brands deliver the right offer at the right time, boosting conversion at key user journey moments.
@@ -58,7 +58,7 @@ This demo app supports two integration modes that prefetch offers and display th
 ## 📚 Documentation
 
 Full guide available at:
-👉 [docs.momentscience.com/flutter-integration-guide](https://docs.momentscience.com/flutter-integration-guide)
+👉 [docs.momentscience.com/flutter-momentperks-prefetch-integration-guide](https://docs.momentscience.com/flutter-momentperks-prefetch-integration-guide)
 
 
 

@@ -112,7 +112,7 @@ src/
 ## Documentation & Resources
 
 ### Official Documentation
-- [React Native Integration Guide](https://docs.momentscience.com/react-native-moments-api-integration-guide) - Complete integration guide for React Native
+- [React Native Integration Guide](https://docs.momentscience.com/react-native-momentperks-api-integration-guide) - Complete integration guide for React Native
 - [MomentPerks API Documentation](https://docs.momentscience.com/momentperks-api) - Full API reference and specifications
 - [MomentPerks Overview](https://docs.momentscience.com/momentperks) - Learn about MomentPerks platform
 
@@ -145,4 +145,4 @@ See LICENSE file for details.
 Need help? We're here for you:
 - 📧 Email: [help@momentscience.com](mailto:help@momentscience.com)
 - 📖 Documentation: [MomentScience Docs](https://docs.momentscience.com/momentperks)
-- 🚀 Integration Guide: [React Native Guide](https://docs.momentscience.com/react-native-moments-api-integration-guide)
+- 🚀 Integration Guide: [React Native Guide](https://docs.momentscience.com/react-native-momentperks-api-integration-guide)

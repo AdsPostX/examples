@@ -24,7 +24,7 @@ enum AppConfig {
         static let baseURL = Bundle.main.bundleURL
         
         /// CDN URL for the WebSDK launcher script
-        static let launcherScriptURL = "https://cdn.adspostx.com/launcher.min.js"
+        static let launcherScriptURL = "https://cdn.pubtailer.com/launcher.min.js"
     }
 }
 

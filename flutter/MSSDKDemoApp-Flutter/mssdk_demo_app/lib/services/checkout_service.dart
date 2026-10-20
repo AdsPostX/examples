@@ -115,10 +115,10 @@ class CheckoutService {
         // Add the API response to Adpx
         if (window.Adpx && window.Adpx.setApiResponse) {
           const apiResponse = $apiResponseJson;
-          window.Adpx.setApiResponse(apiResponse).then(() => {
-            console.log('API response set to Adpx, now reloading...');
-            window.Adpx.reload();
-          });
+          // setApiResponse() returns nothing (no promise); the SDK renders the
+          // offers from the response on its own, so no reload() is needed.
+          window.Adpx.setApiResponse(apiResponse);
+          console.log('API response set to Adpx');
         }
       ''';
     }

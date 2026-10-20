@@ -48,7 +48,7 @@ See the demo code for implementation patterns.
 
 ## Documentation & Resources
 
-- **📘 Integration Guide:** [Kotlin Moments API Integration Guide](https://docs.momentscience.com/kotlin-moments-api-integration-guide)
+- **📘 Integration Guide:** [Kotlin Moments API Integration Guide](https://docs.momentscience.com/android-kotlin-momentperks-api-integration-guide)
 - **📖 API Reference:** [MomentPerks API Documentation](https://docs.momentscience.com/momentperks-api)
 - **🌐 Dashboard:** [Get Your API Key](https://app.momentscience.com/)
 - **📚 Product Overview:** [MomentPerks Overview](https://docs.momentscience.com/momentperks)

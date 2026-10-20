@@ -48,7 +48,7 @@ This demo app supports both SDK and API-based integrations, allowing you to pref
 ## 📚 Documentation
 
 Full guide available at:
-👉 [docs.momentscience.com/android-integration-guide-kotlin](https://docs.momentscience.com/android-integration-guide-kotlin)
+👉 [docs.momentscience.com/android-momentperks-prefetch-integration-guide](https://docs.momentscience.com/android-momentperks-prefetch-integration-guide)
 
 ## ❓ Need Help?
 

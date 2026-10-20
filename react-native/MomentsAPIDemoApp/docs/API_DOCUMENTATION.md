@@ -430,7 +430,7 @@ Set in request:
 
 ## Additional Resources
 
-- **Official Documentation:** https://docs.momentscience.com/react-native-moments-api-integration-guide
+- **Official Documentation:** https://docs.momentscience.com/react-native-momentperks-api-integration-guide
 - **API Base URL:** https://api.adspostx.com/native/v4
 
 ---

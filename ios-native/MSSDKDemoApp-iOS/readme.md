@@ -1,6 +1,6 @@
 # MomentScience iOS SDK Demo (Swift)
 
-This repository contains a demo application that demonstrates how to integrate the [MomentScience SDK](https://docs.momentscience.com/ios-integration-guide-swift) into an iOS app.
+This repository contains a demo application that demonstrates how to integrate the [MomentScience SDK](https://docs.momentscience.com/swift-momentperks-prefetch-integration-guide) into an iOS app.
 This is an official MomentScience example app showing how to integrate the SDK using **Swift** and **SwiftUI**.
 
 **MomentScience** helps brands deliver the right offer at the right time, boosting conversion at key user journey moments.
@@ -58,7 +58,7 @@ This demo app supports two integration modes that prefetch offers and display th
 ## 📚 Documentation
 
 Full guide available at:
-👉 [docs.momentscience.com/ios-integration-guide-swift](https://docs.momentscience.com/ios-integration-guide-swift)
+👉 [docs.momentscience.com/swift-momentperks-prefetch-integration-guide](https://docs.momentscience.com/swift-momentperks-prefetch-integration-guide)
 
 
 

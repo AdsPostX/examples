@@ -6,7 +6,7 @@ A comprehensive Flutter demo application showcasing the integration of the [Mome
 
 This demo implements the patterns described in the official MomentScience documentation:
 
-- **[Flutter - Moments API Integration Guide](https://docs.momentscience.com/flutter-moments-api-integration-guide)** - Complete integration guide
+- **[Flutter - Moments API Integration Guide](https://docs.momentscience.com/flutter-momentperks-api-integration-guide)** - Complete integration guide
 - **[MomentPerks API](https://docs.momentscience.com/momentperks-api)** - API reference documentation
 - **[Getting Your API Key](https://app.momentscience.com/)** - How to obtain your API credentials
 - **[MomentPerks Overview](https://docs.momentscience.com/momentperks)** - Understanding MomentPerks
@@ -207,7 +207,7 @@ This app follows **MVVM (Model-View-ViewModel)** architecture:
 - **Authentication**: API key via query parameter
 - **Content-Type**: `application/json`
 
-For complete API documentation, see: [Flutter Integration Guide](https://docs.momentscience.com/flutter-moments-api-integration-guide)
+For complete API documentation, see: [Flutter Integration Guide](https://docs.momentscience.com/flutter-momentperks-api-integration-guide)
 
 ### Environment Variables
 
@@ -241,14 +241,14 @@ See [ENV_SETUP.md](msapidemoapp_fl/ENV_SETUP.md) for detailed environment variab
 
 This is a demo application provided for integration reference. For suggestions or improvements:
 
-1. Check the [official documentation](https://docs.momentscience.com/flutter-moments-api-integration-guide)
+1. Check the [official documentation](https://docs.momentscience.com/flutter-momentperks-api-integration-guide)
 2. Create an issue in this repository
 3. Contact MomentScience support at [help@momentscience.com](mailto:help@momentscience.com)
 
 ## 📧 Support & Resources
 
 ### Support
-- **📚 Official Documentation**: [Flutter - Moments API Integration Guide](https://docs.momentscience.com/flutter-moments-api-integration-guide)
+- **📚 Official Documentation**: [Flutter - Moments API Integration Guide](https://docs.momentscience.com/flutter-momentperks-api-integration-guide)
 - **🔑 Getting API Key**: [MomentScience Dashboard](https://app.momentscience.com/)
 - **💬 Moments API Support**: [help@momentscience.com](mailto:help@momentscience.com)
 - **🐛 Demo App Issues**: Create an issue in this repository
@@ -265,4 +265,4 @@ This is a demo application provided by MomentScience for integration reference p
 
 ---
 
-**Ready to integrate?** Start with the [official Flutter integration guide](https://docs.momentscience.com/flutter-moments-api-integration-guide) and use this demo as a reference implementation. 🚀
+**Ready to integrate?** Start with the [official Flutter integration guide](https://docs.momentscience.com/flutter-momentperks-api-integration-guide) and use this demo as a reference implementation. 🚀

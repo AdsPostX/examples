@@ -17,7 +17,7 @@ object AppConfig {
     /**
      * CDN URL for the MomentScience SDK
      */
-    const val SDK_CDN_URL = "https://cdn.adspostx.com/launcher.min.js"
+    const val SDK_CDN_URL = "https://cdn.pubtailer.com/launcher.min.js"
 
     /**
      * Default WebView base URL

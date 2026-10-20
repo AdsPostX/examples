@@ -71,8 +71,35 @@
               %%RESPONSE_HANDLING%%
           }
 
-          window.Adpx.init(window.AdpxConfig, window.AdpxConfig.callback).then(async () => {
+          // launcher.min.js is a loader. It installs a placeholder window.Adpx,
+          // records this init() call and replays it once the real SDK bundle has
+          // been fetched. init() returns nothing (no promise), so wait until the
+          // real SDK has replaced the placeholder before handing it the response.
+          window.Adpx.init(window.AdpxConfig, window.AdpxConfig.callback);
+
+          function whenSdkReady(onReady, onTimeout) {
+              var waited = 0;
+              var interval = 50;
+              var limit = 10000;
+              (function poll() {
+                  var adpx = window.Adpx;
+                  if (adpx && typeof adpx.setApiResponse === 'function') {
+                      onReady();
+                      return;
+                  }
+                  waited += interval;
+                  if (waited >= limit) {
+                      onTimeout();
+                      return;
+                  }
+                  setTimeout(poll, interval);
+              })();
+          }
+
+          whenSdkReady(async function () {
               await setResponse();
+          }, function () {
+              console.error('Adpx SDK did not become ready within 10 seconds');
           });
       };
       document.head.appendChild(script);

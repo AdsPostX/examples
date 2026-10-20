@@ -177,6 +177,9 @@ class OffersService: OffersServiceProtocol {
             }
             
             return response
+        } catch let error as OffersError {
+            // Re-throw our own errors (e.g. noOffers) unchanged so callers can match them
+            throw error
         } catch let error as DecodingError {
             print("Decoding error: \(error)")
             throw OffersError.decodingError

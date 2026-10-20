@@ -41,11 +41,11 @@ class NetworkServiceImpl : NetworkService {
      */
     override suspend fun fetchOffers(
         sdkId: String,
-        payload: Map<String, String>? = null,
+        payload: Map<String, String>?,
         loyaltyboost: String?,
         creative: String?,
         campaignId: String?,
-        isDevelopment: Boolean = false
+        isDevelopment: Boolean
     ): JsonElement = withContext(Dispatchers.IO) {
         try {
             // Validate input parameters for allowed values
